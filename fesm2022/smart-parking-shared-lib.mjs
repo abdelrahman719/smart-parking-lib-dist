@@ -341,21 +341,21 @@ class AuthBeService {
         this.baseUrl = baseUrl;
     }
     login(data) {
-        return this.http.post(`${this.baseUrl}/api/v1/idm/auth/login`, { username: data.username, password: data.password }, {
+        return this.http.post(`${this.baseUrl}/auth/login`, { username: data.username, password: data.password }, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
     logout() {
-        return this.http.post(`${this.baseUrl}/api/v1/idm/auth/logout`, {});
+        return this.http.post(`${this.baseUrl}/auth/logout`, {});
     }
     refreshToken(refreshToken) {
-        return this.http.post(`${this.baseUrl}/api/v1/idm/auth/refresh`, refreshToken, {
+        return this.http.post(`${this.baseUrl}/auth/refresh`, refreshToken, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
     validateToken() {
         return this.http
-            .post(`${this.baseUrl}/api/v1/idm/auth/validate`, {})
+            .post(`${this.baseUrl}/auth/validate`, {})
             .pipe(retry(3), catchError((error) => {
             console.error('Request failed after 3 retries', error);
             this.authContextService.clearData();
@@ -365,7 +365,7 @@ class AuthBeService {
         }));
     }
     getCurrUser() {
-        return this.http.get(`${this.baseUrl}/api/v1/idm/auth/me`);
+        return this.http.get(`${this.baseUrl}/auth/me`);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthBeService, deps: [{ token: i1.HttpClient }, { token: AuthContextService }, { token: i3.Router }, { token: API_BASE_URL$1 }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: AuthBeService, providedIn: 'root' });

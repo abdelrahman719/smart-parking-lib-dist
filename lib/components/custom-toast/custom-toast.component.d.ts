@@ -1,10 +1,10 @@
 import { ToastService } from '../../services/ui/toast.service';
 import * as i0 from "@angular/core";
 export declare class CustomToastComponent {
+    toastService: ToastService;
     positionClass: string;
     colorClass: string;
-    toastService: ToastService;
-    constructor();
+    constructor(toastService: ToastService);
     private updatePositionClass;
     private updateColorClass;
     hideToast(): void;

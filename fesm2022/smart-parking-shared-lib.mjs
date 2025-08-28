@@ -325,8 +325,8 @@ const SHOW_SUCCESS_TOASTER = new HttpContextToken(() => true);
 
 const API_BASE_URL$1 = new InjectionToken('API_BASE_URL', {
     providedIn: 'root',
-    factory: () => window?.env?.backendBaseUrl ??
-        'https://dispatching-api-gateway-821cc537b8b6.herokuapp.com',
+    factory: () => window?.env?.authUrl ??
+        'http://k8s-spbacken-smartpar-85d2b5c11e-1570195193.us-east-1.elb.amazonaws.com',
 });
 
 class AuthBeService {
@@ -341,7 +341,7 @@ class AuthBeService {
         this.baseUrl = baseUrl;
     }
     login(data) {
-        return this.http.post(`${this.baseUrl}/auth`, { username: data.username, password: data.password }, {
+        return this.http.post(`${this.baseUrl}/auth/login`, { username: data.username, password: data.password }, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }

@@ -341,7 +341,7 @@ class AuthBeService {
         this.baseUrl = baseUrl;
     }
     login(data) {
-        return this.http.post(`${this.baseUrl}/auth/login`, { username: data.username, password: data.password }, {
+        return this.http.post(`${this.baseUrl}/auth`, { username: data.username, password: data.password }, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
@@ -360,7 +360,7 @@ class AuthBeService {
             console.error('Request failed after 3 retries', error);
             this.authContextService.clearData();
             window.dispatchEvent(new CustomEvent('auth-logout'));
-            this.router.navigate(['/auth/login']);
+            this.router.navigate(['/auth']);
             throw error;
         }));
     }
@@ -444,7 +444,7 @@ class AuthService {
     logOutUser() {
         this.authContextService.clearData();
         // window.dispatchEvent(new CustomEvent('auth-logout'));
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth']);
         window.location.reload();
     }
     logout() {
@@ -1332,7 +1332,7 @@ const ErrorInterceptor = (req, next) => {
                 // refresh expired
                 authContextService.clearData();
                 window.dispatchEvent(new CustomEvent('auth-logout'));
-                router.navigate(['/auth/login']);
+                router.navigate(['/auth']);
                 break;
             case 404:
                 console.error('End Point Not Found');
@@ -3786,11 +3786,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 class CustomLoadingSpinnerComponent {
     local = input(false);
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomLoadingSpinnerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomLoadingSpinnerComponent, isStandalone: true, selector: "custom-loading-spinner", inputs: { local: { classPropertyName: "local", publicName: "local", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0, template: "@if(!local()){\r\n\r\n  <div class=\"global-loader-container \">\r\n\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n  </div>\r\n}@else {\r\n  <div class=\"local-loader-container \">\r\n\r\n    <span class=\"loader\"></span>\r\n  </div>\r\n\r\n}\r\n", styles: [".global-loader-container{height:100vh;width:100vw;display:flex;top:0;left:0;position:absolute;justify-content:center;align-items:center;z-index:999999;background-color:#00000063}.local-loader-container{height:100%;width:100%;display:flex;inset:0;position:absolute;justify-content:center;padding-top:15%;align-items:start;z-index:999999}.warpper{background-color:var(--smp-spinner-bg);padding:4.9em;border-radius:5em}.loader{width:12.2em;height:12.2em;border:8px solid;border-color:var(--smp-spinner-color) transparent;border-radius:50%;display:inline-block;box-sizing:border-box;animation:rotation 1s ease-in-out infinite}@keyframes rotation{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomLoadingSpinnerComponent, isStandalone: true, selector: "custom-loading-spinner", inputs: { local: { classPropertyName: "local", publicName: "local", isSignal: true, isRequired: false, transformFunction: null } }, ngImport: i0, template: "@if(!local()){\r\n\r\n  <div class=\"global-loader-container \">\r\n\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n  </div>\r\n}@else {\r\n  <div class=\"local-loader-container \">\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n\r\n  </div>\r\n\r\n}\r\n", styles: [".global-loader-container{height:100vh;width:100vw;display:flex;top:0;left:0;position:absolute;justify-content:center;align-items:center;z-index:999999;background-color:#00000063}.local-loader-container{height:100%;width:100%;display:flex;inset:0;position:absolute;justify-content:center;padding-top:15%;align-items:start;z-index:999999}.warpper{background-color:var(--smp-spinner-bg);padding:4.9em;border-radius:5em}.loader{width:10em;height:10em;border:7px solid;border-color:var(--smp-spinner-color) transparent;border-radius:50%;display:inline-block;box-sizing:border-box;animation:rotation 1.5s ease-in-out infinite}@keyframes rotation{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomLoadingSpinnerComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-loading-spinner', imports: [], template: "@if(!local()){\r\n\r\n  <div class=\"global-loader-container \">\r\n\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n  </div>\r\n}@else {\r\n  <div class=\"local-loader-container \">\r\n\r\n    <span class=\"loader\"></span>\r\n  </div>\r\n\r\n}\r\n", styles: [".global-loader-container{height:100vh;width:100vw;display:flex;top:0;left:0;position:absolute;justify-content:center;align-items:center;z-index:999999;background-color:#00000063}.local-loader-container{height:100%;width:100%;display:flex;inset:0;position:absolute;justify-content:center;padding-top:15%;align-items:start;z-index:999999}.warpper{background-color:var(--smp-spinner-bg);padding:4.9em;border-radius:5em}.loader{width:12.2em;height:12.2em;border:8px solid;border-color:var(--smp-spinner-color) transparent;border-radius:50%;display:inline-block;box-sizing:border-box;animation:rotation 1s ease-in-out infinite}@keyframes rotation{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n"] }]
+            args: [{ selector: 'custom-loading-spinner', imports: [], template: "@if(!local()){\r\n\r\n  <div class=\"global-loader-container \">\r\n\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n  </div>\r\n}@else {\r\n  <div class=\"local-loader-container \">\r\n    <div class=\"warpper\">\r\n\r\n      <span class=\"loader\"></span>\r\n    </div>\r\n\r\n  </div>\r\n\r\n}\r\n", styles: [".global-loader-container{height:100vh;width:100vw;display:flex;top:0;left:0;position:absolute;justify-content:center;align-items:center;z-index:999999;background-color:#00000063}.local-loader-container{height:100%;width:100%;display:flex;inset:0;position:absolute;justify-content:center;padding-top:15%;align-items:start;z-index:999999}.warpper{background-color:var(--smp-spinner-bg);padding:4.9em;border-radius:5em}.loader{width:10em;height:10em;border:7px solid;border-color:var(--smp-spinner-color) transparent;border-radius:50%;display:inline-block;box-sizing:border-box;animation:rotation 1.5s ease-in-out infinite}@keyframes rotation{0%{transform:rotate(0)}to{transform:rotate(360deg)}}\n"] }]
         }] });
 
 const checkedIconSrc = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none">

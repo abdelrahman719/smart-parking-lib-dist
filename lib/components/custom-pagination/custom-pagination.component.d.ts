@@ -6,6 +6,7 @@ export declare class CustomPaginationComponent {
     page: number;
     pageSize: number;
     private _totalCount;
+    oldStyle: boolean;
     set totalCount(value: number);
     get totalCount(): number;
     pageChange: EventEmitter<IPageChangeEvent>;

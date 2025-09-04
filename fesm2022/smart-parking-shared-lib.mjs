@@ -1,18 +1,18 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, inject, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ContentChild, ViewChild, HostBinding, ViewEncapsulation, model } from '@angular/core';
-import { retry, catchError, BehaviorSubject, Observable, map, throwError, finalize, tap, Subscription, fromEvent, filter, Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ContentChild, Injector, ViewContainerRef, ViewChild, inject, HostBinding, ViewEncapsulation, model, output, ApplicationRef, EnvironmentInjector, createComponent } from '@angular/core';
+import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, take, firstValueFrom, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
 import * as i3 from '@angular/router';
 import { Router } from '@angular/router';
 import * as i1$1 from '@ngx-translate/core';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import * as i1$3 from '@angular/forms';
 import { FormsModule, ReactiveFormsModule, FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as i1$2 from '@angular/common';
 import { isPlatformBrowser, CommonModule, NgStyle, NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import * as i1$4 from '@angular/platform-browser';
-import { state, transition, style, animate, keyframes, group, query, trigger } from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const ModuleRoutes = {
@@ -768,633 +768,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                     providedIn: 'root',
                 }]
         }] });
-
-// shared-lib/translation.service.ts
-class TranslationService {
-    translate = inject(TranslateService);
-    initialize(defaultLang = 'en') {
-        this.translate.setDefaultLang(defaultLang);
-        const browserLang = this.translate.getBrowserLang();
-        this.translate.use(browserLang?.match(/en|es/) ? browserLang : defaultLang);
-    }
-    changeLanguage(lang) {
-        this.translate.use(lang);
-    }
-    get(key, params) {
-        return this.translate.instant(key, params);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }] });
-
-class SidenavService {
-    _isCollapsed = signal(false);
-    constructor() {
-        // Initialize from sessionStorage on service creation
-        const storedState = sessionStorage.getItem('isCollapsed');
-        if (storedState === 'true') {
-            this._isCollapsed.set(true);
-        }
-        this.listenToWindowResize();
-    }
-    get isCollapsed() {
-        return this._isCollapsed();
-    }
-    toggle() {
-        const newVal = !this._isCollapsed();
-        sessionStorage.setItem('isCollapsed', newVal.toString());
-        this._isCollapsed.set(newVal);
-    }
-    collapse() {
-        this._isCollapsed.set(true);
-        sessionStorage.setItem('isCollapsed', 'true');
-    }
-    expand() {
-        this._isCollapsed.set(false);
-        sessionStorage.setItem('isCollapsed', 'false');
-    }
-    listenToWindowResize() {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            // Always collapse when < 900px
-            if (width < 900) {
-                this._isCollapsed.set(true);
-                sessionStorage.setItem('isCollapsed', 'true');
-            }
-            // Always expand when >= 700px
-            else {
-                this._isCollapsed.set(false);
-                sessionStorage.setItem('isCollapsed', 'false');
-            }
-        };
-        // Initial check
-        handleResize();
-        // Listen to resize
-        window.addEventListener('resize', handleResize);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [] });
-
-class GeoLocationService {
-    getCurrentPosition() {
-        return new Observable((observer) => {
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    observer.next(position);
-                    observer.complete();
-                }, (error) => {
-                    observer.error(error);
-                });
-            }
-            else {
-                observer.error('Geolocation is not supported by this browser.');
-            }
-        });
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, decorators: [{
-            type: Injectable,
-            args: [{
-                    providedIn: 'root'
-                }]
-        }] });
-
-// Auth services
-
-/**
- * Checks if any fields in an object contain data (not empty string or undefined)
- * @param {any} obj - The object to check
- * @returns {boolean} True if any field has data, false otherwise
- */
-const someFieldsContainData = (obj) => Object.values(obj).some((value) => value !== '' && value !== undefined);
-/**
- * Generates a random HSL color based on an index value
- * @param {number} index - The index used to generate unique hue
- * @param {number} lightness - The lightness percentage (0-100)
- * @returns {string} HSL color string (e.g., "hsl(120, 70%, 50%)")
- */
-const generateRandomColor = (index, lightness) => {
-    const hue = (index * 137.508) % 360;
-    const saturation = 70;
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-};
-/**
- * Formats a timestamp into a human-readable time string
- * @param {string} timestamp - ISO date string
- * @returns {string} Formatted time string (e.g., "Sent at 2:30 PM")
- */
-const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const formattedHours = hours % 12 || 12;
-    const period = hours < 12 ? 'AM' : 'PM';
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `Sent at ${formattedHours}:${formattedMinutes} ${period}`;
-};
-/**
- * Recursively flattens a tree structure into a single array
- * @param {any[]} nodes - Array of nodes with potential children
- * @param {any[]} [result=[]] - Accumulator array (used internally for recursion)
- * @returns {any[]} Flattened array of all nodes
- */
-const flattenTree = (nodes, result = []) => {
-    nodes.forEach((node) => {
-        result.push(node);
-        if (node.children && node.children.length > 0) {
-            flattenTree(node.children, result);
-        }
-    });
-    return result;
-};
-/**
- * Converts a date string to YYYY-MM-DD format
- * @param {any} inputDate - Date string or object
- * @returns {string} Formatted date string (e.g., "2023-05-15")
- */
-const convertDateFormat = (inputDate) => {
-    const dateObject = new Date(inputDate);
-    const year = dateObject.getFullYear();
-    const month = `0${dateObject.getMonth() + 1}`.slice(-2);
-    const day = `0${dateObject.getDate()}`.slice(-2);
-    const convertedDate = `${year}-${month}-${day}`;
-    return convertedDate;
-};
-/**
- * Converts Excel serial date number to JavaScript Date object
- * @param {number} serial - Excel serial date number
- * @returns {Date} JavaScript Date object
- */
-const excelDateToJSDate = (serial) => {
-    const excelStartDate = new Date(1900, 0, 1);
-    const jsDate = new Date(excelStartDate.getTime() + (serial - 1) * 24 * 60 * 60 * 1000);
-    return jsDate;
-};
-/**
- * Formats a date to YYYY-MM-DD format
- * @param {any} inputDate - Date string or object
- * @returns {string} Formatted date string (e.g., "2023-05-15")
- */
-function formatDate(inputDate) {
-    const date = new Date(inputDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-/**
- * Formats a date to YYYY-MM-DD HH:MM:SS format
- * @param {any} inputDate - Date string or object
- * @returns {string} Formatted datetime string (e.g., "2023-05-15 14:30:45")
- */
-function formatDateWithTime(inputDate) {
-    const date = new Date(inputDate);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-/**
- * Generates a unique number based on current timestamp and index
- * @param {number} index - Additional number to ensure uniqueness
- * @returns {string} Unique number string combining timestamp and index
- */
-function generateUniqueNumber(index) {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const day = currentDate.getDate();
-    const hour = currentDate.getHours();
-    const minute = currentDate.getMinutes();
-    const second = currentDate.getSeconds();
-    const millisecond = currentDate.getMilliseconds();
-    const uniqueNumber = `${year}${month}${day}${hour}${minute}${second}${millisecond}${index}`;
-    return uniqueNumber;
-}
-/**
- * Calculates time difference between two dates in hours and minutes
- * @param {Date} start - Start date
- * @param {Date} end - End date
- * @returns {string} Formatted time difference (e.g., "2 H and 30 M")
- */
-function diffTime(start, end) {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const diffMs = endDate.getTime() - startDate.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    if (diffHours >= 1) {
-        return `${diffHours} H and ${diffMinutes} M`;
-    }
-    if (diffHours < 1 && diffMinutes >= 1) {
-        return `${diffMinutes} M`;
-    }
-    return '0 M';
-}
-/**
- * Converts a File object to Base64 string (Note: currently incomplete implementation)
- * @param {any} selectedFile - File object to convert
- * @returns {any} Should return Base64 string (implementation needs fixing)
- */
-function convertFileToBase64(selectedFile) {
-    const reader = new FileReader();
-    reader.onload = (e) => e.target.result;
-    reader.readAsDataURL(selectedFile);
-}
-/**
- * Converts a date to relative time string (e.g., "2 hours ago")
- * @param {any} date - Date to compare with current time
- * @returns {string} Relative time string
- */
-function timeAgo(date) {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    const units = [
-        { name: 'year', seconds: 31536000 },
-        { name: 'month', seconds: 2592000 },
-        { name: 'week', seconds: 604800 },
-        { name: 'day', seconds: 86400 },
-        { name: 'hour', seconds: 3600 },
-        { name: 'minute', seconds: 60 },
-        { name: 'second', seconds: 1 },
-    ];
-    for (const unit of units) {
-        const interval = Math.floor(diffInSeconds / unit.seconds);
-        if (interval >= 1) {
-            return ` ${interval} ${unit.name}${interval !== 1 ? 's' : ''} ago`;
-        }
-    }
-    return 'just now';
-}
-/**
- * Formats a timestamp to HH:MM:SS format (UTC time)
- * @param {string} timestamp - ISO date string
- * @returns {string} Formatted time string (e.g., "14:30:45")
- */
-function formatinitialTakeTime(timestamp) {
-    const date = new Date(timestamp);
-    const hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
-    const seconds = date.getUTCSeconds();
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
-// File type checking utilities
-const imageExtensions = [
-    'jpg',
-    'jpeg',
-    'png',
-    'gif',
-    'bmp',
-    'tiff',
-    'webp',
-    'svg',
-];
-const videoExtensions = [
-    'mp4',
-    'avi',
-    'mov',
-    'wmv',
-    'flv',
-    'mkv',
-    'webm',
-];
-const documentExtensions = ['pdf', 'docx'];
-/**
- * Checks if a file path has an image extension
- * @param {string} path - File path to check
- * @returns {boolean} True if path ends with image extension
- */
-function isImagePath(path) {
-    if (!path) {
-        return false;
-    }
-    const parts = path.split('.');
-    if (parts.length < 2) {
-        return false;
-    }
-    const extension = parts.pop()?.toLowerCase() || '';
-    return imageExtensions.includes(extension);
-}
-/**
- * Checks if a file path has a video extension
- * @param {string} path - File path to check
- * @returns {boolean} True if path ends with video extension
- */
-function isVedioPath(path) {
-    if (!path) {
-        return false;
-    }
-    const parts = path.split('.');
-    if (parts.length < 2) {
-        return false;
-    }
-    const extension = parts.pop()?.toLowerCase() || '';
-    return videoExtensions.includes(extension);
-}
-/**
- * Checks if a file path has a document extension
- * @param {string} path - File path to check
- * @returns {boolean} True if path ends with document extension
- */
-function isDocumentPath(path) {
-    if (!path) {
-        return false;
-    }
-    const parts = path.split('.');
-    if (parts.length < 2) {
-        return false;
-    }
-    const extension = parts.pop()?.toLowerCase() || '';
-    return documentExtensions.includes(extension);
-}
-/**
- * Converts Base64 data URI to Blob object
- * @param {string} dataURI - Base64 encoded data URI
- * @returns {Blob} Blob object representing the image
- */
-// export function b64toBlob(dataURI: string, mimeType: string): Blob {
-//   const byteString = atob(dataURI);
-//   const ab = new ArrayBuffer(byteString.length);
-//   const ia = new Uint8Array(ab);
-//   for (let i = 0; i < byteString.length; i++) {
-//     ia[i] = byteString.charCodeAt(i);
-//   }
-//   return new Blob([ab], { type: mimeType });
-// }
-function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        const slice = byteCharacters.slice(offset, offset + sliceSize);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-    }
-    return new Blob(byteArrays, { type: contentType });
-}
-/**
- * Initiates a download of a given Blob object by creating a temporary anchor element
- * and triggering a click event on it. The file will be saved with the specified file name.
- *
- * @param blob - The Blob object to be downloaded.
- * @param fileName - The desired name for the downloaded file. Defaults to 'download' if not provided.
- */
-function downloadBlob(blob, fileName) {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName || 'download';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
-}
-/**
- * Converts a Blob object to Base64 data URI
- * @param {Blob} blob - Blob object to convert
- * @returns {Promise<string>} Promise resolving to Base64 encoded data URI
- */
-function blobToB64(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            if (typeof reader.result === 'string') {
-                // Remove the data URL prefix if present
-                const base64 = reader.result.replace(/^data:.*;base64,/, '');
-                resolve(base64);
-            }
-            else {
-                reject(new Error('Failed to convert Blob to Base64'));
-            }
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
-/**
- * Simple logger function that console.logs the input
- * @param {any} [data=''] - Data to log (defaults to empty string)
- */
-function logger(data = '') {
-    console.log(data);
-}
-/**
- * Extracts all validation errors from a FormGroup
- * @param {FormGroup} form - Angular FormGroup to inspect
- * @returns {Array} Array of error objects containing control name, error type and value
- */
-function getFormValidationErrors(form) {
-    const result = [];
-    Object.keys(form.controls).forEach((key) => {
-        const controlErrors = form.get(key)?.errors ?? null;
-        if (controlErrors) {
-            Object.keys(controlErrors).forEach((keyError) => {
-                result.push({
-                    control: key,
-                    error: keyError,
-                    value: controlErrors[keyError],
-                });
-            });
-        }
-    });
-    return result;
-}
-/**
- * Converts FormGroup values to FormData (handles File objects specially)
- * @param {FormGroup} formGroup - Angular FormGroup to convert
- * @returns {FormData} FormData object containing all form values
- */
-function convertFormGroupToFormData(formGroup) {
-    const formData = new FormData();
-    Object.keys(formGroup.controls).forEach((key) => {
-        const control = formGroup.get(key);
-        if (control) {
-            if (control.value instanceof File) {
-                formData.append(key, control.value);
-            }
-            else {
-                formData.append(key, control.value == null ? '' : control.value);
-            }
-        }
-    });
-    return formData;
-}
-
-const AuthInterceptor = (request, next) => {
-    const token = localStorage.getItem(AuthConstant.TOKEN);
-    const translate = localStorage.getItem(I18nConstant.LANGUAGE);
-    const skipToken = request.context.get(SKIP_TOKEN);
-    const showSuccessToaster = request.context.get(SHOW_SUCCESS_TOASTER);
-    const toastService = inject(ToastService);
-    // 'Content-Type': 'application/json',
-    const headersConfig = {
-        'accept-language': translate === I18nConstant.EN ? 'en-US' : 'e.g',
-    };
-    if (!skipToken) {
-        headersConfig['Authorization'] = `Bearer ${token}`;
-    }
-    const clonedRequest = request.clone({
-        setHeaders: headersConfig,
-    });
-    return next(clonedRequest).pipe(map((event) => {
-        //&& isPlatformBrowser(PLATFORM_ID)
-        if (event instanceof HttpResponse) {
-            const body = event.body;
-            if (body.status === 'SUCCESS' || body.success) {
-                body['success'] = true;
-            }
-            else {
-                body['success'] = false;
-            }
-            //  body['statusCode'] = event.status;
-            // console.log('body: ', body['success'] );
-            //    console.log('request.method: ', request.method);
-            if (body &&
-                body.success &&
-                (request.method === 'POST' ||
-                    request.method === 'PUT' ||
-                    request.method === 'DELETE')) {
-                if (showSuccessToaster) {
-                    toastService.toast(`${body.message}`, 'top-center', 'success', 4000);
-                }
-                // if (!body.success) {
-                //   if (body.errors && body.errors.length > 0) {
-                //     body.errors.forEach((error) => {
-                //       toastService.toast(`${error.msg}`, 'top-center', 'error', 2000);
-                //     });
-                //   } else {
-                //     toastService.toast(`Unknown Error`, 'top-center', 'error', 2000);
-                //   }
-                // }
-            }
-        }
-        return event;
-    }));
-};
-
-const ErrorInterceptor = (req, next) => {
-    let authService = inject(AuthService);
-    let authContextService = inject(AuthContextService);
-    let router = inject(Router);
-    let toastService = inject(ToastService);
-    return next(req).pipe(
-    // retry({
-    //   count: 3,
-    //   delay: (error) => {
-    //     if (error.status === 503) {
-    //       // Retry logic for 503 errors
-    //       return timer(1000); // Retry after 1 second
-    //     }
-    //     return throwError(() => error);
-    //   },
-    // }),
-    catchError((error) => {
-        // if (error && isPlatformBrowser(PLATFORM_ID)) {
-        // } else {
-        // }
-        //      if (error.status === 503) {
-        //   toastService.toast('Service unavailable. Please try again later.', 'top-center', 'error', 2000);
-        // }
-        switch (error.status) {
-            case 400:
-                toastService.toast(error.error.errorMessage, 'top-center', 'error', 2000);
-                break;
-            case 401:
-                // access token expired / au auth
-                authService.handleRefreshToken();
-                //  authContextService.clearData();
-                // window.dispatchEvent(new CustomEvent('auth-logout'));
-                // router.navigate(['/auth/login']);
-                break;
-            case 403:
-                // no permission
-                toastService.toast(`User don't have permission`, 'top-center', 'error', 2000);
-                authService.handlePermissionConfig();
-                console.error('No Permission');
-                break;
-            case 406:
-                // refresh expired
-                authContextService.clearData();
-                window.dispatchEvent(new CustomEvent('auth-logout'));
-                router.navigate(['/auth']);
-                break;
-            case 404:
-                console.error('End Point Not Found');
-                break;
-            case 503:
-                toastService.toast(`Please Contact Support Team`, 'top-center', 'error', 2000);
-                break;
-            default:
-                toastService.toast(`Please Contact Support Team`, 'top-center', 'error', 2000);
-        }
-        // refresh token + code
-        // access token
-        // 503 -- service idle -- error message
-        // 404 -- end point not found // /
-        // if (error.error && isPlatformBrowser(PLATFORM_ID)) {
-        //   if (error.error.errors) {
-        //     const errorMessages = Object.values(error.error.errors).flat();
-        //     errorMessages.forEach((errorMessage: any) => {
-        //       console.error(errorMessage);
-        //     });
-        //   } else if (error?.error?.message) {
-        //     console.error(error.error.message);
-        //   } else {
-        //     console.error('Something went wrong');
-        //   }
-        // }
-        return throwError(error);
-    }));
-};
-
-let totalRequests = 0;
-const loadingInterceptor = (req, next) => {
-    const loadingService = inject(LoadingService);
-    // console.log('loadingService: ', loadingService);
-    // If the custom header is present, skip the loader
-    // by this =>     context: new HttpContext().set(SKIP_LOADER, true),
-    const skipLoader = req.context.get(SKIP_LOADER);
-    if (skipLoader) {
-        return next(req);
-    }
-    totalRequests++;
-    loadingService.loading.set(true);
-    return next(req).pipe(finalize(() => {
-        totalRequests--;
-        if (totalRequests == 0) {
-            loadingService.loading.set(false);
-            loadingService.currentLoadingSection.set(null);
-        }
-    }));
-};
-
-const NetworkConnectionInterceptor = (req, next) => {
-    const startTime = Date.now();
-    return next(req).pipe(tap(() => {
-        const elapsedTime = Date.now() - startTime;
-        const threshold = 5000;
-        if (elapsedTime > threshold) {
-            console.log('Slow network detected');
-        }
-    }));
-};
 
 class CustomAppErrorComponent {
     control;
@@ -2415,11 +1788,11 @@ class CustomInputFormComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomInputFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomInputFormComponent, isStandalone: true, selector: "custom-input-form", inputs: { class: "class", labelClass: "labelClass", label: "label", placeholder: "placeholder", name: "name", type: "type", controlName: "controlName", parentForm: "parentForm", validation: "validation", pattern: "pattern", height: "height", disabled: "disabled" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div style=\"width: 100%\" [formGroup]=\"parentForm\" class=\"input-wrapper\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-alert-error); font-size: .95em; font-weight: 500\">*</span>\r\n    } @else{\r\n    <span style=\"color: var(--smp-color-alert-error); font-size: .95em; font-weight: 500\"\r\n      >&nbsp;</span\r\n    >\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <div class=\"input-error-container\">\r\n      @if( parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched && !disabled ){\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n      }\r\n    </div>\r\n\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (ngModelChange)=\"valueChange.emit($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n\r\n    />\r\n    <!-- Error icon (SVG) -->\r\n    @if( parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched && !disabled ){\r\n    <span class=\"input-icon\"\r\n      ><svg\r\n        width=\"1.08em\"\r\n        height=\"1.08em\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g clip-path=\"url(#clip0_9085_34629)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 7V11\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 15H11.01\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_9085_34629\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n    }\r\n\r\n    @if(type ==='password' ||( type==='text'&& showPassword)){\r\n          <button\r\n            [ngClass]=\"{\r\n    'eye-icon-position': parentForm.controls[controlName].invalid && parentForm.controls[controlName].touched,\r\n  }\"\r\n          type=\"button\"\r\n          class=\"input-icon-passwrord-eye \"\r\n          (click)=\"togglePasswordVisibility()\"\r\n          [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n        >\r\n          @if(showPassword){\r\n            <!-- eye (show) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n              <circle cx=\"12\" cy=\"12\" r=\"3\" stroke=\"currentColor\" stroke-width=\"1.6\"/>\r\n            </svg>\r\n          } @else {\r\n            <!-- eye-off (hide) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M3 3l18 18\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>\r\n              <path d=\"M10.58 10.58A3 3 0 0012 15a3 3 0 002.42-4.42M9.9 4.24A10.91 10.91 0 0112 4c6.5 0 10 7 10 7a17.21 17.21 0 01-3.07 3.62M6.24 6.24A17.77 17.77 0 002 11s3.5 7 10 7a10.86 10.86 0 004.76-1.07\"\r\n                    stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n            </svg>\r\n          }\r\n        </button>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".input-wrapper{position:relative}.input-container{position:relative;height:var(--height)}.custom-input{height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);outline:none!important;box-shadow:none;font-size:1em;font-weight:400;transition:border-color .2s;padding:.2em 1em}.custom-input:disabled{background-color:var(--smp-color-text-disabled);cursor:not-allowed}.custom-input.input-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826;padding:.2em 4em .2em 1em}.input-icon{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#e55658;font-size:1.5em;pointer-events:none}.input-icon-passwrord-eye{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#666c;font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer}.eye-icon-position{right:2.3em}.custom-input::placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.input-error-container{position:absolute;top:100%;left:0;width:100%}.input-error-container custom-app-error{pointer-events:none}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.PatternValidator, selector: "[pattern][formControlName],[pattern][formControl],[pattern][ngModel]", inputs: ["pattern"] }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i1$3.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomInputFormComponent, isStandalone: true, selector: "custom-input-form", inputs: { class: "class", labelClass: "labelClass", label: "label", placeholder: "placeholder", name: "name", type: "type", controlName: "controlName", parentForm: "parentForm", validation: "validation", pattern: "pattern", height: "height", disabled: "disabled" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div style=\"width: 100%\" [formGroup]=\"parentForm\" class=\"input-wrapper\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-form-label); font-size: .95em; font-weight: 500\">*</span>\r\n    } @else{\r\n    <span style=\"color: var(--smp-color-form-label); font-size: .95em; font-weight: 500\"\r\n      >&nbsp;</span\r\n    >\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <div class=\"input-error-container\">\r\n      @if( parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched && !disabled ){\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n      }\r\n    </div>\r\n\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (ngModelChange)=\"valueChange.emit($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n\r\n    />\r\n    <!-- Error icon (SVG) -->\r\n    @if( parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched && !disabled ){\r\n    <span class=\"input-icon\"\r\n      ><svg\r\n        width=\"1.08em\"\r\n        height=\"1.08em\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g clip-path=\"url(#clip0_9085_34629)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 7V11\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 15H11.01\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_9085_34629\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n    }\r\n\r\n    @if(type ==='password' ||( type==='text'&& showPassword)){\r\n          <button\r\n            [ngClass]=\"{\r\n    'eye-icon-position': parentForm.controls[controlName].invalid && parentForm.controls[controlName].touched,\r\n  }\"\r\n          type=\"button\"\r\n          class=\"input-icon-passwrord-eye \"\r\n          (click)=\"togglePasswordVisibility()\"\r\n          [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n        >\r\n          @if(showPassword){\r\n            <!-- eye (show) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n              <circle cx=\"12\" cy=\"12\" r=\"3\" stroke=\"currentColor\" stroke-width=\"1.6\"/>\r\n            </svg>\r\n          } @else {\r\n            <!-- eye-off (hide) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M3 3l18 18\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>\r\n              <path d=\"M10.58 10.58A3 3 0 0012 15a3 3 0 002.42-4.42M9.9 4.24A10.91 10.91 0 0112 4c6.5 0 10 7 10 7a17.21 17.21 0 01-3.07 3.62M6.24 6.24A17.77 17.77 0 002 11s3.5 7 10 7a10.86 10.86 0 004.76-1.07\"\r\n                    stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n            </svg>\r\n          }\r\n        </button>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".input-wrapper{position:relative}.input-container{position:relative;height:var(--height)}.custom-input{height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);outline:none!important;box-shadow:none;font-size:1em;font-weight:400;transition:border-color .2s;padding:.2em 1em}.custom-input:disabled{background-color:var(--smp-color-text-disabled);cursor:not-allowed}.custom-input.input-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826;padding:.2em 4em .2em 1em}.input-icon{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#e55658;font-size:1.5em;pointer-events:none}.input-icon-passwrord-eye{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#666c;font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer}.eye-icon-position{right:2.3em}.custom-input::placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.input-error-container{position:absolute;top:100%;left:0;width:100%}.input-error-container custom-app-error{pointer-events:none}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.PatternValidator, selector: "[pattern][formControlName],[pattern][formControl],[pattern][ngModel]", inputs: ["pattern"] }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i1$3.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomInputFormComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-input-form', standalone: true, imports: [NgStyle, ReactiveFormsModule, CustomAppErrorComponent, NgClass], template: "<div style=\"width: 100%\" [formGroup]=\"parentForm\" class=\"input-wrapper\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-alert-error); font-size: .95em; font-weight: 500\">*</span>\r\n    } @else{\r\n    <span style=\"color: var(--smp-color-alert-error); font-size: .95em; font-weight: 500\"\r\n      >&nbsp;</span\r\n    >\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <div class=\"input-error-container\">\r\n      @if( parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched && !disabled ){\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n      }\r\n    </div>\r\n\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (ngModelChange)=\"valueChange.emit($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n\r\n    />\r\n    <!-- Error icon (SVG) -->\r\n    @if( parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched && !disabled ){\r\n    <span class=\"input-icon\"\r\n      ><svg\r\n        width=\"1.08em\"\r\n        height=\"1.08em\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g clip-path=\"url(#clip0_9085_34629)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 7V11\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 15H11.01\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_9085_34629\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n    }\r\n\r\n    @if(type ==='password' ||( type==='text'&& showPassword)){\r\n          <button\r\n            [ngClass]=\"{\r\n    'eye-icon-position': parentForm.controls[controlName].invalid && parentForm.controls[controlName].touched,\r\n  }\"\r\n          type=\"button\"\r\n          class=\"input-icon-passwrord-eye \"\r\n          (click)=\"togglePasswordVisibility()\"\r\n          [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n        >\r\n          @if(showPassword){\r\n            <!-- eye (show) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n              <circle cx=\"12\" cy=\"12\" r=\"3\" stroke=\"currentColor\" stroke-width=\"1.6\"/>\r\n            </svg>\r\n          } @else {\r\n            <!-- eye-off (hide) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M3 3l18 18\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>\r\n              <path d=\"M10.58 10.58A3 3 0 0012 15a3 3 0 002.42-4.42M9.9 4.24A10.91 10.91 0 0112 4c6.5 0 10 7 10 7a17.21 17.21 0 01-3.07 3.62M6.24 6.24A17.77 17.77 0 002 11s3.5 7 10 7a10.86 10.86 0 004.76-1.07\"\r\n                    stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n            </svg>\r\n          }\r\n        </button>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".input-wrapper{position:relative}.input-container{position:relative;height:var(--height)}.custom-input{height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);outline:none!important;box-shadow:none;font-size:1em;font-weight:400;transition:border-color .2s;padding:.2em 1em}.custom-input:disabled{background-color:var(--smp-color-text-disabled);cursor:not-allowed}.custom-input.input-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826;padding:.2em 4em .2em 1em}.input-icon{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#e55658;font-size:1.5em;pointer-events:none}.input-icon-passwrord-eye{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#666c;font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer}.eye-icon-position{right:2.3em}.custom-input::placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.input-error-container{position:absolute;top:100%;left:0;width:100%}.input-error-container custom-app-error{pointer-events:none}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}\n"] }]
+            args: [{ selector: 'custom-input-form', standalone: true, imports: [NgStyle, ReactiveFormsModule, CustomAppErrorComponent, NgClass], template: "<div style=\"width: 100%\" [formGroup]=\"parentForm\" class=\"input-wrapper\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-form-label); font-size: .95em; font-weight: 500\">*</span>\r\n    } @else{\r\n    <span style=\"color: var(--smp-color-form-label); font-size: .95em; font-weight: 500\"\r\n      >&nbsp;</span\r\n    >\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <div class=\"input-error-container\">\r\n      @if( parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched && !disabled ){\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n      }\r\n    </div>\r\n\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (ngModelChange)=\"valueChange.emit($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n\r\n    />\r\n    <!-- Error icon (SVG) -->\r\n    @if( parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched && !disabled ){\r\n    <span class=\"input-icon\"\r\n      ><svg\r\n        width=\"1.08em\"\r\n        height=\"1.08em\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g clip-path=\"url(#clip0_9085_34629)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 7V11\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 15H11.01\"\r\n            stroke=\"#EB0000\"\r\n            stroke-width=\"1.3\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_9085_34629\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n    }\r\n\r\n    @if(type ==='password' ||( type==='text'&& showPassword)){\r\n          <button\r\n            [ngClass]=\"{\r\n    'eye-icon-position': parentForm.controls[controlName].invalid && parentForm.controls[controlName].touched,\r\n  }\"\r\n          type=\"button\"\r\n          class=\"input-icon-passwrord-eye \"\r\n          (click)=\"togglePasswordVisibility()\"\r\n          [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n        >\r\n          @if(showPassword){\r\n            <!-- eye (show) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n              <circle cx=\"12\" cy=\"12\" r=\"3\" stroke=\"currentColor\" stroke-width=\"1.6\"/>\r\n            </svg>\r\n          } @else {\r\n            <!-- eye-off (hide) -->\r\n            <svg width=\"1.2em\" height=\"1.2em\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\">\r\n              <path d=\"M3 3l18 18\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>\r\n              <path d=\"M10.58 10.58A3 3 0 0012 15a3 3 0 002.42-4.42M9.9 4.24A10.91 10.91 0 0112 4c6.5 0 10 7 10 7a17.21 17.21 0 01-3.07 3.62M6.24 6.24A17.77 17.77 0 002 11s3.5 7 10 7a10.86 10.86 0 004.76-1.07\"\r\n                    stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n            </svg>\r\n          }\r\n        </button>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".input-wrapper{position:relative}.input-container{position:relative;height:var(--height)}.custom-input{height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);outline:none!important;box-shadow:none;font-size:1em;font-weight:400;transition:border-color .2s;padding:.2em 1em}.custom-input:disabled{background-color:var(--smp-color-text-disabled);cursor:not-allowed}.custom-input.input-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826;padding:.2em 4em .2em 1em}.input-icon{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#e55658;font-size:1.5em;pointer-events:none}.input-icon-passwrord-eye{position:absolute;right:1em;top:50%;transform:translateY(-50%);color:#666c;font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer}.eye-icon-position{right:2.3em}.custom-input::placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.input-error-container{position:absolute;top:100%;left:0;width:100%}.input-error-container custom-app-error{pointer-events:none}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}\n"] }]
         }], propDecorators: { class: [{
                 type: Input
             }], labelClass: [{
@@ -2518,11 +1891,11 @@ class CustomMultiSelectComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomMultiSelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomMultiSelectComponent, isStandalone: true, selector: "custom-multi-select", inputs: { label: "label", labelClass: "labelClass", dropdownOptionsClass: "dropdownOptionsClass", dropdownHeaderClass: "dropdownHeaderClass", dropdownContainerClass: "dropdownContainerClass", placeholder: "placeholder", enableFilter: "enableFilter", showClear: "showClear", options: "options", value: "value", height: "height", reset: "reset" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div style=\"width: 100%\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      <span class=\"selected-value\">\r\n        {{ selectedOptions.length > 0 ? getSelectedLabels() : placeholder }}\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if(selectedOptions.length > 0 && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          style=\"min-height: 12px\"\r\n          width=\"inherit\"\r\n          height=\"inherit\"\r\n          viewBox=\"0 0 17 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M14.5 5.5L9.56061 11.0118C8.97727 11.6627 8.02273 11.6627 7.43939 11.0118L2.5 5.5\"\r\n            stroke=\"#999999\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Filter options...\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @for(option of filteredOptions; track option.id){\r\n        <div class=\"dropdown-option\" (click)=\"toggleOptionSelection(option)\">\r\n          <input\r\n            type=\"checkbox\"\r\n            class=\"custom-checkbox\"\r\n            [checked]=\"isSelected(option.id)\"\r\n            (click)=\"$event.stopPropagation()\"\r\n          />\r\n          <span>{{ option.nameEn }}</span>\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3)}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;height:calc(var(--height) / 2)}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a}.filter-container{padding:8px;border-bottom:1px solid #e5e7eb}.filter-input{width:100%;padding:8px;border:1px solid #82828233;border-radius:.25rem;outline:none}.options-list{padding:4px 0}.dropdown-option{padding:8px 16px;cursor:pointer}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.dropdown-option{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background-color .2s}.dropdown-option:hover{background-color:#f3f4f6}.option-label{flex:1}.custom-checkbox{appearance:none;width:20px;height:20px;border:2px solid #ccc;border-radius:3px;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease,background-color .3s ease;flex-shrink:0}.custom-checkbox:checked{background-color:#25c7bc;border-color:#25c7bc}.custom-checkbox:checked:after{content:\"\";position:absolute;top:0;left:5px;width:6px;height:12px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox:focus{border-color:#25c7bc}.dropdown-option.selected{background-color:#e5e7eb}.no-options{padding:12px 16px;color:#6b7280;font-style:italic;text-align:center}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomMultiSelectComponent, isStandalone: true, selector: "custom-multi-select", inputs: { label: "label", labelClass: "labelClass", dropdownOptionsClass: "dropdownOptionsClass", dropdownHeaderClass: "dropdownHeaderClass", dropdownContainerClass: "dropdownContainerClass", placeholder: "placeholder", enableFilter: "enableFilter", showClear: "showClear", options: "options", value: "value", height: "height", reset: "reset" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div style=\"width: 100%\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      <span class=\"selected-value\">\r\n        {{ selectedOptions.length > 0 ? getSelectedLabels() : placeholder }}\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if(selectedOptions.length > 0 && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          style=\"min-height: 12px\"\r\n          width=\"inherit\"\r\n          height=\"inherit\"\r\n          viewBox=\"0 0 17 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M14.5 5.5L9.56061 11.0118C8.97727 11.6627 8.02273 11.6627 7.43939 11.0118L2.5 5.5\"\r\n            stroke=\"#999999\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Filter options...\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @for(option of filteredOptions; track option.id){\r\n        <div class=\"dropdown-option\" (click)=\"toggleOptionSelection(option)\">\r\n          <input\r\n            type=\"checkbox\"\r\n            class=\"custom-checkbox\"\r\n            [checked]=\"isSelected(option.id)\"\r\n            (click)=\"$event.stopPropagation()\"\r\n          />\r\n          <span>{{ option.nameEn }}</span>\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3)}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;height:calc(var(--height) / 2);margin:0 .5em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a}.filter-container{padding:8px;border-bottom:1px solid #e5e7eb}.filter-input{width:100%;padding:8px;border:1px solid #82828233;border-radius:.25rem;outline:none}.options-list{padding:4px 0}.dropdown-option{padding:8px 16px;cursor:pointer}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.dropdown-option{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background-color .2s}.dropdown-option:hover{background-color:#f3f4f6}.option-label{flex:1}.custom-checkbox{appearance:none;width:20px;height:20px;border:2px solid #ccc;border-radius:3px;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease,background-color .3s ease;flex-shrink:0}.custom-checkbox:checked{background-color:#25c7bc;border-color:#25c7bc}.custom-checkbox:checked:after{content:\"\";position:absolute;top:0;left:5px;width:6px;height:12px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox:focus{border-color:#25c7bc}.dropdown-option.selected{background-color:#e5e7eb}.no-options{padding:12px 16px;color:#6b7280;font-style:italic;text-align:center}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomMultiSelectComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-multi-select', standalone: true, imports: [NgStyle, FormsModule, ClickOutsideDirective], template: "<div style=\"width: 100%\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      <span class=\"selected-value\">\r\n        {{ selectedOptions.length > 0 ? getSelectedLabels() : placeholder }}\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if(selectedOptions.length > 0 && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          style=\"min-height: 12px\"\r\n          width=\"inherit\"\r\n          height=\"inherit\"\r\n          viewBox=\"0 0 17 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M14.5 5.5L9.56061 11.0118C8.97727 11.6627 8.02273 11.6627 7.43939 11.0118L2.5 5.5\"\r\n            stroke=\"#999999\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Filter options...\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @for(option of filteredOptions; track option.id){\r\n        <div class=\"dropdown-option\" (click)=\"toggleOptionSelection(option)\">\r\n          <input\r\n            type=\"checkbox\"\r\n            class=\"custom-checkbox\"\r\n            [checked]=\"isSelected(option.id)\"\r\n            (click)=\"$event.stopPropagation()\"\r\n          />\r\n          <span>{{ option.nameEn }}</span>\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3)}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;height:calc(var(--height) / 2)}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a}.filter-container{padding:8px;border-bottom:1px solid #e5e7eb}.filter-input{width:100%;padding:8px;border:1px solid #82828233;border-radius:.25rem;outline:none}.options-list{padding:4px 0}.dropdown-option{padding:8px 16px;cursor:pointer}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.dropdown-option{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background-color .2s}.dropdown-option:hover{background-color:#f3f4f6}.option-label{flex:1}.custom-checkbox{appearance:none;width:20px;height:20px;border:2px solid #ccc;border-radius:3px;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease,background-color .3s ease;flex-shrink:0}.custom-checkbox:checked{background-color:#25c7bc;border-color:#25c7bc}.custom-checkbox:checked:after{content:\"\";position:absolute;top:0;left:5px;width:6px;height:12px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox:focus{border-color:#25c7bc}.dropdown-option.selected{background-color:#e5e7eb}.no-options{padding:12px 16px;color:#6b7280;font-style:italic;text-align:center}\n"] }]
+            args: [{ selector: 'custom-multi-select', standalone: true, imports: [NgStyle, FormsModule, ClickOutsideDirective], template: "<div style=\"width: 100%\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      <span class=\"selected-value\">\r\n        {{ selectedOptions.length > 0 ? getSelectedLabels() : placeholder }}\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if(selectedOptions.length > 0 && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          style=\"min-height: 12px\"\r\n          width=\"inherit\"\r\n          height=\"inherit\"\r\n          viewBox=\"0 0 17 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M14.5 5.5L9.56061 11.0118C8.97727 11.6627 8.02273 11.6627 7.43939 11.0118L2.5 5.5\"\r\n            stroke=\"#999999\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Filter options...\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @for(option of filteredOptions; track option.id){\r\n        <div class=\"dropdown-option\" (click)=\"toggleOptionSelection(option)\">\r\n          <input\r\n            type=\"checkbox\"\r\n            class=\"custom-checkbox\"\r\n            [checked]=\"isSelected(option.id)\"\r\n            (click)=\"$event.stopPropagation()\"\r\n          />\r\n          <span>{{ option.nameEn }}</span>\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3)}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;height:calc(var(--height) / 2);margin:0 .5em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a}.filter-container{padding:8px;border-bottom:1px solid #e5e7eb}.filter-input{width:100%;padding:8px;border:1px solid #82828233;border-radius:.25rem;outline:none}.options-list{padding:4px 0}.dropdown-option{padding:8px 16px;cursor:pointer}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.dropdown-option{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;transition:background-color .2s}.dropdown-option:hover{background-color:#f3f4f6}.option-label{flex:1}.custom-checkbox{appearance:none;width:20px;height:20px;border:2px solid #ccc;border-radius:3px;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease,background-color .3s ease;flex-shrink:0}.custom-checkbox:checked{background-color:#25c7bc;border-color:#25c7bc}.custom-checkbox:checked:after{content:\"\";position:absolute;top:0;left:5px;width:6px;height:12px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox:focus{border-color:#25c7bc}.dropdown-option.selected{background-color:#e5e7eb}.no-options{padding:12px 16px;color:#6b7280;font-style:italic;text-align:center}\n"] }]
         }], propDecorators: { label: [{
                 type: Input
             }], labelClass: [{
@@ -2708,6 +2081,7 @@ class CustomPaginationComponent {
     page = 1;
     pageSize = 10;
     _totalCount = 0;
+    oldStyle = false;
     set totalCount(value) {
         this._totalCount = value;
         this.calculateTotalPages();
@@ -2802,11 +2176,11 @@ class CustomPaginationComponent {
         });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPaginationComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomPaginationComponent, isStandalone: true, selector: "custom-pagination", inputs: { maxVisiblePages: { classPropertyName: "maxVisiblePages", publicName: "maxVisiblePages", isSignal: false, isRequired: false, transformFunction: null }, page: { classPropertyName: "page", publicName: "page", isSignal: false, isRequired: true, transformFunction: null }, pageSize: { classPropertyName: "pageSize", publicName: "pageSize", isSignal: false, isRequired: false, transformFunction: null }, totalCount: { classPropertyName: "totalCount", publicName: "totalCount", isSignal: false, isRequired: true, transformFunction: null }, baseValue: { classPropertyName: "baseValue", publicName: "baseValue", isSignal: false, isRequired: false, transformFunction: null }, hideTotalCount: { classPropertyName: "hideTotalCount", publicName: "hideTotalCount", isSignal: true, isRequired: false, transformFunction: null }, showPageSize: { classPropertyName: "showPageSize", publicName: "showPageSize", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { pageChange: "pageChange" }, ngImport: i0, template: "<div class=\"pagination\">\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount\">A total of {{ totalCount }} data</p>\r\n  } @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container\">\r\n    <!-- <div\r\n      class=\"page\"\r\n      (click)=\"firstPage()\"\r\n      [ngClass]=\"{ disabled: 1 === page }\"\r\n    >\r\n      <svg\r\n        width=\"10\"\r\n        height=\"8\"\r\n        viewBox=\"0 0 10 8\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          fill-rule=\"evenodd\"\r\n          clip-rule=\"evenodd\"\r\n          d=\"M9.63255 7.81586C9.40287 8.05473 9.02305 8.06218 8.78418 7.8325L5.18418 4.4325C5.06653 4.31938 5.00005 4.16321 5.00005 4C5.00005 3.83679 5.06653 3.68062 5.18418 3.5675L8.78418 0.1675C9.02304 -0.0621766 9.40287 -0.0547285 9.63255 0.184134C9.86222 0.422997 9.85478 0.802823 9.61591 1.0325L6.46571 4L9.61591 6.9675C9.85478 7.19718 9.86222 7.577 9.63255 7.81586ZM4.83255 7.81586C4.60287 8.05473 4.22305 8.06218 3.98418 7.8325L0.384182 4.4325C0.266534 4.31938 0.200047 4.16321 0.200047 4C0.200047 3.83679 0.266534 3.68062 0.384182 3.5675L3.98418 0.1675C4.22304 -0.0621762 4.60287 -0.0547281 4.83255 0.184134C5.06222 0.422997 5.05478 0.802823 4.81591 1.0325L1.66571 4L4.81591 6.9675C5.05478 7.19718 5.06222 7.577 4.83255 7.81586Z\"\r\n          fill=\"#595959\"\r\n        />\r\n      </svg>\r\n    </div> -->\r\n\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"16\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @for(item of totalPages(); track item) {\r\n    <div\r\n      (click)=\"changePage(item)\"\r\n      class=\"page\"\r\n      [ngClass]=\"{ active: item === page }\"\r\n    >\r\n      {{ item }}\r\n    </div>\r\n\r\n    }\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"17\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    <!-- <div\r\n      class=\"page\"\r\n      (click)=\"lastPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"10\"\r\n        height=\"8\"\r\n        viewBox=\"0 0 10 8\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M0.384087 6.9675C0.145224 7.19718 0.137776 7.577 0.367452 7.81587C0.597128 8.05473 0.976954 8.06218 1.21582 7.8325L4.81582 4.4325C4.93347 4.31938 4.99995 4.16321 4.99995 4C4.99995 3.83679 4.93347 3.68062 4.81582 3.5675L1.21582 0.167501C0.976954 -0.0621752 0.597128 -0.0547274 0.367452 0.184135C0.137776 0.422999 0.145224 0.802824 0.384087 1.0325L3.53429 4L0.384087 6.9675Z\"\r\n          fill=\"#595959\"\r\n        />\r\n        <path\r\n          d=\"M5.18409 6.9675C4.94522 7.19718 4.93778 7.577 5.16745 7.81587C5.39713 8.05473 5.77695 8.06218 6.01582 7.8325L9.61582 4.4325C9.73347 4.31938 9.79995 4.16321 9.79995 4C9.79995 3.83679 9.73347 3.68062 9.61582 3.5675L6.01582 0.167501C5.77695 -0.0621752 5.39713 -0.0547274 5.16745 0.184135C4.93778 0.422999 4.94522 0.802824 5.18409 1.0325L8.33429 4L5.18409 6.9675Z\"\r\n          fill=\"#595959\"\r\n        />\r\n      </svg>\r\n    </div> -->\r\n    @if(showPageSize) {\r\n    <div class=\"pageSize\">\r\n      <select class=\"pageSizeSelect\" (change)=\"onPageSizeChange($event)\">\r\n        @for(option of pageSizeOptions(); track option){\r\n        <option [value]=\"option\">{{ option }} Items / Page</option>\r\n        }\r\n      </select>\r\n    </div>\r\n    }\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".pagination{display:flex;justify-content:space-between;align-items:center;width:100%;max-height:50px;margin:5px 0;padding:0 10px 0 0}.totalCount{font-size:.875em;color:#595959;font-weight:500}.page-container{display:flex;align-items:center;gap:.2em;max-height:50px}.page{width:2.4rem;height:2.4rem;max-width:2.4rem;max-height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:.8em;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer}.page.active{border:1px solid #602450;background-color:#6024502e}.page.disabled{border:1px solid #d9d9d9;background-color:#f2f2f2;cursor:auto}.pageSizeSelect{height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:.8em;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0 5px}select:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.pageSizeSelect:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomPaginationComponent, isStandalone: true, selector: "custom-pagination", inputs: { maxVisiblePages: { classPropertyName: "maxVisiblePages", publicName: "maxVisiblePages", isSignal: false, isRequired: false, transformFunction: null }, page: { classPropertyName: "page", publicName: "page", isSignal: false, isRequired: true, transformFunction: null }, pageSize: { classPropertyName: "pageSize", publicName: "pageSize", isSignal: false, isRequired: false, transformFunction: null }, totalCount: { classPropertyName: "totalCount", publicName: "totalCount", isSignal: false, isRequired: true, transformFunction: null }, baseValue: { classPropertyName: "baseValue", publicName: "baseValue", isSignal: false, isRequired: false, transformFunction: null }, hideTotalCount: { classPropertyName: "hideTotalCount", publicName: "hideTotalCount", isSignal: true, isRequired: false, transformFunction: null }, showPageSize: { classPropertyName: "showPageSize", publicName: "showPageSize", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { pageChange: "pageChange" }, ngImport: i0, template: "\r\n@if(oldStyle){\r\n<div class=\"pagination\">\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount\">A total of {{ totalCount }} data</p>\r\n  } @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container\">\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"16\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @for(item of totalPages(); track item) {\r\n    <div\r\n      (click)=\"changePage(item)\"\r\n      class=\"page\"\r\n      [ngClass]=\"{ active: item === page }\"\r\n    >\r\n      {{ item }}\r\n    </div>\r\n\r\n    }\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"17\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @if(showPageSize) {\r\n    <div class=\"pageSize\">\r\n      <select class=\"pageSizeSelect\" (change)=\"onPageSizeChange($event)\">\r\n        @for(option of pageSizeOptions(); track option){\r\n        <option [value]=\"option\">{{ option }} Items / Page</option>\r\n        }\r\n      </select>\r\n    </div>\r\n    }\r\n  </div>\r\n  }\r\n</div>\r\n}@else {\r\n<div class=\"pagination  \">\r\n\r\n\r\n   @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container sm-pagination-flex\">\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"12\"\r\n        height=\"12\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#1F1F1F\"\r\n          stroke-width=\"2\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n<div  class=\"pages-numbers\">\r\n\r\n  @for(item of totalPages(); track item) {\r\n  <div\r\n    (click)=\"changePage(item)\"\r\n    class=\"page\"\r\n    [ngClass]=\"{ active: item === page }\"\r\n  >\r\n    {{ item }}\r\n  </div>\r\n\r\n  }\r\n</div>\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"12\"\r\n        height=\"12\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#1F1F1F\"\r\n          stroke-width=\"2\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n  </div>\r\n  }\r\n\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount-msg\">Showing <span class=\"count-no\">{{page}}</span>  to <span class=\"count-no\">{{totalCount / pageSize}}</span> of <span class=\"count-no\">{{totalCount}}</span> Results</p>\r\n  }\r\n</div>\r\n}\r\n", styles: [".pagination{display:flex;justify-content:space-between;align-items:center;width:100%;max-height:50px;margin:5px 0;padding:0 10px 0 0}.totalCount{font-size:.875em;color:#595959;font-weight:500}.page-container{display:flex;align-items:center;gap:.2em;max-height:4.4rem}.sm-pagination-flex{gap:2.4rem}.pages-numbers{display:flex;align-items:center;gap:1.2rem}.page{width:2.8rem;height:2.8rem;max-width:2.8rem;max-height:2.8rem;border-radius:.8rem;border:1px solid #D9DBE1;color:#1f1f1f;font-size:1.4rem;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer}.page.active{border:1px solid transparent;background-color:#602650;color:#fff}.page.disabled{opacity:40%;cursor:auto}.pageSizeSelect{height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:1.4rem;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0 5px}select:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.pageSizeSelect:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.totalCount-msg{font-size:1.2rem;color:var(--smp-color-text)}.count-no{color:var(--smp-color-primary);font-weight:600}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPaginationComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-pagination', standalone: true, imports: [CommonModule], template: "<div class=\"pagination\">\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount\">A total of {{ totalCount }} data</p>\r\n  } @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container\">\r\n    <!-- <div\r\n      class=\"page\"\r\n      (click)=\"firstPage()\"\r\n      [ngClass]=\"{ disabled: 1 === page }\"\r\n    >\r\n      <svg\r\n        width=\"10\"\r\n        height=\"8\"\r\n        viewBox=\"0 0 10 8\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          fill-rule=\"evenodd\"\r\n          clip-rule=\"evenodd\"\r\n          d=\"M9.63255 7.81586C9.40287 8.05473 9.02305 8.06218 8.78418 7.8325L5.18418 4.4325C5.06653 4.31938 5.00005 4.16321 5.00005 4C5.00005 3.83679 5.06653 3.68062 5.18418 3.5675L8.78418 0.1675C9.02304 -0.0621766 9.40287 -0.0547285 9.63255 0.184134C9.86222 0.422997 9.85478 0.802823 9.61591 1.0325L6.46571 4L9.61591 6.9675C9.85478 7.19718 9.86222 7.577 9.63255 7.81586ZM4.83255 7.81586C4.60287 8.05473 4.22305 8.06218 3.98418 7.8325L0.384182 4.4325C0.266534 4.31938 0.200047 4.16321 0.200047 4C0.200047 3.83679 0.266534 3.68062 0.384182 3.5675L3.98418 0.1675C4.22304 -0.0621762 4.60287 -0.0547281 4.83255 0.184134C5.06222 0.422997 5.05478 0.802823 4.81591 1.0325L1.66571 4L4.81591 6.9675C5.05478 7.19718 5.06222 7.577 4.83255 7.81586Z\"\r\n          fill=\"#595959\"\r\n        />\r\n      </svg>\r\n    </div> -->\r\n\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"16\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @for(item of totalPages(); track item) {\r\n    <div\r\n      (click)=\"changePage(item)\"\r\n      class=\"page\"\r\n      [ngClass]=\"{ active: item === page }\"\r\n    >\r\n      {{ item }}\r\n    </div>\r\n\r\n    }\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"17\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    <!-- <div\r\n      class=\"page\"\r\n      (click)=\"lastPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"10\"\r\n        height=\"8\"\r\n        viewBox=\"0 0 10 8\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M0.384087 6.9675C0.145224 7.19718 0.137776 7.577 0.367452 7.81587C0.597128 8.05473 0.976954 8.06218 1.21582 7.8325L4.81582 4.4325C4.93347 4.31938 4.99995 4.16321 4.99995 4C4.99995 3.83679 4.93347 3.68062 4.81582 3.5675L1.21582 0.167501C0.976954 -0.0621752 0.597128 -0.0547274 0.367452 0.184135C0.137776 0.422999 0.145224 0.802824 0.384087 1.0325L3.53429 4L0.384087 6.9675Z\"\r\n          fill=\"#595959\"\r\n        />\r\n        <path\r\n          d=\"M5.18409 6.9675C4.94522 7.19718 4.93778 7.577 5.16745 7.81587C5.39713 8.05473 5.77695 8.06218 6.01582 7.8325L9.61582 4.4325C9.73347 4.31938 9.79995 4.16321 9.79995 4C9.79995 3.83679 9.73347 3.68062 9.61582 3.5675L6.01582 0.167501C5.77695 -0.0621752 5.39713 -0.0547274 5.16745 0.184135C4.93778 0.422999 4.94522 0.802824 5.18409 1.0325L8.33429 4L5.18409 6.9675Z\"\r\n          fill=\"#595959\"\r\n        />\r\n      </svg>\r\n    </div> -->\r\n    @if(showPageSize) {\r\n    <div class=\"pageSize\">\r\n      <select class=\"pageSizeSelect\" (change)=\"onPageSizeChange($event)\">\r\n        @for(option of pageSizeOptions(); track option){\r\n        <option [value]=\"option\">{{ option }} Items / Page</option>\r\n        }\r\n      </select>\r\n    </div>\r\n    }\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".pagination{display:flex;justify-content:space-between;align-items:center;width:100%;max-height:50px;margin:5px 0;padding:0 10px 0 0}.totalCount{font-size:.875em;color:#595959;font-weight:500}.page-container{display:flex;align-items:center;gap:.2em;max-height:50px}.page{width:2.4rem;height:2.4rem;max-width:2.4rem;max-height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:.8em;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer}.page.active{border:1px solid #602450;background-color:#6024502e}.page.disabled{border:1px solid #d9d9d9;background-color:#f2f2f2;cursor:auto}.pageSizeSelect{height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:.8em;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0 5px}select:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.pageSizeSelect:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}\n"] }]
+            args: [{ selector: 'custom-pagination', standalone: true, imports: [CommonModule,], template: "\r\n@if(oldStyle){\r\n<div class=\"pagination\">\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount\">A total of {{ totalCount }} data</p>\r\n  } @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container\">\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"16\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @for(item of totalPages(); track item) {\r\n    <div\r\n      (click)=\"changePage(item)\"\r\n      class=\"page\"\r\n      [ngClass]=\"{ active: item === page }\"\r\n    >\r\n      {{ item }}\r\n    </div>\r\n\r\n    }\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"17\"\r\n        height=\"17\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#595959\"\r\n          stroke-width=\"1.25\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n    @if(showPageSize) {\r\n    <div class=\"pageSize\">\r\n      <select class=\"pageSizeSelect\" (change)=\"onPageSizeChange($event)\">\r\n        @for(option of pageSizeOptions(); track option){\r\n        <option [value]=\"option\">{{ option }} Items / Page</option>\r\n        }\r\n      </select>\r\n    </div>\r\n    }\r\n  </div>\r\n  }\r\n</div>\r\n}@else {\r\n<div class=\"pagination  \">\r\n\r\n\r\n   @if(totalPages().length >= 2){\r\n\r\n  <div class=\"page-container sm-pagination-flex\">\r\n    <div class=\"page\" (click)=\"prevPage()\" [ngClass]=\"{ disabled: 1 === page }\">\r\n      <svg\r\n        width=\"12\"\r\n        height=\"12\"\r\n        viewBox=\"0 0 16 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M10 12.0728L6 8.07275L10 4.07275\"\r\n          stroke=\"#1F1F1F\"\r\n          stroke-width=\"2\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n<div  class=\"pages-numbers\">\r\n\r\n  @for(item of totalPages(); track item) {\r\n  <div\r\n    (click)=\"changePage(item)\"\r\n    class=\"page\"\r\n    [ngClass]=\"{ active: item === page }\"\r\n  >\r\n    {{ item }}\r\n  </div>\r\n\r\n  }\r\n</div>\r\n    <div\r\n      class=\"page\"\r\n      (click)=\"nextPage()\"\r\n      [ngClass]=\"{ disabled: totalPages().length === page }\"\r\n    >\r\n      <svg\r\n        width=\"12\"\r\n        height=\"12\"\r\n        viewBox=\"0 0 17 17\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M6.51001 12.0728L10.51 8.07275L6.51001 4.07275\"\r\n          stroke=\"#1F1F1F\"\r\n          stroke-width=\"2\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </div>\r\n\r\n  </div>\r\n  }\r\n\r\n  @if(!hideTotalCount()) {\r\n\r\n  <p class=\"totalCount-msg\">Showing <span class=\"count-no\">{{page}}</span>  to <span class=\"count-no\">{{totalCount / pageSize}}</span> of <span class=\"count-no\">{{totalCount}}</span> Results</p>\r\n  }\r\n</div>\r\n}\r\n", styles: [".pagination{display:flex;justify-content:space-between;align-items:center;width:100%;max-height:50px;margin:5px 0;padding:0 10px 0 0}.totalCount{font-size:.875em;color:#595959;font-weight:500}.page-container{display:flex;align-items:center;gap:.2em;max-height:4.4rem}.sm-pagination-flex{gap:2.4rem}.pages-numbers{display:flex;align-items:center;gap:1.2rem}.page{width:2.8rem;height:2.8rem;max-width:2.8rem;max-height:2.8rem;border-radius:.8rem;border:1px solid #D9DBE1;color:#1f1f1f;font-size:1.4rem;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer}.page.active{border:1px solid transparent;background-color:#602650;color:#fff}.page.disabled{opacity:40%;cursor:auto}.pageSizeSelect{height:2.4rem;border-radius:.3em;border:1px solid rgba(217,217,217,1);color:#595959;font-size:1.4rem;font-weight:500;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0 5px}select:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.pageSizeSelect:focus-visible{outline:none;border:1px solid rgba(217,217,217,1)}.totalCount-msg{font-size:1.2rem;color:var(--smp-color-text)}.count-no{color:var(--smp-color-primary);font-weight:600}\n"] }]
         }], ctorParameters: () => [], propDecorators: { maxVisiblePages: [{
                 type: Input
             }], page: [{
@@ -2859,10 +2233,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
-const sortSvg$1 = '<svg width="auto" height="inherit" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.4"><path d="M1.53516 11.4792L5.6671 15.6112L9.79905 11.4792" stroke="black" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.53516 6.52086L5.6671 2.38892L9.79905 6.52086" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
-const actionViewSvg$1 = '<svg width="auto" height="inherit" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0001 0.75C14.9429 0.75 19.055 4.30645 19.9172 9C19.055 13.6935 14.9429 17.25 10.0001 17.25C5.05728 17.25 0.945142 13.6935 0.0830078 9C0.945142 4.30645 5.05728 0.75 10.0001 0.75ZM10.0001 15.4167C13.8827 15.4167 17.2051 12.7143 18.0461 9C17.2051 5.28569 13.8827 2.58333 10.0001 2.58333C6.11739 2.58333 2.79504 5.28569 1.95405 9C2.79504 12.7143 6.11739 15.4167 10.0001 15.4167ZM10.0001 13.125C7.7219 13.125 5.87508 11.2782 5.87508 9C5.87508 6.72183 7.7219 4.875 10.0001 4.875C12.2782 4.875 14.1251 6.72183 14.1251 9C14.1251 11.2782 12.2782 13.125 10.0001 13.125ZM10.0001 11.2917C11.2658 11.2917 12.2918 10.2656 12.2918 9C12.2918 7.73436 11.2658 6.70833 10.0001 6.70833C8.73447 6.70833 7.70841 7.73436 7.70841 9C7.70841 10.2656 8.73447 11.2917 10.0001 11.2917Z" fill="#25C7BC"/></svg>';
-const actionEditSvg$1 = '<svg width="auto" height="inherit" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7"><path d="M13.6745 12.0231L14.7622 10.9354C14.9321 10.7654 15.2278 10.8844 15.2278 11.1291V16.0713C15.2278 16.9721 14.497 17.7029 13.5963 17.7029H1.63155C0.7308 17.7029 0 16.9721 0 16.0713V4.10663C0 3.20587 0.7308 2.47507 1.63155 2.47507H10.928C11.1693 2.47507 11.2917 2.76739 11.1218 2.94074L10.0341 4.02845C9.98307 4.07943 9.91508 4.10663 9.8403 4.10663H1.63155V16.0713H13.5963V12.2134C13.5963 12.142 13.6235 12.074 13.6745 12.0231ZM18.9974 5.16374L10.0714 14.0897L6.99868 14.4296C6.10813 14.5282 5.35013 13.777 5.44871 12.8796L5.78861 9.80686L14.7146 0.880909C15.493 0.102522 16.7506 0.102522 17.5256 0.880909L18.994 2.34931C19.7724 3.12769 19.7724 4.38875 18.9974 5.16374ZM15.6391 6.21405L13.6643 4.23919L7.34879 10.5581L7.10065 12.7777L9.32025 12.5295L15.6391 6.21405ZM17.8417 3.50499L16.3733 2.03659C16.234 1.89723 16.0062 1.89723 15.8703 2.03659L14.8199 3.0869L16.7948 5.06176L17.8451 4.01145C17.9811 3.86869 17.9811 3.64435 17.8417 3.50499Z" fill="#444A6D"/></g></svg>';
-const actionDeleteSvg$1 = '<svg width="auto" height="inherit" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_8955_16606)"><path d="M15.0485 1.32129L1.69141 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.69141 1.32129L15.0485 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_8955_16606"><rect width="15.5833" height="15.5833" fill="white" transform="translate(0.578125 0.208252)"/></clipPath></defs></svg>';
+const sortSvg$2 = '<svg width="auto" height="inherit" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.4"><path d="M1.53516 11.4792L5.6671 15.6112L9.79905 11.4792" stroke="black" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.53516 6.52086L5.6671 2.38892L9.79905 6.52086" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+const actionViewSvg$2 = '<svg width="auto" height="inherit" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0001 0.75C14.9429 0.75 19.055 4.30645 19.9172 9C19.055 13.6935 14.9429 17.25 10.0001 17.25C5.05728 17.25 0.945142 13.6935 0.0830078 9C0.945142 4.30645 5.05728 0.75 10.0001 0.75ZM10.0001 15.4167C13.8827 15.4167 17.2051 12.7143 18.0461 9C17.2051 5.28569 13.8827 2.58333 10.0001 2.58333C6.11739 2.58333 2.79504 5.28569 1.95405 9C2.79504 12.7143 6.11739 15.4167 10.0001 15.4167ZM10.0001 13.125C7.7219 13.125 5.87508 11.2782 5.87508 9C5.87508 6.72183 7.7219 4.875 10.0001 4.875C12.2782 4.875 14.1251 6.72183 14.1251 9C14.1251 11.2782 12.2782 13.125 10.0001 13.125ZM10.0001 11.2917C11.2658 11.2917 12.2918 10.2656 12.2918 9C12.2918 7.73436 11.2658 6.70833 10.0001 6.70833C8.73447 6.70833 7.70841 7.73436 7.70841 9C7.70841 10.2656 8.73447 11.2917 10.0001 11.2917Z" fill="#25C7BC"/></svg>';
+const actionEditSvg$2 = '<svg width="auto" height="inherit" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7"><path d="M13.6745 12.0231L14.7622 10.9354C14.9321 10.7654 15.2278 10.8844 15.2278 11.1291V16.0713C15.2278 16.9721 14.497 17.7029 13.5963 17.7029H1.63155C0.7308 17.7029 0 16.9721 0 16.0713V4.10663C0 3.20587 0.7308 2.47507 1.63155 2.47507H10.928C11.1693 2.47507 11.2917 2.76739 11.1218 2.94074L10.0341 4.02845C9.98307 4.07943 9.91508 4.10663 9.8403 4.10663H1.63155V16.0713H13.5963V12.2134C13.5963 12.142 13.6235 12.074 13.6745 12.0231ZM18.9974 5.16374L10.0714 14.0897L6.99868 14.4296C6.10813 14.5282 5.35013 13.777 5.44871 12.8796L5.78861 9.80686L14.7146 0.880909C15.493 0.102522 16.7506 0.102522 17.5256 0.880909L18.994 2.34931C19.7724 3.12769 19.7724 4.38875 18.9974 5.16374ZM15.6391 6.21405L13.6643 4.23919L7.34879 10.5581L7.10065 12.7777L9.32025 12.5295L15.6391 6.21405ZM17.8417 3.50499L16.3733 2.03659C16.234 1.89723 16.0062 1.89723 15.8703 2.03659L14.8199 3.0869L16.7948 5.06176L17.8451 4.01145C17.9811 3.86869 17.9811 3.64435 17.8417 3.50499Z" fill="#444A6D"/></g></svg>';
+const actionDeleteSvg$2 = '<svg width="auto" height="inherit" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_8955_16606)"><path d="M15.0485 1.32129L1.69141 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.69141 1.32129L15.0485 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_8955_16606"><rect width="15.5833" height="15.5833" fill="white" transform="translate(0.578125 0.208252)"/></clipPath></defs></svg>';
 
 class CustomTableComponent {
     sanitizer;
@@ -2903,15 +2277,15 @@ class CustomTableComponent {
     checkedActionDeleteSvg;
     constructor(sanitizer) {
         this.sanitizer = sanitizer;
-        const sortSvgIcon = sortSvg$1;
+        const sortSvgIcon = sortSvg$2;
         this.checkedSortIcon = this.sanitizer.bypassSecurityTrustHtml(sortSvgIcon);
-        const ActionView = actionViewSvg$1;
+        const ActionView = actionViewSvg$2;
         this.checkedActionViewSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionView);
-        const ActionEdit = actionEditSvg$1;
+        const ActionEdit = actionEditSvg$2;
         this.checkedActionEditSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionEdit);
-        const ActionDelete = actionDeleteSvg$1;
+        const ActionDelete = actionDeleteSvg$2;
         this.checkedActionDeleteSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionDelete);
     }
@@ -3356,50 +2730,83 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
         }], ctorParameters: () => [{ type: ToastService }] });
 
 class CustomModalComponent {
+    // Inputs
     modalTitle = '';
-    showDot = false;
-    headerButton = '';
+    modalIcon = '';
     overlayClickClose = true;
+    // Outputs
     hideEvent = new EventEmitter();
-    headerButtonClick = new EventEmitter();
+    closed = new EventEmitter();
     isVisible = false;
-    open() {
-        this.isVisible = true;
+    // Anchor readiness (inside *ngIf*)
+    contentReadySubject = new ReplaySubject(1);
+    contentReady$ = this.contentReadySubject.asObservable();
+    hostVcRef;
+    dynamicChildRef;
+    // Bind to the same ref name as the template: #contentHost
+    // NOTE: do NOT set static: true (it’s inside *ngIf*)
+    set contentHost(vcr) {
+        if (vcr) {
+            this.hostVcRef = vcr;
+            this.contentReadySubject.next();
+        }
     }
+    // Public API
+    open() { this.isVisible = true; }
     close() {
         this.isVisible = false;
-        //  this.hideEvent.emit();
+        this.clearDynamicContent();
+        this.closed.emit();
     }
     closeInternal() {
         this.isVisible = false;
+        this.clearDynamicContent();
         this.hideEvent.emit();
-    }
-    onHeaderButtonClick() {
-        this.headerButtonClick.emit();
+        this.closed.emit();
     }
     onOverlayClick(event) {
-        if (event.target === event.currentTarget && this.overlayClickClose) {
+        if (event.target === event.currentTarget && this.overlayClickClose)
             this.close();
-        }
+    }
+    /** Attach child and provide MODAL_REF so it can close itself */
+    attachContent(component, extraProviders = []) {
+        if (!this.hostVcRef)
+            throw new Error('Modal content host not ready');
+        const modalRefApi = { close: () => this.close() };
+        const injector = Injector.create({
+            providers: [{ provide: MODAL_REF, useValue: modalRefApi }, ...extraProviders],
+            parent: this.hostVcRef.injector,
+        });
+        this.hostVcRef.clear();
+        const ref = this.hostVcRef.createComponent(component, { injector });
+        this.dynamicChildRef = ref;
+        return ref;
+    }
+    // Helpers
+    clearDynamicContent() {
+        this.hostVcRef?.clear();
+        this.dynamicChildRef?.destroy();
+        this.dynamicChildRef = undefined;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomModalComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: CustomModalComponent, isStandalone: true, selector: "modal", inputs: { modalTitle: "modalTitle", showDot: "showDot", headerButton: "headerButton", overlayClickClose: "overlayClickClose" }, outputs: { hideEvent: "hideEvent", headerButtonClick: "headerButtonClick" }, ngImport: i0, template: "<div\r\n  *ngIf=\"isVisible\"\r\n  class=\"modal-overlay flex flex-row justify-start align-start\"\r\n  (click)=\"onOverlayClick($event)\"\r\n>\r\n  <!-- X button outside modal-content -->\r\n\r\n  <div class=\"flex flex-row\">\r\n    <!-- < class=\"modal-content\" (click)=\"$event.stopPropagation()\"> -->\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <span *ngIf=\"showDot\" class=\"modal-dot\"></span>\r\n        <span class=\"modal-title\">{{ modalTitle }}</span>\r\n        <div *ngIf=\"headerButton\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"btn-header\"\r\n            (click)=\"onHeaderButtonClick()\"\r\n          >\r\n            {{ headerButton }}\r\n          </button>\r\n        </div>\r\n      </div>\r\n      <div class=\"modal-main-content\">\r\n        <ng-content></ng-content>\r\n      </div>\r\n    </div>\r\n    <div class=\"flex justify-start\">\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close\"\r\n        aria-label=\"Close\"\r\n        (click)=\"closeInternal()\"\r\n      >\r\n        <svg\r\n          width=\"80\"\r\n          height=\"80\"\r\n          viewBox=\"0 0 80 80\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n          aria-hidden=\"true\"\r\n        >\r\n          <line\r\n            x1=\"20\"\r\n            y1=\"20\"\r\n            x2=\"60\"\r\n            y2=\"60\"\r\n            stroke=\"currentColor\"\r\n            stroke-width=\"4\"\r\n            stroke-linecap=\"round\"\r\n          />\r\n          <line\r\n            x1=\"60\"\r\n            y1=\"20\"\r\n            x2=\"20\"\r\n            y2=\"60\"\r\n            stroke=\"currentColor\"\r\n            stroke-width=\"4\"\r\n            stroke-linecap=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:10px 0 10px 10px;min-width:600px;max-width:90vw;padding:1.5em;display:flex;align-items:center;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:start;padding:0 .5em;position:relative}.btn-header{font-family:var(--FM-Bold);font-weight:500;font-size:1.7rem;color:#637486;background-color:#f7f7f7;cursor:pointer;border:#adb5be solid 1px;border-radius:.4em;padding:.3em 1em}.modal-title{flex:1;text-align:left;font-size:1.4em;font-weight:600;width:min-content}.modal-dot{width:1em;height:1em;background:#25c7bc;border-radius:25%;margin-right:10px}.btn-close{height:2.5em;width:2.5em;padding:.5em .6em;background-color:#526275;display:flex;align-items:center;border-top-right-radius:25%;border-bottom-right-radius:25%;cursor:pointer;color:#fff;outline:none;font-size:large}.btn-close:hover{background-color:#4f5a6b}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomModalComponent, isStandalone: true, selector: "modal", inputs: { modalTitle: "modalTitle", modalIcon: "modalIcon", overlayClickClose: "overlayClickClose" }, outputs: { hideEvent: "hideEvent", closed: "closed" }, viewQueries: [{ propertyName: "contentHost", first: true, predicate: ["contentHost"], descendants: true, read: ViewContainerRef }], ngImport: i0, template: "<div\r\n  *ngIf=\"isVisible\"\r\n  class=\"modal-overlay flex flex-row justify-start align-start\"\r\n  (click)=\"onOverlayClick($event)\"\r\n>\r\n  <div class=\"flex flex-row\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <div class=\"left-header\">\r\n          @if(modalIcon){\r\n\r\n            <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n          }\r\n          <p class=\"modal-title\">{{ modalTitle }}</p>\r\n        </div>\r\n        <button\r\n          type=\"button\"\r\n          class=\"btn-close-icon\"\r\n          aria-label=\"Close\"\r\n          (click)=\"closeInternal()\"\r\n        >\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"16\"\r\n            viewBox=\"0 0 16 16\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M1.00098 1L15 14.9991\"\r\n              stroke=\"#595959\"\r\n              stroke-width=\"1.5\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M0.999964 14.9991L14.999 1\"\r\n              stroke=\"#595959\"\r\n              stroke-width=\"1.5\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </button>\r\n      </div>\r\n      <div class=\"modal-main-content\">\r\n        <ng-content></ng-content>\r\n        <!-- Anchor for dynamic components -->\r\n        <ng-template #contentHost></ng-template>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5em;display:flex;align-items:center;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.5rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon:hover{color:red}.btn-close-icon svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomModalComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'modal', standalone: true, imports: [CommonModule], template: "<div\r\n  *ngIf=\"isVisible\"\r\n  class=\"modal-overlay flex flex-row justify-start align-start\"\r\n  (click)=\"onOverlayClick($event)\"\r\n>\r\n  <!-- X button outside modal-content -->\r\n\r\n  <div class=\"flex flex-row\">\r\n    <!-- < class=\"modal-content\" (click)=\"$event.stopPropagation()\"> -->\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <span *ngIf=\"showDot\" class=\"modal-dot\"></span>\r\n        <span class=\"modal-title\">{{ modalTitle }}</span>\r\n        <div *ngIf=\"headerButton\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"btn-header\"\r\n            (click)=\"onHeaderButtonClick()\"\r\n          >\r\n            {{ headerButton }}\r\n          </button>\r\n        </div>\r\n      </div>\r\n      <div class=\"modal-main-content\">\r\n        <ng-content></ng-content>\r\n      </div>\r\n    </div>\r\n    <div class=\"flex justify-start\">\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close\"\r\n        aria-label=\"Close\"\r\n        (click)=\"closeInternal()\"\r\n      >\r\n        <svg\r\n          width=\"80\"\r\n          height=\"80\"\r\n          viewBox=\"0 0 80 80\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n          aria-hidden=\"true\"\r\n        >\r\n          <line\r\n            x1=\"20\"\r\n            y1=\"20\"\r\n            x2=\"60\"\r\n            y2=\"60\"\r\n            stroke=\"currentColor\"\r\n            stroke-width=\"4\"\r\n            stroke-linecap=\"round\"\r\n          />\r\n          <line\r\n            x1=\"60\"\r\n            y1=\"20\"\r\n            x2=\"20\"\r\n            y2=\"60\"\r\n            stroke=\"currentColor\"\r\n            stroke-width=\"4\"\r\n            stroke-linecap=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:10px 0 10px 10px;min-width:600px;max-width:90vw;padding:1.5em;display:flex;align-items:center;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:start;padding:0 .5em;position:relative}.btn-header{font-family:var(--FM-Bold);font-weight:500;font-size:1.7rem;color:#637486;background-color:#f7f7f7;cursor:pointer;border:#adb5be solid 1px;border-radius:.4em;padding:.3em 1em}.modal-title{flex:1;text-align:left;font-size:1.4em;font-weight:600;width:min-content}.modal-dot{width:1em;height:1em;background:#25c7bc;border-radius:25%;margin-right:10px}.btn-close{height:2.5em;width:2.5em;padding:.5em .6em;background-color:#526275;display:flex;align-items:center;border-top-right-radius:25%;border-bottom-right-radius:25%;cursor:pointer;color:#fff;outline:none;font-size:large}.btn-close:hover{background-color:#4f5a6b}\n"] }]
+            args: [{ selector: 'modal', standalone: true, imports: [CommonModule], template: "<div\r\n  *ngIf=\"isVisible\"\r\n  class=\"modal-overlay flex flex-row justify-start align-start\"\r\n  (click)=\"onOverlayClick($event)\"\r\n>\r\n  <div class=\"flex flex-row\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <div class=\"left-header\">\r\n          @if(modalIcon){\r\n\r\n            <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n          }\r\n          <p class=\"modal-title\">{{ modalTitle }}</p>\r\n        </div>\r\n        <button\r\n          type=\"button\"\r\n          class=\"btn-close-icon\"\r\n          aria-label=\"Close\"\r\n          (click)=\"closeInternal()\"\r\n        >\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"16\"\r\n            viewBox=\"0 0 16 16\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M1.00098 1L15 14.9991\"\r\n              stroke=\"#595959\"\r\n              stroke-width=\"1.5\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M0.999964 14.9991L14.999 1\"\r\n              stroke=\"#595959\"\r\n              stroke-width=\"1.5\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </button>\r\n      </div>\r\n      <div class=\"modal-main-content\">\r\n        <ng-content></ng-content>\r\n        <!-- Anchor for dynamic components -->\r\n        <ng-template #contentHost></ng-template>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5em;display:flex;align-items:center;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.5rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon:hover{color:red}.btn-close-icon svg{width:100%!important;height:auto;display:block}\n"] }]
         }], propDecorators: { modalTitle: [{
                 type: Input
-            }], showDot: [{
-                type: Input
-            }], headerButton: [{
+            }], modalIcon: [{
                 type: Input
             }], overlayClickClose: [{
                 type: Input
             }], hideEvent: [{
                 type: Output
-            }], headerButtonClick: [{
+            }], closed: [{
                 type: Output
+            }], contentHost: [{
+                type: ViewChild,
+                args: ['contentHost', { read: ViewContainerRef }]
             }] } });
 
 const uploadCloudSVG = '<svg width="52"height="53"viewBox="0 0 52 53"fill="none"xmlns="http://www.w3.org/2000/svg"class="upload-icon"><path d="M34.6666 35.1667L25.9999 26.5L17.3333 35.1667"stroke="#626264"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"/><path d="M26 26.5V46"stroke="#626264"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"/><path d="M44.1782 40.345C46.2915 39.193 47.9609 37.37 48.923 35.1637C49.8851 32.9575 50.085 30.4937 49.4914 28.1612C48.8977 25.8287 47.5441 23.7603 45.6444 22.2825C43.7446 20.8047 41.4068 20.0016 38.9999 20H36.2699C35.6141 17.4634 34.3918 15.1084 32.6948 13.1122C30.9978 11.116 28.8704 9.53039 26.4725 8.4747C24.0745 7.419 21.4684 6.92066 18.8502 7.01713C16.2319 7.11359 13.6696 7.80236 11.3558 9.03166C9.04203 10.2609 7.03705 11.9988 5.49159 14.1145C3.94613 16.2302 2.90041 18.6687 2.43304 21.2467C1.96566 23.8248 2.08881 26.4752 2.79321 28.9988C3.49761 31.5224 4.76494 33.8534 6.49991 35.8167"stroke="#626264"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"/><path d="M34.6666 35.1667L25.9999 26.5L17.3333 35.1667"stroke="#626264"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"/></svg>';
@@ -4227,57 +3634,19 @@ const checkIcon = `<svg width="inherit" height="inherit" viewBox="0 0 130 130" f
 </svg>
 `;
 
-const showSuccess = [
-    state('void', style({
-        opacity: 0,
-        height: '9.56em',
-    })),
-    state('visible', style({
-        opacity: 1,
-        height: '26.7em',
-    })),
-    transition('void => visible', [
-        animate('2s ease-in-out', keyframes([
-            style({ opacity: 0, height: '9.56em', offset: 0 }),
-            style({ opacity: 0, height: '5em', offset: 0.5 }),
-            style({ opacity: 1, height: '26.7em', offset: 1 }),
-        ])),
-    ]),
-];
-const hideConfirm = [
-    state('void', style({})), // Parent state
-    state('visible', style({})), // Parent state
-    transition('visible => void', [
-        group([
-            // Use group to run animations simultaneously
-            query('.fade-element', [
-                animate('1s ease-in-out', style({
-                    opacity: 0,
-                })),
-            ], { optional: true }),
-            query('.slide-element', [
-                animate('2s ease-in-out', keyframes([
-                    style({ opacity: 1, height: '9.56em', offset: 0 }),
-                    style({ opacity: 1, height: '5em', offset: 0.5 }),
-                    style({ opacity: 1, height: '26.7em', offset: 1 }),
-                ])),
-            ], { optional: true }),
-        ]),
-    ]),
-];
 class CustomConfirmPopupComponent {
     sanitizer;
     loadingService;
     message = '';
     type = 'info';
+    modalIcon = '';
+    modalTitle = '';
     confirmButtonText = 'YES';
     cancelButtonText = 'NO';
-    extraButton;
     confirmEvent = new EventEmitter();
     cancelEvent = new EventEmitter();
     extraEvent = new EventEmitter();
     overlayClicked = new EventEmitter(false);
-    showSuccessScreen = input(false);
     successMsg = input('');
     checkedInfoSvg;
     checkIcon;
@@ -4287,29 +3656,13 @@ class CustomConfirmPopupComponent {
     successPressed = false;
     isVisible = false;
     eventVal;
+    closed = new EventEmitter();
     constructor(sanitizer, loadingService) {
         this.sanitizer = sanitizer;
         this.loadingService = loadingService;
         const infoSvgIcon = infoSvg;
         this.checkedInfoSvg = this.sanitizer.bypassSecurityTrustHtml(infoSvgIcon);
         this.checkIcon = this.sanitizer.bypassSecurityTrustHtml(checkIcon);
-    }
-    ngOnInit() {
-        // Watch for showSuccessScreen signal changes
-        this.watchSuccessScreen();
-    }
-    watchSuccessScreen() {
-        // Since you're using signals, you can use effect or watch the signal
-        // This will trigger whenever showSuccessScreen changes
-        if (this.showSuccessScreen()) {
-            this.transitionToSuccess();
-        }
-    }
-    ngOnChanges() {
-        // Alternative: watch input changes if using traditional inputs
-        if (this.showSuccessScreen()) {
-            this.transitionToSuccess();
-        }
     }
     open(event) {
         this.isVisible = true;
@@ -4318,11 +3671,10 @@ class CustomConfirmPopupComponent {
         this.successAnimationState = 'hidden';
     }
     close() {
-        if (!this.showSuccessScreen()) {
-            this.isVisible = false;
-            this.currentView = 'confirmation';
-            this.successAnimationState = 'hidden';
-        }
+        this.isVisible = false;
+        this.currentView = 'confirmation';
+        this.successAnimationState = 'hidden';
+        this.closed.emit();
     }
     checkSuccess() {
         this.confirmEvent.emit();
@@ -4338,6 +3690,7 @@ class CustomConfirmPopupComponent {
         this.overlayClicked.emit(true);
         if (event.target === event.currentTarget) {
             this.isVisible = false;
+            this.closed.emit();
         }
     }
     startAnimation(event) {
@@ -4347,28 +3700,24 @@ class CustomConfirmPopupComponent {
         console.log('DONE', event);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomConfirmPopupComponent, deps: [{ token: i1$4.DomSanitizer }, { token: LoadingService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomConfirmPopupComponent, isStandalone: true, selector: "custom-confirm-popup", inputs: { message: { classPropertyName: "message", publicName: "message", isSignal: false, isRequired: true, transformFunction: null }, type: { classPropertyName: "type", publicName: "type", isSignal: false, isRequired: true, transformFunction: null }, confirmButtonText: { classPropertyName: "confirmButtonText", publicName: "confirmButtonText", isSignal: false, isRequired: false, transformFunction: null }, cancelButtonText: { classPropertyName: "cancelButtonText", publicName: "cancelButtonText", isSignal: false, isRequired: false, transformFunction: null }, extraButton: { classPropertyName: "extraButton", publicName: "extraButton", isSignal: false, isRequired: false, transformFunction: null }, showSuccessScreen: { classPropertyName: "showSuccessScreen", publicName: "showSuccessScreen", isSignal: true, isRequired: false, transformFunction: null }, successMsg: { classPropertyName: "successMsg", publicName: "successMsg", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { confirmEvent: "confirmEvent", cancelEvent: "cancelEvent", extraEvent: "extraEvent", overlayClicked: "overlayClicked" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"popup-overlay\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n  <div\r\n    *ngIf=\"!showSuccessScreen()\"\r\n    style=\"\r\n      overflow: hidden;\r\n      width: 37.7em;\r\n      height: 25.375em;\r\n      position: absolute;\r\n    \"\r\n    [@slideAndFade]=\"currentView === 'confirmation' ? 'visible' : 'hidden'\"\r\n    (@slideAndFade.start)=\"startAnimation($event)\"\r\n    (@slideAndFade.done)=\"doneAnimation($event)\"\r\n  >\r\n    <div class=\"popup-container\" [ngClass]=\"type\">\r\n      <div class=\"popup-header slide-element\">\r\n        <div class=\"popup-icon fade-element\" [innerHTML]=\"checkedInfoSvg\"></div>\r\n      </div>\r\n      <div class=\"popup-message\">\r\n        <p>{{ message }}</p>\r\n      </div>\r\n      <div\r\n        class=\"popup-actions\"\r\n        [ngClass]=\"{\r\n          'three-buttons': extraButton,\r\n          'two-buttons': !extraButton\r\n        }\"\r\n      >\r\n        <button class=\"btn no-btn\" (click)=\"cancelEvent.emit(); close()\">\r\n          {{ cancelButtonText }}\r\n        </button>\r\n        @if(extraButton) {\r\n        <button class=\"btn extra-btn\" (click)=\"extraEvent.emit(); close()\">\r\n          {{ extraButton }}\r\n        </button>\r\n        }\r\n\r\n        <button\r\n          class=\"btn yes-btn\"\r\n          [ngClass]=\"type\"\r\n          (click)=\"checkSuccess()\"\r\n          [disabled]=\"this.loadingService.loading() && successPressed\"\r\n        >\r\n          {{ confirmButtonText }}\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <!-- <div style=\"position: relative; width: 37.7em; height: 26.7em\"> -->\r\n  <div\r\n    *ngIf=\"showSuccessScreen()\"\r\n    class=\"success-container\"\r\n    [@showSuccess]=\"currentView === 'success' ? 'visible' : 'hidden'\"\r\n  >\r\n    <!--\r\n -->\r\n    <div class=\"check-popup-icon\" [innerHTML]=\"checkIcon\"></div>\r\n    <p class=\"sucess-msg\">\r\n      {{ successMsg() }}\r\n    </p>\r\n  </div>\r\n  <!-- </div> -->\r\n</div>\r\n", styles: [".popup-overlay{position:fixed;inset:0;background:#0000001a;display:flex;align-items:center;justify-content:center;z-index:1000}.popup-container{background:#fff;border-radius:.9em;min-width:33em;max-width:95vw;box-shadow:0 4px 24px #0000001a;overflow:hidden;text-align:center;width:37.7em;height:25.375em;position:absolute}.popup-container.info .popup-header{background:#3b80aa}.popup-container.delete .popup-header{background:#f43f5e}.popup-header{padding:2em 0 1em}.popup-icon{width:110px;height:110px;margin:0 auto;display:flex;align-items:center;justify-content:center}.popup-message{padding:3em 2em 0}.popup-message p{font-size:1.3em;color:#707070;font-weight:600;margin:auto}.popup-actions{display:flex;justify-content:center;gap:24px;padding:3em 4em 4em}.popup-actions.three-buttons{gap:18px}.btn{min-width:5.5em;padding:1em 1.5em;border:none;border-radius:.7em;font-size:1.1em;font-weight:500;cursor:pointer;transition:background .2s;color:#fff}.btn:disabled{position:relative;opacity:.5!important;cursor:not-allowed;color:transparent}.btn:disabled:after{content:\"\";position:absolute;top:50%;left:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border:2px solid rgba(0,0,0,.2);border-top-color:#0009;border-radius:50%;animation:spin 1s linear infinite;pointer-events:none}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.popup-actions .btn{margin:0}.three-buttons .no-btn{background-color:#ff4c4c}.three-buttons .yes-btn{background-color:#25c7bc}.three-buttons .extra-btn{background-color:#06213d}.two-buttons .yes-btn.info{background:#25c7bc}.two-buttons .yes-btn.delete{background:#ff4c4c}.two-buttons .no-btn{background:#06213d}.success-container{display:flex;flex-direction:column;justify-content:center;align-items:center;background-color:#25c7bc;color:#fff;padding:1.5em 3em;border-radius:.9em;width:37.7em;height:26.7em;position:absolute;top:calc(-12.6em + 50%)}.check-popup-icon{width:11em;max-height:11em;height:80%;margin:2em auto;display:flex;align-items:center;justify-content:center}.sucess-msg{font-size:1.3em;text-align:center}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }], animations: [
-            trigger('slideAndFade', hideConfirm),
-            trigger('showSuccess', showSuccess),
-        ] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomConfirmPopupComponent, isStandalone: true, selector: "custom-confirm-popup", inputs: { message: { classPropertyName: "message", publicName: "message", isSignal: false, isRequired: true, transformFunction: null }, type: { classPropertyName: "type", publicName: "type", isSignal: false, isRequired: true, transformFunction: null }, modalIcon: { classPropertyName: "modalIcon", publicName: "modalIcon", isSignal: false, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: false, isRequired: false, transformFunction: null }, confirmButtonText: { classPropertyName: "confirmButtonText", publicName: "confirmButtonText", isSignal: false, isRequired: false, transformFunction: null }, cancelButtonText: { classPropertyName: "cancelButtonText", publicName: "cancelButtonText", isSignal: false, isRequired: false, transformFunction: null }, successMsg: { classPropertyName: "successMsg", publicName: "successMsg", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { confirmEvent: "confirmEvent", cancelEvent: "cancelEvent", extraEvent: "extraEvent", overlayClicked: "overlayClicked", closed: "closed" }, ngImport: i0, template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Yes , Save\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomConfirmPopupComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-confirm-popup', imports: [CommonModule], animations: [
-                        trigger('slideAndFade', hideConfirm),
-                        trigger('showSuccess', showSuccess),
-                    ], template: "<div class=\"popup-overlay\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n  <div\r\n    *ngIf=\"!showSuccessScreen()\"\r\n    style=\"\r\n      overflow: hidden;\r\n      width: 37.7em;\r\n      height: 25.375em;\r\n      position: absolute;\r\n    \"\r\n    [@slideAndFade]=\"currentView === 'confirmation' ? 'visible' : 'hidden'\"\r\n    (@slideAndFade.start)=\"startAnimation($event)\"\r\n    (@slideAndFade.done)=\"doneAnimation($event)\"\r\n  >\r\n    <div class=\"popup-container\" [ngClass]=\"type\">\r\n      <div class=\"popup-header slide-element\">\r\n        <div class=\"popup-icon fade-element\" [innerHTML]=\"checkedInfoSvg\"></div>\r\n      </div>\r\n      <div class=\"popup-message\">\r\n        <p>{{ message }}</p>\r\n      </div>\r\n      <div\r\n        class=\"popup-actions\"\r\n        [ngClass]=\"{\r\n          'three-buttons': extraButton,\r\n          'two-buttons': !extraButton\r\n        }\"\r\n      >\r\n        <button class=\"btn no-btn\" (click)=\"cancelEvent.emit(); close()\">\r\n          {{ cancelButtonText }}\r\n        </button>\r\n        @if(extraButton) {\r\n        <button class=\"btn extra-btn\" (click)=\"extraEvent.emit(); close()\">\r\n          {{ extraButton }}\r\n        </button>\r\n        }\r\n\r\n        <button\r\n          class=\"btn yes-btn\"\r\n          [ngClass]=\"type\"\r\n          (click)=\"checkSuccess()\"\r\n          [disabled]=\"this.loadingService.loading() && successPressed\"\r\n        >\r\n          {{ confirmButtonText }}\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <!-- <div style=\"position: relative; width: 37.7em; height: 26.7em\"> -->\r\n  <div\r\n    *ngIf=\"showSuccessScreen()\"\r\n    class=\"success-container\"\r\n    [@showSuccess]=\"currentView === 'success' ? 'visible' : 'hidden'\"\r\n  >\r\n    <!--\r\n -->\r\n    <div class=\"check-popup-icon\" [innerHTML]=\"checkIcon\"></div>\r\n    <p class=\"sucess-msg\">\r\n      {{ successMsg() }}\r\n    </p>\r\n  </div>\r\n  <!-- </div> -->\r\n</div>\r\n", styles: [".popup-overlay{position:fixed;inset:0;background:#0000001a;display:flex;align-items:center;justify-content:center;z-index:1000}.popup-container{background:#fff;border-radius:.9em;min-width:33em;max-width:95vw;box-shadow:0 4px 24px #0000001a;overflow:hidden;text-align:center;width:37.7em;height:25.375em;position:absolute}.popup-container.info .popup-header{background:#3b80aa}.popup-container.delete .popup-header{background:#f43f5e}.popup-header{padding:2em 0 1em}.popup-icon{width:110px;height:110px;margin:0 auto;display:flex;align-items:center;justify-content:center}.popup-message{padding:3em 2em 0}.popup-message p{font-size:1.3em;color:#707070;font-weight:600;margin:auto}.popup-actions{display:flex;justify-content:center;gap:24px;padding:3em 4em 4em}.popup-actions.three-buttons{gap:18px}.btn{min-width:5.5em;padding:1em 1.5em;border:none;border-radius:.7em;font-size:1.1em;font-weight:500;cursor:pointer;transition:background .2s;color:#fff}.btn:disabled{position:relative;opacity:.5!important;cursor:not-allowed;color:transparent}.btn:disabled:after{content:\"\";position:absolute;top:50%;left:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border:2px solid rgba(0,0,0,.2);border-top-color:#0009;border-radius:50%;animation:spin 1s linear infinite;pointer-events:none}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.popup-actions .btn{margin:0}.three-buttons .no-btn{background-color:#ff4c4c}.three-buttons .yes-btn{background-color:#25c7bc}.three-buttons .extra-btn{background-color:#06213d}.two-buttons .yes-btn.info{background:#25c7bc}.two-buttons .yes-btn.delete{background:#ff4c4c}.two-buttons .no-btn{background:#06213d}.success-container{display:flex;flex-direction:column;justify-content:center;align-items:center;background-color:#25c7bc;color:#fff;padding:1.5em 3em;border-radius:.9em;width:37.7em;height:26.7em;position:absolute;top:calc(-12.6em + 50%)}.check-popup-icon{width:11em;max-height:11em;height:80%;margin:2em auto;display:flex;align-items:center;justify-content:center}.sucess-msg{font-size:1.3em;text-align:center}\n"] }]
+            args: [{ selector: 'custom-confirm-popup', imports: [CommonModule], template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Yes , Save\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"] }]
         }], ctorParameters: () => [{ type: i1$4.DomSanitizer }, { type: LoadingService }], propDecorators: { message: [{
                 type: Input,
                 args: [{ required: true }]
             }], type: [{
                 type: Input,
                 args: [{ required: true }]
+            }], modalIcon: [{
+                type: Input
+            }], modalTitle: [{
+                type: Input
             }], confirmButtonText: [{
                 type: Input
             }], cancelButtonText: [{
-                type: Input
-            }], extraButton: [{
                 type: Input
             }], confirmEvent: [{
                 type: Output
@@ -4377,6 +3726,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }], extraEvent: [{
                 type: Output
             }], overlayClicked: [{
+                type: Output
+            }], closed: [{
                 type: Output
             }] } });
 
@@ -4455,11 +3806,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Input
             }] } });
 
-const sortSvg = '<svg width="auto" height="15" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.4"><path d="M1.53516 11.4792L5.6671 15.6112L9.79905 11.4792" stroke="black" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.53516 6.52086L5.6671 2.38892L9.79905 6.52086" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
-const actionViewSvg = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0001 0.75C14.9429 0.75 19.055 4.30645 19.9172 9C19.055 13.6935 14.9429 17.25 10.0001 17.25C5.05728 17.25 0.945142 13.6935 0.0830078 9C0.945142 4.30645 5.05728 0.75 10.0001 0.75ZM10.0001 15.4167C13.8827 15.4167 17.2051 12.7143 18.0461 9C17.2051 5.28569 13.8827 2.58333 10.0001 2.58333C6.11739 2.58333 2.79504 5.28569 1.95405 9C2.79504 12.7143 6.11739 15.4167 10.0001 15.4167ZM10.0001 13.125C7.7219 13.125 5.87508 11.2782 5.87508 9C5.87508 6.72183 7.7219 4.875 10.0001 4.875C12.2782 4.875 14.1251 6.72183 14.1251 9C14.1251 11.2782 12.2782 13.125 10.0001 13.125ZM10.0001 11.2917C11.2658 11.2917 12.2918 10.2656 12.2918 9C12.2918 7.73436 11.2658 6.70833 10.0001 6.70833C8.73447 6.70833 7.70841 7.73436 7.70841 9C7.70841 10.2656 8.73447 11.2917 10.0001 11.2917Z" fill="#25C7BC"/></svg>';
-const actionEditSvg = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7"><path d="M13.6745 12.0231L14.7622 10.9354C14.9321 10.7654 15.2278 10.8844 15.2278 11.1291V16.0713C15.2278 16.9721 14.497 17.7029 13.5963 17.7029H1.63155C0.7308 17.7029 0 16.9721 0 16.0713V4.10663C0 3.20587 0.7308 2.47507 1.63155 2.47507H10.928C11.1693 2.47507 11.2917 2.76739 11.1218 2.94074L10.0341 4.02845C9.98307 4.07943 9.91508 4.10663 9.8403 4.10663H1.63155V16.0713H13.5963V12.2134C13.5963 12.142 13.6235 12.074 13.6745 12.0231ZM18.9974 5.16374L10.0714 14.0897L6.99868 14.4296C6.10813 14.5282 5.35013 13.777 5.44871 12.8796L5.78861 9.80686L14.7146 0.880909C15.493 0.102522 16.7506 0.102522 17.5256 0.880909L18.994 2.34931C19.7724 3.12769 19.7724 4.38875 18.9974 5.16374ZM15.6391 6.21405L13.6643 4.23919L7.34879 10.5581L7.10065 12.7777L9.32025 12.5295L15.6391 6.21405ZM17.8417 3.50499L16.3733 2.03659C16.234 1.89723 16.0062 1.89723 15.8703 2.03659L14.8199 3.0869L16.7948 5.06176L17.8451 4.01145C17.9811 3.86869 17.9811 3.64435 17.8417 3.50499Z" fill="#444A6D"/></g></svg>';
-const actionDeleteSvg = '<svg width="auto" height="15" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_8955_16606)"><path d="M15.0485 1.32129L1.69141 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.69141 1.32129L15.0485 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_8955_16606"><rect width="15.5833" height="15.5833" fill="white" transform="translate(0.578125 0.208252)"/></clipPath></defs></svg>';
-const expandIcon = `<svg width="auto" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+const sortSvg$1 = '<svg width="auto" height="15" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.4"><path d="M1.53516 11.4792L5.6671 15.6112L9.79905 11.4792" stroke="black" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.53516 6.52086L5.6671 2.38892L9.79905 6.52086" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+const actionViewSvg$1 = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0001 0.75C14.9429 0.75 19.055 4.30645 19.9172 9C19.055 13.6935 14.9429 17.25 10.0001 17.25C5.05728 17.25 0.945142 13.6935 0.0830078 9C0.945142 4.30645 5.05728 0.75 10.0001 0.75ZM10.0001 15.4167C13.8827 15.4167 17.2051 12.7143 18.0461 9C17.2051 5.28569 13.8827 2.58333 10.0001 2.58333C6.11739 2.58333 2.79504 5.28569 1.95405 9C2.79504 12.7143 6.11739 15.4167 10.0001 15.4167ZM10.0001 13.125C7.7219 13.125 5.87508 11.2782 5.87508 9C5.87508 6.72183 7.7219 4.875 10.0001 4.875C12.2782 4.875 14.1251 6.72183 14.1251 9C14.1251 11.2782 12.2782 13.125 10.0001 13.125ZM10.0001 11.2917C11.2658 11.2917 12.2918 10.2656 12.2918 9C12.2918 7.73436 11.2658 6.70833 10.0001 6.70833C8.73447 6.70833 7.70841 7.73436 7.70841 9C7.70841 10.2656 8.73447 11.2917 10.0001 11.2917Z" fill="#25C7BC"/></svg>';
+const actionEditSvg$1 = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7"><path d="M13.6745 12.0231L14.7622 10.9354C14.9321 10.7654 15.2278 10.8844 15.2278 11.1291V16.0713C15.2278 16.9721 14.497 17.7029 13.5963 17.7029H1.63155C0.7308 17.7029 0 16.9721 0 16.0713V4.10663C0 3.20587 0.7308 2.47507 1.63155 2.47507H10.928C11.1693 2.47507 11.2917 2.76739 11.1218 2.94074L10.0341 4.02845C9.98307 4.07943 9.91508 4.10663 9.8403 4.10663H1.63155V16.0713H13.5963V12.2134C13.5963 12.142 13.6235 12.074 13.6745 12.0231ZM18.9974 5.16374L10.0714 14.0897L6.99868 14.4296C6.10813 14.5282 5.35013 13.777 5.44871 12.8796L5.78861 9.80686L14.7146 0.880909C15.493 0.102522 16.7506 0.102522 17.5256 0.880909L18.994 2.34931C19.7724 3.12769 19.7724 4.38875 18.9974 5.16374ZM15.6391 6.21405L13.6643 4.23919L7.34879 10.5581L7.10065 12.7777L9.32025 12.5295L15.6391 6.21405ZM17.8417 3.50499L16.3733 2.03659C16.234 1.89723 16.0062 1.89723 15.8703 2.03659L14.8199 3.0869L16.7948 5.06176L17.8451 4.01145C17.9811 3.86869 17.9811 3.64435 17.8417 3.50499Z" fill="#444A6D"/></g></svg>';
+const actionDeleteSvg$1 = '<svg width="auto" height="15" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_8955_16606)"><path d="M15.0485 1.32129L1.69141 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.69141 1.32129L15.0485 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_8955_16606"><rect width="15.5833" height="15.5833" fill="white" transform="translate(0.578125 0.208252)"/></clipPath></defs></svg>';
+const expandIcon$1 = `<svg width="auto" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 0.999999L7 7L13 1" stroke="#7f7f7f" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `;
@@ -4479,18 +3830,18 @@ class CustomDynamicTableWithCategoriesComponent {
     expandSvg;
     constructor(sanitizer) {
         this.sanitizer = sanitizer;
-        const sortSvgIcon = sortSvg;
+        const sortSvgIcon = sortSvg$1;
         this.checkedSortIcon = this.sanitizer.bypassSecurityTrustHtml(sortSvgIcon);
-        const ActionView = actionViewSvg;
+        const ActionView = actionViewSvg$1;
         this.checkedActionViewSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionView);
-        const ActionEdit = actionEditSvg;
+        const ActionEdit = actionEditSvg$1;
         this.checkedActionEditSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionEdit);
-        const ActionDelete = actionDeleteSvg;
+        const ActionDelete = actionDeleteSvg$1;
         this.checkedActionDeleteSvg =
             this.sanitizer.bypassSecurityTrustHtml(ActionDelete);
-        const ExpandIcon = expandIcon;
+        const ExpandIcon = expandIcon$1;
         this.expandSvg = this.sanitizer.bypassSecurityTrustHtml(ExpandIcon);
     }
     onAction(row, handler) {
@@ -4830,8 +4181,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
 
 class CustomTabsComponent {
     tabsList;
-    color = '#4B4B4B';
-    colorSelected = '#15C5CE';
+    color = '#979797';
+    colorSelected = '#000000';
     tabTemplates = {};
     tabSelected = new EventEmitter();
     selectedTab;
@@ -4844,11 +4195,11 @@ class CustomTabsComponent {
         this.tabSelected.emit(tab);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomTabsComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomTabsComponent, isStandalone: true, selector: "custom-tabs", inputs: { tabsList: "tabsList", color: "color", colorSelected: "colorSelected", tabTemplates: "tabTemplates", selectedTab: "selectedTab" }, outputs: { tabSelected: "tabSelected" }, ngImport: i0, template: "<!-- tab-selector.component.html -->\r\n<div class=\"tab-container\">\r\n  @for (tab of tabsList; track tab) {\r\n  <button\r\n    class=\"tab-button\"\r\n    [style.color]=\"selectedTab.id === tab.id ? colorSelected : color\"\r\n    [class.selected]=\"selectedTab.id === tab.id\"\r\n    (click)=\"selectTab(tab)\"\r\n  >\r\n    @if(tabTemplates[tab.id]) {\r\n    <ng-template *ngTemplateOutlet=\"tabTemplates[tab.id]\"></ng-template>\r\n    } @else{\r\n    {{ tab.nameEn }}}\r\n    <span\r\n      class=\"underline\"\r\n      [style.backgroundColor]=\"colorSelected\"\r\n      [class.visible]=\"selectedTab.id === tab.id\"\r\n    ></span>\r\n  </button>\r\n  }\r\n</div>\r\n", styles: [".tab-container{display:flex;gap:1.5em;padding-top:.5rem;padding-bottom:1.25rem;margin:.5rem 0;font-size:1.25em}.tab-button{position:relative;padding-bottom:.25rem;font-weight:300;background:none;border:none;outline:none;transition:color .2s;cursor:pointer;font-family:var(--FM-Light)}.tab-button.selected{cursor:default;font-family:var(--FM-Bold)}.underline{content:\"\";position:absolute;left:0;bottom:-.25rem;height:.1em;width:100%;border-radius:4px;transform:scaleX(0);opacity:0;transition:transform .3s,opacity .3s}.underline.visible{transform:scaleX(1);opacity:1}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomTabsComponent, isStandalone: true, selector: "custom-tabs", inputs: { tabsList: "tabsList", color: "color", colorSelected: "colorSelected", tabTemplates: "tabTemplates", selectedTab: "selectedTab" }, outputs: { tabSelected: "tabSelected" }, ngImport: i0, template: "<!-- tab-selector.component.html -->\r\n<div class=\"tab-container\">\r\n  @for (tab of tabsList; track tab) {\r\n  <button\r\n    class=\"tab-button\"\r\n    [style.color]=\"selectedTab.id === tab.id ? colorSelected : color\"\r\n    [class.selected]=\"selectedTab.id === tab.id\"\r\n    (click)=\"selectTab(tab)\"\r\n  >\r\n    @if(tabTemplates[tab.id]) {\r\n    <ng-template *ngTemplateOutlet=\"tabTemplates[tab.id]\"></ng-template>\r\n    } @else{\r\n    {{ tab.nameEn }}}\r\n    <span\r\n      class=\"underline\"\r\n      [style.backgroundColor]=\"colorSelected\"\r\n      [class.visible]=\"selectedTab.id === tab.id\"\r\n    ></span>\r\n  </button>\r\n  }\r\n</div>\r\n", styles: [".tab-container{display:flex;gap:1.5rem;padding-top:.5rem;padding-bottom:1.25rem;margin:.5rem 0;font-size:1.4rem}.tab-button{position:relative;background:none;border:none;outline:none;transition:color .2s;cursor:pointer;padding:1rem}.tab-button.selected{cursor:default;color:var(--smp-color-tabs-text)}.underline{content:\"\";position:absolute;left:0;bottom:-.25rem;height:.1em;width:100%;border-radius:4px;transform:scaleX(0);opacity:0;transition:transform .3s,opacity .3s}.underline.visible{transform:scaleX(1);opacity:1}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomTabsComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-tabs', imports: [CommonModule], template: "<!-- tab-selector.component.html -->\r\n<div class=\"tab-container\">\r\n  @for (tab of tabsList; track tab) {\r\n  <button\r\n    class=\"tab-button\"\r\n    [style.color]=\"selectedTab.id === tab.id ? colorSelected : color\"\r\n    [class.selected]=\"selectedTab.id === tab.id\"\r\n    (click)=\"selectTab(tab)\"\r\n  >\r\n    @if(tabTemplates[tab.id]) {\r\n    <ng-template *ngTemplateOutlet=\"tabTemplates[tab.id]\"></ng-template>\r\n    } @else{\r\n    {{ tab.nameEn }}}\r\n    <span\r\n      class=\"underline\"\r\n      [style.backgroundColor]=\"colorSelected\"\r\n      [class.visible]=\"selectedTab.id === tab.id\"\r\n    ></span>\r\n  </button>\r\n  }\r\n</div>\r\n", styles: [".tab-container{display:flex;gap:1.5em;padding-top:.5rem;padding-bottom:1.25rem;margin:.5rem 0;font-size:1.25em}.tab-button{position:relative;padding-bottom:.25rem;font-weight:300;background:none;border:none;outline:none;transition:color .2s;cursor:pointer;font-family:var(--FM-Light)}.tab-button.selected{cursor:default;font-family:var(--FM-Bold)}.underline{content:\"\";position:absolute;left:0;bottom:-.25rem;height:.1em;width:100%;border-radius:4px;transform:scaleX(0);opacity:0;transition:transform .3s,opacity .3s}.underline.visible{transform:scaleX(1);opacity:1}\n"] }]
+            args: [{ selector: 'custom-tabs', imports: [CommonModule], template: "<!-- tab-selector.component.html -->\r\n<div class=\"tab-container\">\r\n  @for (tab of tabsList; track tab) {\r\n  <button\r\n    class=\"tab-button\"\r\n    [style.color]=\"selectedTab.id === tab.id ? colorSelected : color\"\r\n    [class.selected]=\"selectedTab.id === tab.id\"\r\n    (click)=\"selectTab(tab)\"\r\n  >\r\n    @if(tabTemplates[tab.id]) {\r\n    <ng-template *ngTemplateOutlet=\"tabTemplates[tab.id]\"></ng-template>\r\n    } @else{\r\n    {{ tab.nameEn }}}\r\n    <span\r\n      class=\"underline\"\r\n      [style.backgroundColor]=\"colorSelected\"\r\n      [class.visible]=\"selectedTab.id === tab.id\"\r\n    ></span>\r\n  </button>\r\n  }\r\n</div>\r\n", styles: [".tab-container{display:flex;gap:1.5rem;padding-top:.5rem;padding-bottom:1.25rem;margin:.5rem 0;font-size:1.4rem}.tab-button{position:relative;background:none;border:none;outline:none;transition:color .2s;cursor:pointer;padding:1rem}.tab-button.selected{cursor:default;color:var(--smp-color-tabs-text)}.underline{content:\"\";position:absolute;left:0;bottom:-.25rem;height:.1em;width:100%;border-radius:4px;transform:scaleX(0);opacity:0;transition:transform .3s,opacity .3s}.underline.visible{transform:scaleX(1);opacity:1}\n"] }]
         }], propDecorators: { tabsList: [{
                 type: Input,
                 args: [{ required: true }]
@@ -5016,6 +4367,8 @@ class CustomActionsDropdownComponent {
     actions = [];
     context;
     horizontalDots = false;
+    hasActionTemplate = false;
+    expandSide = 'RIGHT';
     isOpen = false;
     constructor(sanitizer) {
         this.sanitizer = sanitizer;
@@ -5035,16 +4388,20 @@ class CustomActionsDropdownComponent {
         this.closeDropdown();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomActionsDropdownComponent, deps: [{ token: i1$4.DomSanitizer }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomActionsDropdownComponent, isStandalone: true, selector: "custom-actions-dropdown", inputs: { actions: "actions", context: "context", horizontalDots: "horizontalDots" }, ngImport: i0, template: "\r\n\r\n  <div\r\n\r\n    class=\"action-dropdown\" (mouseenter)=\"openDropdown()\" (mouseleave)=\"closeDropdown()\"\r\n\r\n  >\r\n  @if(horizontalDots){\r\n    <div class=\"horizontal-dots\">\r\n\r\n      <svg width=\"20\" height=\"5\" viewBox=\"0 0 20 5\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <path\r\n              d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n              fill=\"#06213D\" />\r\n      </svg>\r\n    </div>\r\n  }@else{\r\n\r\n    <div  class=\"mutlti-action-icon icon-wrapper\">\r\n      <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"auto\" height=\"auto\" viewBox=\"0 0 4 12\" fill=\"none\">\r\n  <path d=\"M0.666707 1.33333C0.666707 2.06971 1.26366 2.66667 2.00004 2.66667C2.73642 2.66667 3.33337 2.06971 3.33337 1.33333C3.33337 0.596954 2.73642 -2.60937e-08 2.00004 -5.82819e-08C1.26366 -9.047e-08 0.666707 0.596954 0.666707 1.33333Z\" fill=\"#8E8E8E\"/>\r\n  <path d=\"M2.00004 7.33333C1.26366 7.33333 0.666707 6.73638 0.666707 6C0.666707 5.26362 1.26366 4.66667 2.00004 4.66667C2.73642 4.66667 3.33337 5.26362 3.33337 6C3.33337 6.73638 2.73642 7.33333 2.00004 7.33333Z\" fill=\"#8E8E8E\"/>\r\n  <path d=\"M2.00004 12C1.26366 12 0.666707 11.403 0.666707 10.6667C0.666707 9.93029 1.26366 9.33333 2.00004 9.33333C2.73642 9.33333 3.33337 9.93029 3.33337 10.6667C3.33337 11.403 2.73642 12 2.00004 12Z\" fill=\"#8E8E8E\"/>\r\n  </svg>\r\n    </div>\r\n  }\r\n\r\n\r\n    @if(isOpen && actions.length>0){\r\n\r\n    <div class=\"dropdown-menu\"   >\r\n      <ul>\r\n        @for(action of actions ;track $index){\r\n\r\n        <li class=\"dropdown-item\" (click)=\"onClickAction(action , $event)\">\r\n          @if(action.icon){\r\n\r\n            <span class=\"action-icon-inline\"  [innerHTML]=\"sanitizeSvg(action.icon)\"></span>\r\n          }\r\n          <p class=\"action-label\">{{ action.label }}</p>\r\n        </li>\r\n        }\r\n      </ul>\r\n    </div>\r\n    }\r\n  </div>\r\n\r\n", styles: [".action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer;opacity:85%}.dropdown-menu{position:absolute;top:100%;inset-inline-end:0;background-color:#fff;border:1px solid #d1d5db;box-shadow:0 4px 6px #0000001a;border-radius:.2em;z-index:9999;padding:.25em 0}.dropdown-item{display:flex;align-items:center;padding:.5em .8em;font-size:.8em;cursor:pointer;transition:background-color .2s;color:#06213d;background-color:#fff;gap:.3em}.dropdown-item:hover{background-color:#f3f4f6}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.icon-wrapper{width:.3em;height:auto}.icon-wrapper svg{width:100%!important;height:auto;display:block}.action-label{text-wrap:nowrap}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomActionsDropdownComponent, isStandalone: true, selector: "custom-actions-dropdown", inputs: { actions: "actions", context: "context", horizontalDots: "horizontalDots", hasActionTemplate: "hasActionTemplate", expandSide: "expandSide" }, ngImport: i0, template: "<div\r\n  class=\"action-dropdown\"\r\n  (mouseenter)=\"openDropdown()\"\r\n  (mouseleave)=\"closeDropdown()\"\r\n>\r\n  @if(horizontalDots){\r\n  <div class=\"horizontal-dots\">\r\n    <svg\r\n      width=\"20\"\r\n      height=\"5\"\r\n      viewBox=\"0 0 20 5\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n        fill=\"#06213D\"\r\n      />\r\n    </svg>\r\n  </div>\r\n  }@else{\r\n\r\n  <div class=\"mutlti-action-icon icon-wrapper\">\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"16\"\r\n      viewBox=\"0 0 4 16\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M1.99292 12.75C2.68328 12.75 3.24292 13.3096 3.24292 14C3.24292 14.6904 2.68328 15.25 1.99292 15.25H1.98413C1.29377 15.25 0.734131 14.6904 0.734131 14C0.734131 13.3096 1.29377 12.75 1.98413 12.75H1.99292ZM2.00073 6.75C2.69109 6.75 3.25073 7.30964 3.25073 8C3.25073 8.69036 2.69109 9.25 2.00073 9.25H1.99194C1.30159 9.25 0.741943 8.69036 0.741943 8C0.741943 7.30964 1.30159 6.75 1.99194 6.75H2.00073ZM2.00854 0.75C2.6989 0.75 3.25854 1.30964 3.25854 2C3.25854 2.69036 2.6989 3.25 2.00854 3.25H1.99976C1.3094 3.25 0.749756 2.69036 0.749756 2C0.749756 1.30964 1.3094 0.75 1.99976 0.75H2.00854Z\"\r\n        fill=\"#4B4F55\"\r\n      />\r\n    </svg>\r\n  </div>\r\n  } @if(isOpen && actions.length>0){\r\n\r\n  <div\r\n    class=\"dropdown-menu\"\r\n    [class.right]=\"expandSide === 'RIGHT'\"\r\n    [class.left]=\"expandSide === 'LEFT'\"\r\n  >\r\n    <ul>\r\n      @for(action of actions ;track $index){\r\n\r\n      <li class=\"dropdown-item\" (click)=\"onClickAction(action, $event)\">\r\n        @if(action.icon){\r\n\r\n        <span\r\n          class=\"action-icon-inline\"\r\n          [innerHTML]=\"sanitizeSvg(action.icon)\"\r\n        ></span>\r\n        }\r\n        <p class=\"action-label\">{{ action.label }}</p>\r\n      </li>\r\n      }\r\n    </ul>\r\n  </div>\r\n  } @if(isOpen && hasActionTemplate){\r\n  <div\r\n    class=\"dropdown-menu\"\r\n    [class.right]=\"expandSide === 'RIGHT'\"\r\n    [class.left]=\"expandSide === 'LEFT'\"\r\n  >\r\n    <ng-content />\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer;opacity:85%}.dropdown-menu{position:absolute;top:100%;inset-inline-end:0;background-color:#fff;border:1px solid #d1d5db;box-shadow:0 4px 6px #0000001a;border-radius:.2em;z-index:9999999;padding:.25em 0}.dropdown-item{display:flex;align-items:center;padding:.5em .8em;font-size:.8em;cursor:pointer;transition:background-color .2s;color:#06213d;background-color:#fff;gap:.3em}.dropdown-item:hover{background-color:#f3f4f6}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.icon-wrapper{width:.3em;height:auto}.icon-wrapper svg{width:100%!important;height:auto;display:block}.action-label{text-wrap:nowrap}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%}.right{right:0;left:auto}.left{left:0;right:auto}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomActionsDropdownComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-actions-dropdown', imports: [], template: "\r\n\r\n  <div\r\n\r\n    class=\"action-dropdown\" (mouseenter)=\"openDropdown()\" (mouseleave)=\"closeDropdown()\"\r\n\r\n  >\r\n  @if(horizontalDots){\r\n    <div class=\"horizontal-dots\">\r\n\r\n      <svg width=\"20\" height=\"5\" viewBox=\"0 0 20 5\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <path\r\n              d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n              fill=\"#06213D\" />\r\n      </svg>\r\n    </div>\r\n  }@else{\r\n\r\n    <div  class=\"mutlti-action-icon icon-wrapper\">\r\n      <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"auto\" height=\"auto\" viewBox=\"0 0 4 12\" fill=\"none\">\r\n  <path d=\"M0.666707 1.33333C0.666707 2.06971 1.26366 2.66667 2.00004 2.66667C2.73642 2.66667 3.33337 2.06971 3.33337 1.33333C3.33337 0.596954 2.73642 -2.60937e-08 2.00004 -5.82819e-08C1.26366 -9.047e-08 0.666707 0.596954 0.666707 1.33333Z\" fill=\"#8E8E8E\"/>\r\n  <path d=\"M2.00004 7.33333C1.26366 7.33333 0.666707 6.73638 0.666707 6C0.666707 5.26362 1.26366 4.66667 2.00004 4.66667C2.73642 4.66667 3.33337 5.26362 3.33337 6C3.33337 6.73638 2.73642 7.33333 2.00004 7.33333Z\" fill=\"#8E8E8E\"/>\r\n  <path d=\"M2.00004 12C1.26366 12 0.666707 11.403 0.666707 10.6667C0.666707 9.93029 1.26366 9.33333 2.00004 9.33333C2.73642 9.33333 3.33337 9.93029 3.33337 10.6667C3.33337 11.403 2.73642 12 2.00004 12Z\" fill=\"#8E8E8E\"/>\r\n  </svg>\r\n    </div>\r\n  }\r\n\r\n\r\n    @if(isOpen && actions.length>0){\r\n\r\n    <div class=\"dropdown-menu\"   >\r\n      <ul>\r\n        @for(action of actions ;track $index){\r\n\r\n        <li class=\"dropdown-item\" (click)=\"onClickAction(action , $event)\">\r\n          @if(action.icon){\r\n\r\n            <span class=\"action-icon-inline\"  [innerHTML]=\"sanitizeSvg(action.icon)\"></span>\r\n          }\r\n          <p class=\"action-label\">{{ action.label }}</p>\r\n        </li>\r\n        }\r\n      </ul>\r\n    </div>\r\n    }\r\n  </div>\r\n\r\n", styles: [".action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer;opacity:85%}.dropdown-menu{position:absolute;top:100%;inset-inline-end:0;background-color:#fff;border:1px solid #d1d5db;box-shadow:0 4px 6px #0000001a;border-radius:.2em;z-index:9999;padding:.25em 0}.dropdown-item{display:flex;align-items:center;padding:.5em .8em;font-size:.8em;cursor:pointer;transition:background-color .2s;color:#06213d;background-color:#fff;gap:.3em}.dropdown-item:hover{background-color:#f3f4f6}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.icon-wrapper{width:.3em;height:auto}.icon-wrapper svg{width:100%!important;height:auto;display:block}.action-label{text-wrap:nowrap}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%}\n"] }]
+            args: [{ selector: 'custom-actions-dropdown', imports: [], template: "<div\r\n  class=\"action-dropdown\"\r\n  (mouseenter)=\"openDropdown()\"\r\n  (mouseleave)=\"closeDropdown()\"\r\n>\r\n  @if(horizontalDots){\r\n  <div class=\"horizontal-dots\">\r\n    <svg\r\n      width=\"20\"\r\n      height=\"5\"\r\n      viewBox=\"0 0 20 5\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n        fill=\"#06213D\"\r\n      />\r\n    </svg>\r\n  </div>\r\n  }@else{\r\n\r\n  <div class=\"mutlti-action-icon icon-wrapper\">\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"16\"\r\n      viewBox=\"0 0 4 16\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M1.99292 12.75C2.68328 12.75 3.24292 13.3096 3.24292 14C3.24292 14.6904 2.68328 15.25 1.99292 15.25H1.98413C1.29377 15.25 0.734131 14.6904 0.734131 14C0.734131 13.3096 1.29377 12.75 1.98413 12.75H1.99292ZM2.00073 6.75C2.69109 6.75 3.25073 7.30964 3.25073 8C3.25073 8.69036 2.69109 9.25 2.00073 9.25H1.99194C1.30159 9.25 0.741943 8.69036 0.741943 8C0.741943 7.30964 1.30159 6.75 1.99194 6.75H2.00073ZM2.00854 0.75C2.6989 0.75 3.25854 1.30964 3.25854 2C3.25854 2.69036 2.6989 3.25 2.00854 3.25H1.99976C1.3094 3.25 0.749756 2.69036 0.749756 2C0.749756 1.30964 1.3094 0.75 1.99976 0.75H2.00854Z\"\r\n        fill=\"#4B4F55\"\r\n      />\r\n    </svg>\r\n  </div>\r\n  } @if(isOpen && actions.length>0){\r\n\r\n  <div\r\n    class=\"dropdown-menu\"\r\n    [class.right]=\"expandSide === 'RIGHT'\"\r\n    [class.left]=\"expandSide === 'LEFT'\"\r\n  >\r\n    <ul>\r\n      @for(action of actions ;track $index){\r\n\r\n      <li class=\"dropdown-item\" (click)=\"onClickAction(action, $event)\">\r\n        @if(action.icon){\r\n\r\n        <span\r\n          class=\"action-icon-inline\"\r\n          [innerHTML]=\"sanitizeSvg(action.icon)\"\r\n        ></span>\r\n        }\r\n        <p class=\"action-label\">{{ action.label }}</p>\r\n      </li>\r\n      }\r\n    </ul>\r\n  </div>\r\n  } @if(isOpen && hasActionTemplate){\r\n  <div\r\n    class=\"dropdown-menu\"\r\n    [class.right]=\"expandSide === 'RIGHT'\"\r\n    [class.left]=\"expandSide === 'LEFT'\"\r\n  >\r\n    <ng-content />\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer;opacity:85%}.dropdown-menu{position:absolute;top:100%;inset-inline-end:0;background-color:#fff;border:1px solid #d1d5db;box-shadow:0 4px 6px #0000001a;border-radius:.2em;z-index:9999999;padding:.25em 0}.dropdown-item{display:flex;align-items:center;padding:.5em .8em;font-size:.8em;cursor:pointer;transition:background-color .2s;color:#06213d;background-color:#fff;gap:.3em}.dropdown-item:hover{background-color:#f3f4f6}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.icon-wrapper{width:.3em;height:auto}.icon-wrapper svg{width:100%!important;height:auto;display:block}.action-label{text-wrap:nowrap}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%}.right{right:0;left:auto}.left{left:0;right:auto}\n"] }]
         }], ctorParameters: () => [{ type: i1$4.DomSanitizer }], propDecorators: { actions: [{
                 type: Input
             }], context: [{
                 type: Input
             }], horizontalDots: [{
+                type: Input
+            }], hasActionTemplate: [{
+                type: Input
+            }], expandSide: [{
                 type: Input
             }] } });
 
@@ -5067,11 +4424,11 @@ class CustomReactiveSearchInputComponent {
         this.inputSubject.next(value); // for debounce emit
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomReactiveSearchInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomReactiveSearchInputComponent, isStandalone: true, selector: "custom-reactive-search-input", inputs: { model: { classPropertyName: "model", publicName: "model", isSignal: false, isRequired: false, transformFunction: null }, headerSearchIcon: { classPropertyName: "headerSearchIcon", publicName: "headerSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, containerClass: { classPropertyName: "containerClass", publicName: "containerClass", isSignal: false, isRequired: true, transformFunction: null }, inputClass: { classPropertyName: "inputClass", publicName: "inputClass", isSignal: false, isRequired: true, transformFunction: null }, inputPlaceholder: { classPropertyName: "inputPlaceholder", publicName: "inputPlaceholder", isSignal: false, isRequired: true, transformFunction: null } }, outputs: { modelChange: "modelChange", search: "search" }, ngImport: i0, template: "<div [ngClass]=\"containerClass\">\r\n  <div class=\"search-icon\">\r\n    @if(headerSearchIcon()){\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <rect\r\n        width=\"auto\"\r\n        height=\"24\"\r\n        transform=\"translate(0.267578 0.523438)\"\r\n        fill=\"#F5F5F5\"\r\n      />\r\n      <path\r\n        d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n      <path\r\n        opacity=\"0.3\"\r\n        d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n    </svg>\r\n\r\n    }@else {\r\n\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 25 24\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M12 21C17.2467 21 21.5 16.7467 21.5 11.5C21.5 6.25329 17.2467 2 12 2C6.75329 2 2.5 6.25329 2.5 11.5C2.5 16.7467 6.75329 21 12 21Z\"\r\n        stroke=\"#7C8289\"\r\n        stroke-width=\"1.5\"\r\n        stroke-linecap=\"round\"\r\n        stroke-linejoin=\"round\"\r\n      />\r\n      <path\r\n        d=\"M22.5 22L20.5 20\"\r\n        stroke=\"#7C8289\"\r\n        stroke-width=\"1.5\"\r\n        stroke-linecap=\"round\"\r\n        stroke-linejoin=\"round\"\r\n      />\r\n    </svg>\r\n    }\r\n  </div>\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder\"\r\n  />\r\n</div>\r\n", styles: [".search-icon{width:1.6em;height:auto}.search-icon svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomReactiveSearchInputComponent, isStandalone: true, selector: "custom-reactive-search-input", inputs: { model: { classPropertyName: "model", publicName: "model", isSignal: false, isRequired: false, transformFunction: null }, headerSearchIcon: { classPropertyName: "headerSearchIcon", publicName: "headerSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, containerClass: { classPropertyName: "containerClass", publicName: "containerClass", isSignal: false, isRequired: true, transformFunction: null }, inputClass: { classPropertyName: "inputClass", publicName: "inputClass", isSignal: false, isRequired: true, transformFunction: null }, inputPlaceholder: { classPropertyName: "inputPlaceholder", publicName: "inputPlaceholder", isSignal: false, isRequired: true, transformFunction: null } }, outputs: { modelChange: "modelChange", search: "search" }, ngImport: i0, template: "<div [ngClass]=\"containerClass\">\r\n  <div class=\"search-icon\">\r\n    @if(headerSearchIcon()){\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <rect\r\n        width=\"auto\"\r\n        height=\"24\"\r\n        transform=\"translate(0.267578 0.523438)\"\r\n        fill=\"#F5F5F5\"\r\n      />\r\n      <path\r\n        d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n      <path\r\n        opacity=\"0.3\"\r\n        d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n    </svg>\r\n\r\n    }@else {\r\n\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"18\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n        fill=\"#a5a5a5\"\r\n      />\r\n    </svg>\r\n\r\n    }\r\n  </div>\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder\"\r\n  />\r\n</div>\r\n", styles: [".search-icon{height:auto;width:1em;min-width:1em;margin:.1em}.search-icon svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomReactiveSearchInputComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-reactive-search-input', imports: [NgClass, FormsModule], template: "<div [ngClass]=\"containerClass\">\r\n  <div class=\"search-icon\">\r\n    @if(headerSearchIcon()){\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <rect\r\n        width=\"auto\"\r\n        height=\"24\"\r\n        transform=\"translate(0.267578 0.523438)\"\r\n        fill=\"#F5F5F5\"\r\n      />\r\n      <path\r\n        d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n      <path\r\n        opacity=\"0.3\"\r\n        d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n    </svg>\r\n\r\n    }@else {\r\n\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 25 24\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M12 21C17.2467 21 21.5 16.7467 21.5 11.5C21.5 6.25329 17.2467 2 12 2C6.75329 2 2.5 6.25329 2.5 11.5C2.5 16.7467 6.75329 21 12 21Z\"\r\n        stroke=\"#7C8289\"\r\n        stroke-width=\"1.5\"\r\n        stroke-linecap=\"round\"\r\n        stroke-linejoin=\"round\"\r\n      />\r\n      <path\r\n        d=\"M22.5 22L20.5 20\"\r\n        stroke=\"#7C8289\"\r\n        stroke-width=\"1.5\"\r\n        stroke-linecap=\"round\"\r\n        stroke-linejoin=\"round\"\r\n      />\r\n    </svg>\r\n    }\r\n  </div>\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder\"\r\n  />\r\n</div>\r\n", styles: [".search-icon{width:1.6em;height:auto}.search-icon svg{width:100%!important;height:auto;display:block}\n"] }]
+            args: [{ selector: 'custom-reactive-search-input', imports: [NgClass, FormsModule], template: "<div [ngClass]=\"containerClass\">\r\n  <div class=\"search-icon\">\r\n    @if(headerSearchIcon()){\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"24\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <rect\r\n        width=\"auto\"\r\n        height=\"24\"\r\n        transform=\"translate(0.267578 0.523438)\"\r\n        fill=\"#F5F5F5\"\r\n      />\r\n      <path\r\n        d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n      <path\r\n        opacity=\"0.3\"\r\n        d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n        fill=\"#5E6278\"\r\n      />\r\n    </svg>\r\n\r\n    }@else {\r\n\r\n    <svg\r\n      width=\"auto\"\r\n      height=\"18\"\r\n      viewBox=\"0 0 18 18\"\r\n      fill=\"none\"\r\n      xmlns=\"http://www.w3.org/2000/svg\"\r\n    >\r\n      <path\r\n        d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n        fill=\"#a5a5a5\"\r\n      />\r\n    </svg>\r\n\r\n    }\r\n  </div>\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder\"\r\n  />\r\n</div>\r\n", styles: [".search-icon{height:auto;width:1em;min-width:1em;margin:.1em}.search-icon svg{width:100%!important;height:auto;display:block}\n"] }]
         }], ctorParameters: () => [], propDecorators: { model: [{
                 type: Input
             }], modelChange: [{
@@ -5400,6 +4757,1016 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 type: Output
             }] } });
 
+class CustomPagesHeaderComponent {
+    headerTitle = input('');
+    btnTitle = input('');
+    hasTabs = input(false);
+    //@Input() hasTabs:any
+    pageTabs = input([]);
+    selectedTab = signal({});
+    tabSelected = new EventEmitter();
+    addAction = new EventEmitter();
+    constructor() {
+        effect(() => {
+            if (this.pageTabs().length) {
+                console.log('tabs', this.pageTabs());
+                this.selectedTab.set(this.pageTabs()[0]);
+            }
+        });
+    }
+    selectTab(tab) {
+        if (!tab.disabled) {
+            this.selectedTab.set(tab);
+            this.tabSelected.emit(tab);
+        }
+    }
+    onAddClick() {
+        this.addAction.emit();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPagesHeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomPagesHeaderComponent, isStandalone: true, selector: "custom-pages-header", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction" }, ngImport: i0, template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}</h1>\r\n\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}</h1>\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPagesHeaderComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-pages-header', imports: [CustomTabsComponent, TranslateModule], template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}</h1>\r\n\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}</h1>\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"] }]
+        }], ctorParameters: () => [], propDecorators: { tabSelected: [{
+                type: Output
+            }], addAction: [{
+                type: Output
+            }] } });
+
+class CustomMainPagesFilterComponent {
+    // Inputs
+    dropdownOptions = input([]);
+    dropdownSelectedValues = input([]);
+    dropdownPlaceholder = input('');
+    // Output
+    filterChange = output();
+    // Local state
+    searchText = '';
+    selectedIds = [];
+    dropdownChange$ = new Subject();
+    constructor() {
+        this.dropdownChange$
+            .pipe(takeUntilDestroyed(), debounceTime(1000))
+            .subscribe((ids) => {
+            this.selectedIds = ids ?? [];
+            this.emitChange();
+        });
+    }
+    // Handlers
+    onSearch(value) {
+        this.searchText = value ?? '';
+        this.emitChange();
+    }
+    onSelectionChange(ids) {
+        this.dropdownChange$.next(ids ?? []);
+    }
+    emitChange() {
+        this.filterChange.emit({
+            searchText: this.searchText,
+            selectedIds: this.selectedIds,
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomMainPagesFilterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "19.2.14", type: CustomMainPagesFilterComponent, isStandalone: true, selector: "custom-main-pages-filter", inputs: { dropdownOptions: { classPropertyName: "dropdownOptions", publicName: "dropdownOptions", isSignal: true, isRequired: false, transformFunction: null }, dropdownSelectedValues: { classPropertyName: "dropdownSelectedValues", publicName: "dropdownSelectedValues", isSignal: true, isRequired: false, transformFunction: null }, dropdownPlaceholder: { classPropertyName: "dropdownPlaceholder", publicName: "dropdownPlaceholder", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { filterChange: "filterChange" }, ngImport: i0, template: "<div class=\"main-pages-filter-container\">\r\n  <div>\r\n    <custom-reactive-search-input\r\n      [(ngModel)]=\"searchText\"\r\n      (search)=\"onSearch($event)\"\r\n      [containerClass]=\"'search-field '\"\r\n      [inputClass]=\"'search-input'\"\r\n      [inputPlaceholder]=\"'Search'\"\r\n    >\r\n    </custom-reactive-search-input>\r\n  </div>\r\n  <div >\r\n    <custom-multi-select\r\n    [height]=\"'4rem'\"\r\n      [options]=\"dropdownOptions()\"\r\n      [value]=\"dropdownSelectedValues()\"\r\n      (valueChange)=\"onSelectionChange($event)\"\r\n      [enableFilter]=\"false\"\r\n      [showClear]=\"true\"\r\n      [placeholder]=\"dropdownPlaceholder()\"\r\n      [dropdownContainerClass]=\"'filter-dropdown-container'\"\r\n\r\n      [dropdownOptionsClass]=\"'filter-dropdown-options'\"\r\n    >\r\n    </custom-multi-select>\r\n  </div>\r\n</div>\r\n", styles: [".main-pages-filter-container{display:flex;justify-content:start;align-items:center;gap:1rem}::ng-deep .search-field{border-radius:.8rem;color:#1f1f1f;background-color:#fff;padding:1.7rem 1.6rem;font-size:1.6rem;display:flex;align-items:center;gap:.8rem;width:26.6rem;height:4rem;border:solid 1px #d9dbe1}::ng-deep .search-input{font-size:1.6rem;outline:none;border:none}::ng-deep .search-input::placeholder{color:#a5a5a5}.filter-dropdown-container{width:12.6rem}::ng-deep .dropdown-header{font-size:1.6rem;border-radius:.8rem;color:#1f1f1f;background-color:#fff;border:none!important}::ng-deep .dropdown-options{width:26.6rem!important}\n"], dependencies: [{ kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "component", type: CustomReactiveSearchInputComponent, selector: "custom-reactive-search-input", inputs: ["model", "headerSearchIcon", "containerClass", "inputClass", "inputPlaceholder"], outputs: ["modelChange", "search"] }, { kind: "component", type: CustomMultiSelectComponent, selector: "custom-multi-select", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "options", "value", "height", "reset"], outputs: ["valueChange"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomMainPagesFilterComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-main-pages-filter', imports: [
+                        FormsModule,
+                        CustomReactiveSearchInputComponent,
+                        CustomMultiSelectComponent,
+                    ], template: "<div class=\"main-pages-filter-container\">\r\n  <div>\r\n    <custom-reactive-search-input\r\n      [(ngModel)]=\"searchText\"\r\n      (search)=\"onSearch($event)\"\r\n      [containerClass]=\"'search-field '\"\r\n      [inputClass]=\"'search-input'\"\r\n      [inputPlaceholder]=\"'Search'\"\r\n    >\r\n    </custom-reactive-search-input>\r\n  </div>\r\n  <div >\r\n    <custom-multi-select\r\n    [height]=\"'4rem'\"\r\n      [options]=\"dropdownOptions()\"\r\n      [value]=\"dropdownSelectedValues()\"\r\n      (valueChange)=\"onSelectionChange($event)\"\r\n      [enableFilter]=\"false\"\r\n      [showClear]=\"true\"\r\n      [placeholder]=\"dropdownPlaceholder()\"\r\n      [dropdownContainerClass]=\"'filter-dropdown-container'\"\r\n\r\n      [dropdownOptionsClass]=\"'filter-dropdown-options'\"\r\n    >\r\n    </custom-multi-select>\r\n  </div>\r\n</div>\r\n", styles: [".main-pages-filter-container{display:flex;justify-content:start;align-items:center;gap:1rem}::ng-deep .search-field{border-radius:.8rem;color:#1f1f1f;background-color:#fff;padding:1.7rem 1.6rem;font-size:1.6rem;display:flex;align-items:center;gap:.8rem;width:26.6rem;height:4rem;border:solid 1px #d9dbe1}::ng-deep .search-input{font-size:1.6rem;outline:none;border:none}::ng-deep .search-input::placeholder{color:#a5a5a5}.filter-dropdown-container{width:12.6rem}::ng-deep .dropdown-header{font-size:1.6rem;border-radius:.8rem;color:#1f1f1f;background-color:#fff;border:none!important}::ng-deep .dropdown-options{width:26.6rem!important}\n"] }]
+        }], ctorParameters: () => [] });
+
+const sortSvg = '<svg width="auto" height="15" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.4"><path d="M1.53516 11.4792L5.6671 15.6112L9.79905 11.4792" stroke="black" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.53516 6.52086L5.6671 2.38892L9.79905 6.52086" stroke="black" stroke-linecap="round" stroke-linejoin="round"/></g></svg>';
+const actionViewSvg = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.0001 0.75C14.9429 0.75 19.055 4.30645 19.9172 9C19.055 13.6935 14.9429 17.25 10.0001 17.25C5.05728 17.25 0.945142 13.6935 0.0830078 9C0.945142 4.30645 5.05728 0.75 10.0001 0.75ZM10.0001 15.4167C13.8827 15.4167 17.2051 12.7143 18.0461 9C17.2051 5.28569 13.8827 2.58333 10.0001 2.58333C6.11739 2.58333 2.79504 5.28569 1.95405 9C2.79504 12.7143 6.11739 15.4167 10.0001 15.4167ZM10.0001 13.125C7.7219 13.125 5.87508 11.2782 5.87508 9C5.87508 6.72183 7.7219 4.875 10.0001 4.875C12.2782 4.875 14.1251 6.72183 14.1251 9C14.1251 11.2782 12.2782 13.125 10.0001 13.125ZM10.0001 11.2917C11.2658 11.2917 12.2918 10.2656 12.2918 9C12.2918 7.73436 11.2658 6.70833 10.0001 6.70833C8.73447 6.70833 7.70841 7.73436 7.70841 9C7.70841 10.2656 8.73447 11.2917 10.0001 11.2917Z" fill="#25C7BC"/></svg>';
+const actionEditSvg = '<svg width="auto" height="15" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.7"><path d="M13.6745 12.0231L14.7622 10.9354C14.9321 10.7654 15.2278 10.8844 15.2278 11.1291V16.0713C15.2278 16.9721 14.497 17.7029 13.5963 17.7029H1.63155C0.7308 17.7029 0 16.9721 0 16.0713V4.10663C0 3.20587 0.7308 2.47507 1.63155 2.47507H10.928C11.1693 2.47507 11.2917 2.76739 11.1218 2.94074L10.0341 4.02845C9.98307 4.07943 9.91508 4.10663 9.8403 4.10663H1.63155V16.0713H13.5963V12.2134C13.5963 12.142 13.6235 12.074 13.6745 12.0231ZM18.9974 5.16374L10.0714 14.0897L6.99868 14.4296C6.10813 14.5282 5.35013 13.777 5.44871 12.8796L5.78861 9.80686L14.7146 0.880909C15.493 0.102522 16.7506 0.102522 17.5256 0.880909L18.994 2.34931C19.7724 3.12769 19.7724 4.38875 18.9974 5.16374ZM15.6391 6.21405L13.6643 4.23919L7.34879 10.5581L7.10065 12.7777L9.32025 12.5295L15.6391 6.21405ZM17.8417 3.50499L16.3733 2.03659C16.234 1.89723 16.0062 1.89723 15.8703 2.03659L14.8199 3.0869L16.7948 5.06176L17.8451 4.01145C17.9811 3.86869 17.9811 3.64435 17.8417 3.50499Z" fill="#444A6D"/></g></svg>';
+const actionDeleteSvg = '<svg width="auto" height="15" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_8955_16606)"><path d="M15.0485 1.32129L1.69141 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.69141 1.32129L15.0485 14.6784" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_8955_16606"><rect width="15.5833" height="15.5833" fill="white" transform="translate(0.578125 0.208252)"/></clipPath></defs></svg>';
+const expandIcon = `<svg width="auto" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 0.999999L7 7L13 1" stroke="#7f7f7f" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+const STYLES = {
+    paid: { color: '#12AB6C', bg: '#e4f2ec', border: '#12AB6C', label: 'PAID' },
+    not_paid: {
+        color: '#B42318',
+        bg: '#f8e9e8',
+        border: '#B42318',
+        label: 'NOT PAID',
+    },
+    active: {
+        color: '#12AB6C',
+        bg: '#e4f2ec',
+        border: '#12AB6C',
+        label: 'Active',
+    },
+    inactive: {
+        color: '#B42318',
+        bg: '#f8e9e8',
+        border: '#B42318',
+        label: 'Inactive',
+    },
+    in_progress: {
+        color: '#ffffff',
+        bg: '#1F1F1F',
+        border: '#1F1F1F',
+        label: 'In Progress',
+    },
+    closed: {
+        color: '#ffffff',
+        bg: '#D9DBE1',
+        border: '#D9DBE1',
+        label: 'Closed',
+    },
+    open: { color: '#ffffff', bg: '#602650', border: '#602650', label: 'Open' },
+};
+class CustomStatusLabelComponent {
+    status;
+    uppercase = false;
+    normalize(val) {
+        const status = (val ?? '').trim().toLowerCase().replace(/\s+/g, '_');
+        const map = {
+            paid: 'paid',
+            not_paid: 'not_paid',
+            not_payed: 'not_paid',
+            active: 'active',
+            inactive: 'inactive',
+            open: 'open',
+            in_progress: 'in_progress',
+            'in-progress': 'in_progress',
+            'in progress': 'in_progress',
+            closed: 'closed',
+        };
+        return (map[status] ?? 'open');
+    }
+    get key() {
+        return this.normalize(this.status);
+    }
+    get s() {
+        return STYLES[this.key];
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomStatusLabelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "19.2.14", type: CustomStatusLabelComponent, isStandalone: true, selector: "custom-status-label", inputs: { status: "status", uppercase: "uppercase" }, ngImport: i0, template: "  <span class=\"badge\"\r\n      [style.--color]=\"s.color\"\r\n      [style.--background]=\"s.bg\"\r\n      [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n      [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n      [attr.aria-label]=\"s.label\"\r\n      >\r\n      {{ s.label }}\r\n    </span>\r\n", styles: [":host{display:inline-flex}.badge{display:inline-flex;align-items:center;justify-content:center;font-weight:500;border-radius:.8rem;border:.7px solid transparent;padding:.2rem .8rem;font-size:1.4rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background);border-color:var(--borderColor)}\n"] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomStatusLabelComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-status-label', imports: [], template: "  <span class=\"badge\"\r\n      [style.--color]=\"s.color\"\r\n      [style.--background]=\"s.bg\"\r\n      [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n      [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n      [attr.aria-label]=\"s.label\"\r\n      >\r\n      {{ s.label }}\r\n    </span>\r\n", styles: [":host{display:inline-flex}.badge{display:inline-flex;align-items:center;justify-content:center;font-weight:500;border-radius:.8rem;border:.7px solid transparent;padding:.2rem .8rem;font-size:1.4rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background);border-color:var(--borderColor)}\n"] }]
+        }], propDecorators: { status: [{
+                type: Input,
+                args: [{ required: true }]
+            }], uppercase: [{
+                type: Input
+            }] } });
+
+class CustomSmDynamicTableComponent {
+    sanitizer;
+    config = {};
+    actionsList = [];
+    hasCheckBox = true;
+    colTemplates = {};
+    actionTemplate;
+    hasActionTemplate = false;
+    sortColumn = new EventEmitter();
+    nameClick = new EventEmitter();
+    checkedSortIcon;
+    checkedActionViewSvg;
+    checkedActionEditSvg;
+    checkedActionDeleteSvg;
+    expandSvg;
+    statusKey = null;
+    constructor(sanitizer) {
+        this.sanitizer = sanitizer;
+        const sortSvgIcon = sortSvg;
+        this.checkedSortIcon = this.sanitizer.bypassSecurityTrustHtml(sortSvgIcon);
+        const ActionView = actionViewSvg;
+        this.checkedActionViewSvg =
+            this.sanitizer.bypassSecurityTrustHtml(ActionView);
+        const ActionEdit = actionEditSvg;
+        this.checkedActionEditSvg =
+            this.sanitizer.bypassSecurityTrustHtml(ActionEdit);
+        const ActionDelete = actionDeleteSvg;
+        this.checkedActionDeleteSvg =
+            this.sanitizer.bypassSecurityTrustHtml(ActionDelete);
+        const ExpandIcon = expandIcon;
+        this.expandSvg = this.sanitizer.bypassSecurityTrustHtml(ExpandIcon);
+    }
+    onAction(row, handler) {
+        handler(row);
+    }
+    getNestedValue(obj, path) {
+        if (!path)
+            return undefined;
+        const parts = path.split(/[\.\[\]']+/).filter(Boolean);
+        return parts.reduce((acc, key) => acc?.[key], obj);
+    }
+    ngOnChanges(changes) {
+        if (changes['config']) {
+            this.statusKey = this.findStatusKey();
+        }
+    }
+    findStatusKey() {
+        const col = this.config?.columns?.find((c) => (c.key ?? '').toLowerCase().includes('status'));
+        return col?.key ?? null;
+    }
+    isRowInactive(row) {
+        if (!this.statusKey)
+            return false;
+        const val = this.getNestedValue(row, this.statusKey);
+        return String(val).toLowerCase() === 'inactive';
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomSmDynamicTableComponent, deps: [{ token: i1$4.DomSanitizer }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomSmDynamicTableComponent, isStandalone: true, selector: "custom-sm-dynamic-table", inputs: { config: "config", actionsList: "actionsList", hasCheckBox: "hasCheckBox", colTemplates: "colTemplates", actionTemplate: "actionTemplate", hasActionTemplate: "hasActionTemplate" }, outputs: { sortColumn: "sortColumn", nameClick: "nameClick" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"table-container\">\r\n  <table class=\"striped-table\">\r\n    <thead>\r\n      <tr>\r\n        @for(column of config.columns; track $index) {\r\n        <th>\r\n          <div class=\"table-header-cell\">\r\n            {{ column.label | translate }}\r\n            @if(column.sort){\r\n            <div\r\n              [innerHTML]=\"checkedSortIcon\"\r\n              class=\"sort-icon\"\r\n              (click)=\"sortColumn.emit(column.key)\"\r\n            ></div>\r\n            }\r\n          </div>\r\n        </th>\r\n\r\n        }\r\n\r\n        <th class=\"actions-width\">\r\n          <div class=\"table-header-cell\">\r\n            <!-- {{ \"Actions\" | translate }} -->\r\n          </div>\r\n        </th>\r\n      </tr>\r\n    </thead>\r\n    <tbody>\r\n      @for(row of config.data; track $index) {\r\n      <tr>\r\n        @for(col of config.columns; track $index) {\r\n\r\n        <td>\r\n          @if(colTemplates[col.key]) {\r\n          <span [class.disabled-text]=\"isRowInactive(row)\">\r\n            <ng-template\r\n              *ngTemplateOutlet=\"\r\n                colTemplates[col.key];\r\n                context: { $implicit: row }\r\n              \"\r\n            >\r\n            </ng-template>\r\n          </span>\r\n          } @else {\r\n          <!-- condition to apply inactive style -->\r\n          @if(col.key.toLowerCase().includes('status')){\r\n          <custom-status-label\r\n            [status]=\"getNestedValue(row, col.key)\"\r\n          ></custom-status-label>\r\n\r\n          <!-- <span\r\n                style=\"color: #4b4b4b\"\r\n                [ngClass]=\"{ 'no-wrap': col.key.toLowerCase().includes('date') }\"\r\n              >\r\n                {{ getNestedValue(row, col.key) }}\r\n              </span> -->\r\n          }@else {\r\n\r\n          <span\r\n            [class.disabled-text]=\"isRowInactive(row)\"\r\n            style=\"color: #4b4b4b\"\r\n            [ngClass]=\"{ 'no-wrap': col.key.toLowerCase().includes('date') }\"\r\n          >\r\n            {{ getNestedValue(row, col.key) }}\r\n          </span>\r\n          } }\r\n        </td>\r\n\r\n        } @if(actionTemplate){\r\n\r\n        <td>\r\n          <div class=\"action-buttons\">\r\n            <custom-actions-dropdown\r\n              [expandSide]=\"'RIGHT'\"\r\n              [context]=\"row\"\r\n              [horizontalDots]=\"false\"\r\n              [hasActionTemplate]=\"hasActionTemplate\"\r\n            >\r\n              <ng-template\r\n                *ngTemplateOutlet=\"actionTemplate; context: { $implicit: row }\"\r\n              >\r\n              </ng-template\r\n            ></custom-actions-dropdown>\r\n          </div>\r\n        </td>\r\n\r\n        }@else {\r\n\r\n        <td>\r\n          <div class=\"action-buttons\">\r\n            <custom-actions-dropdown\r\n              [expandSide]=\"'RIGHT'\"\r\n              [actions]=\"actionsList\"\r\n              [context]=\"row\"\r\n              [horizontalDots]=\"false\"\r\n            ></custom-actions-dropdown>\r\n          </div>\r\n        </td>\r\n        }\r\n      </tr>\r\n      }\r\n    </tbody>\r\n  </table>\r\n</div>\r\n", styles: [".table-container{overflow-x:auto;width:100%;max-width:100%;font-size:1.4rem;max-height:52vh;overflow-y:auto}.table-container *{font-weight:500!important}.striped-table{width:100%;min-width:1000px;background-color:#fff}.striped-table thead{text-align:start}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:#5e5e6f;position:sticky}.striped-table th{padding:.8rem 1.2rem;color:#5e5e6f;background-color:#f5f5f5}.striped-table th:first-child{border-bottom-left-radius:.8rem;border-top-left-radius:.8rem}.striped-table th:last-child{border-bottom-right-radius:.8rem;border-top-right-radius:.8rem}.striped-table tbody tr{border-bottom:1px solid #eeeeee}.striped-table td{padding:1.3rem 1.2rem;color:#4b4f55}th:first-child,td:first-child{width:1%}th:last-child,td:last-child{width:2%}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1rem}.no-wrap{white-space:nowrap}.disabled-text{opacity:40%}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: CustomActionsDropdownComponent, selector: "custom-actions-dropdown", inputs: ["actions", "context", "horizontalDots", "hasActionTemplate", "expandSide"] }, { kind: "component", type: CustomStatusLabelComponent, selector: "custom-status-label", inputs: ["status", "uppercase"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomSmDynamicTableComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-sm-dynamic-table', imports: [
+                        TranslateModule,
+                        NgClass,
+                        NgTemplateOutlet,
+                        CustomActionsDropdownComponent,
+                        CustomStatusLabelComponent
+                    ], template: "<div class=\"table-container\">\r\n  <table class=\"striped-table\">\r\n    <thead>\r\n      <tr>\r\n        @for(column of config.columns; track $index) {\r\n        <th>\r\n          <div class=\"table-header-cell\">\r\n            {{ column.label | translate }}\r\n            @if(column.sort){\r\n            <div\r\n              [innerHTML]=\"checkedSortIcon\"\r\n              class=\"sort-icon\"\r\n              (click)=\"sortColumn.emit(column.key)\"\r\n            ></div>\r\n            }\r\n          </div>\r\n        </th>\r\n\r\n        }\r\n\r\n        <th class=\"actions-width\">\r\n          <div class=\"table-header-cell\">\r\n            <!-- {{ \"Actions\" | translate }} -->\r\n          </div>\r\n        </th>\r\n      </tr>\r\n    </thead>\r\n    <tbody>\r\n      @for(row of config.data; track $index) {\r\n      <tr>\r\n        @for(col of config.columns; track $index) {\r\n\r\n        <td>\r\n          @if(colTemplates[col.key]) {\r\n          <span [class.disabled-text]=\"isRowInactive(row)\">\r\n            <ng-template\r\n              *ngTemplateOutlet=\"\r\n                colTemplates[col.key];\r\n                context: { $implicit: row }\r\n              \"\r\n            >\r\n            </ng-template>\r\n          </span>\r\n          } @else {\r\n          <!-- condition to apply inactive style -->\r\n          @if(col.key.toLowerCase().includes('status')){\r\n          <custom-status-label\r\n            [status]=\"getNestedValue(row, col.key)\"\r\n          ></custom-status-label>\r\n\r\n          <!-- <span\r\n                style=\"color: #4b4b4b\"\r\n                [ngClass]=\"{ 'no-wrap': col.key.toLowerCase().includes('date') }\"\r\n              >\r\n                {{ getNestedValue(row, col.key) }}\r\n              </span> -->\r\n          }@else {\r\n\r\n          <span\r\n            [class.disabled-text]=\"isRowInactive(row)\"\r\n            style=\"color: #4b4b4b\"\r\n            [ngClass]=\"{ 'no-wrap': col.key.toLowerCase().includes('date') }\"\r\n          >\r\n            {{ getNestedValue(row, col.key) }}\r\n          </span>\r\n          } }\r\n        </td>\r\n\r\n        } @if(actionTemplate){\r\n\r\n        <td>\r\n          <div class=\"action-buttons\">\r\n            <custom-actions-dropdown\r\n              [expandSide]=\"'RIGHT'\"\r\n              [context]=\"row\"\r\n              [horizontalDots]=\"false\"\r\n              [hasActionTemplate]=\"hasActionTemplate\"\r\n            >\r\n              <ng-template\r\n                *ngTemplateOutlet=\"actionTemplate; context: { $implicit: row }\"\r\n              >\r\n              </ng-template\r\n            ></custom-actions-dropdown>\r\n          </div>\r\n        </td>\r\n\r\n        }@else {\r\n\r\n        <td>\r\n          <div class=\"action-buttons\">\r\n            <custom-actions-dropdown\r\n              [expandSide]=\"'RIGHT'\"\r\n              [actions]=\"actionsList\"\r\n              [context]=\"row\"\r\n              [horizontalDots]=\"false\"\r\n            ></custom-actions-dropdown>\r\n          </div>\r\n        </td>\r\n        }\r\n      </tr>\r\n      }\r\n    </tbody>\r\n  </table>\r\n</div>\r\n", styles: [".table-container{overflow-x:auto;width:100%;max-width:100%;font-size:1.4rem;max-height:52vh;overflow-y:auto}.table-container *{font-weight:500!important}.striped-table{width:100%;min-width:1000px;background-color:#fff}.striped-table thead{text-align:start}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:#5e5e6f;position:sticky}.striped-table th{padding:.8rem 1.2rem;color:#5e5e6f;background-color:#f5f5f5}.striped-table th:first-child{border-bottom-left-radius:.8rem;border-top-left-radius:.8rem}.striped-table th:last-child{border-bottom-right-radius:.8rem;border-top-right-radius:.8rem}.striped-table tbody tr{border-bottom:1px solid #eeeeee}.striped-table td{padding:1.3rem 1.2rem;color:#4b4f55}th:first-child,td:first-child{width:1%}th:last-child,td:last-child{width:2%}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1rem}.no-wrap{white-space:nowrap}.disabled-text{opacity:40%}\n"] }]
+        }], ctorParameters: () => [{ type: i1$4.DomSanitizer }], propDecorators: { config: [{
+                type: Input
+            }], actionsList: [{
+                type: Input
+            }], hasCheckBox: [{
+                type: Input
+            }], colTemplates: [{
+                type: Input
+            }], actionTemplate: [{
+                type: Input
+            }], hasActionTemplate: [{
+                type: Input
+            }], sortColumn: [{
+                type: Output
+            }], nameClick: [{
+                type: Output
+            }] } });
+
+// confirm-dialog.service.ts
+class ConfirmDialogService {
+    applicationRef = inject(ApplicationRef);
+    environmentInjector = inject(EnvironmentInjector);
+    async confirm(options) {
+        const hostElement = this.createHostElement();
+        const componentRef = this.mountComponent(hostElement);
+        try {
+            this.setComponentInputs(componentRef, options);
+            const decision = await this.waitForUserDecision(componentRef, options);
+            return decision;
+        }
+        finally {
+            this.destroyComponent(componentRef, hostElement);
+        }
+    }
+    // ————— helpers —————
+    createHostElement() {
+        const hostElement = document.createElement('div');
+        hostElement.classList.add('confirm-dialog-host'); // optional: z-index or layout hook
+        document.body.appendChild(hostElement);
+        return hostElement;
+    }
+    mountComponent(hostElement) {
+        const componentRef = createComponent(CustomConfirmPopupComponent, {
+            environmentInjector: this.environmentInjector,
+            hostElement,
+        });
+        this.applicationRef.attachView(componentRef.hostView);
+        return componentRef;
+    }
+    destroyComponent(componentRef, hostElement) {
+        this.applicationRef.detachView(componentRef.hostView);
+        componentRef.destroy();
+        hostElement.remove();
+    }
+    setComponentInputs(componentRef, options) {
+        const instance = componentRef.instance;
+        instance.type = options.type ?? 'info';
+        instance.message = options.message;
+        instance.modalTitle = options.modalTitle;
+        instance.modalIcon = options.modalIcon;
+        instance.confirmButtonText = options.confirmText ?? 'YES';
+        instance.cancelButtonText = options.cancelText ?? 'NO';
+        instance.open();
+    }
+    async waitForUserDecision(componentRef, options) {
+        const instance = componentRef.instance;
+        const decisionSubject = new Subject();
+        // Confirm
+        instance.confirmEvent.pipe(take(1)).subscribe(() => {
+            decisionSubject.next('confirm');
+            decisionSubject.complete();
+        });
+        // Cancel
+        instance.cancelEvent.pipe(take(1)).subscribe(() => {
+            decisionSubject.next('cancel');
+            decisionSubject.complete();
+        });
+        return firstValueFrom(decisionSubject);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ConfirmDialogService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ConfirmDialogService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ConfirmDialogService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+const MODAL_REF = new InjectionToken('MODAL_REF');
+function injectModalRef() {
+    return inject(MODAL_REF);
+}
+class CustomModalService {
+    applicationRef = inject(ApplicationRef);
+    environmentInjector = inject(EnvironmentInjector);
+    /** Open any component inside the modal (child must be standalone or resolvable). */
+    async openComponentInModal(childComponent, options = {}) {
+        const hostElement = this.createHostElement();
+        const modalRef = this.createModal(hostElement);
+        this.applyModalInputs(modalRef.instance, options);
+        // Render the *ngIf branch so the anchor exists
+        modalRef.instance.open();
+        modalRef.changeDetectorRef.detectChanges();
+        // Wait until the ViewChild anchor is resolved
+        await firstValueFrom(modalRef.instance.contentReady$);
+        // Attach the child
+        const childRef = modalRef.instance.attachContent(childComponent);
+        // Resolve when closed, then cleanup
+        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
+        return {
+            modalComponentRef: modalRef,
+            childComponentRef: childRef,
+            close: () => modalRef.instance.close(),
+            afterClosed,
+        };
+    }
+    // ——— helpers ———
+    createHostElement() {
+        const host = document.createElement('div');
+        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
+        document.body.appendChild(host);
+        return host;
+    }
+    createModal(host) {
+        const ref = createComponent(CustomModalComponent, {
+            environmentInjector: this.environmentInjector,
+            hostElement: host,
+        });
+        this.applicationRef.attachView(ref.hostView);
+        return ref;
+    }
+    destroyModal(ref, host) {
+        this.applicationRef.detachView(ref.hostView);
+        ref.destroy();
+        host.remove();
+    }
+    applyModalInputs(modal, o) {
+        modal.modalTitle = o.title ?? modal.modalTitle;
+        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
+        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
+    }
+    async waitForClose(ref) {
+        return firstValueFrom(ref.instance.closed);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomModalService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomModalService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomModalService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+// shared-lib/translation.service.ts
+class TranslationService {
+    translate = inject(TranslateService);
+    initialize(defaultLang = 'en') {
+        this.translate.setDefaultLang(defaultLang);
+        const browserLang = this.translate.getBrowserLang();
+        this.translate.use(browserLang?.match(/en|es/) ? browserLang : defaultLang);
+    }
+    changeLanguage(lang) {
+        this.translate.use(lang);
+    }
+    get(key, params) {
+        return this.translate.instant(key, params);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+class SidenavService {
+    _isCollapsed = signal(false);
+    constructor() {
+        // Initialize from sessionStorage on service creation
+        const storedState = sessionStorage.getItem('isCollapsed');
+        if (storedState === 'true') {
+            this._isCollapsed.set(true);
+        }
+        this.listenToWindowResize();
+    }
+    get isCollapsed() {
+        return this._isCollapsed();
+    }
+    toggle() {
+        const newVal = !this._isCollapsed();
+        sessionStorage.setItem('isCollapsed', newVal.toString());
+        this._isCollapsed.set(newVal);
+    }
+    collapse() {
+        this._isCollapsed.set(true);
+        sessionStorage.setItem('isCollapsed', 'true');
+    }
+    expand() {
+        this._isCollapsed.set(false);
+        sessionStorage.setItem('isCollapsed', 'false');
+    }
+    listenToWindowResize() {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            // Always collapse when < 900px
+            if (width < 900) {
+                this._isCollapsed.set(true);
+                sessionStorage.setItem('isCollapsed', 'true');
+            }
+            // Always expand when >= 700px
+            else {
+                this._isCollapsed.set(false);
+                sessionStorage.setItem('isCollapsed', 'false');
+            }
+        };
+        // Initial check
+        handleResize();
+        // Listen to resize
+        window.addEventListener('resize', handleResize);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: SidenavService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }], ctorParameters: () => [] });
+
+class GeoLocationService {
+    getCurrentPosition() {
+        return new Observable((observer) => {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    observer.next(position);
+                    observer.complete();
+                }, (error) => {
+                    observer.error(error);
+                });
+            }
+            else {
+                observer.error('Geolocation is not supported by this browser.');
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: GeoLocationService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: 'root'
+                }]
+        }] });
+
+// Auth services
+
+/**
+ * Checks if any fields in an object contain data (not empty string or undefined)
+ * @param {any} obj - The object to check
+ * @returns {boolean} True if any field has data, false otherwise
+ */
+const someFieldsContainData = (obj) => Object.values(obj).some((value) => value !== '' && value !== undefined);
+/**
+ * Generates a random HSL color based on an index value
+ * @param {number} index - The index used to generate unique hue
+ * @param {number} lightness - The lightness percentage (0-100)
+ * @returns {string} HSL color string (e.g., "hsl(120, 70%, 50%)")
+ */
+const generateRandomColor = (index, lightness) => {
+    const hue = (index * 137.508) % 360;
+    const saturation = 70;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+/**
+ * Formats a timestamp into a human-readable time string
+ * @param {string} timestamp - ISO date string
+ * @returns {string} Formatted time string (e.g., "Sent at 2:30 PM")
+ */
+const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const formattedHours = hours % 12 || 12;
+    const period = hours < 12 ? 'AM' : 'PM';
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `Sent at ${formattedHours}:${formattedMinutes} ${period}`;
+};
+/**
+ * Recursively flattens a tree structure into a single array
+ * @param {any[]} nodes - Array of nodes with potential children
+ * @param {any[]} [result=[]] - Accumulator array (used internally for recursion)
+ * @returns {any[]} Flattened array of all nodes
+ */
+const flattenTree = (nodes, result = []) => {
+    nodes.forEach((node) => {
+        result.push(node);
+        if (node.children && node.children.length > 0) {
+            flattenTree(node.children, result);
+        }
+    });
+    return result;
+};
+/**
+ * Converts a date string to YYYY-MM-DD format
+ * @param {any} inputDate - Date string or object
+ * @returns {string} Formatted date string (e.g., "2023-05-15")
+ */
+const convertDateFormat = (inputDate) => {
+    const dateObject = new Date(inputDate);
+    const year = dateObject.getFullYear();
+    const month = `0${dateObject.getMonth() + 1}`.slice(-2);
+    const day = `0${dateObject.getDate()}`.slice(-2);
+    const convertedDate = `${year}-${month}-${day}`;
+    return convertedDate;
+};
+/**
+ * Converts Excel serial date number to JavaScript Date object
+ * @param {number} serial - Excel serial date number
+ * @returns {Date} JavaScript Date object
+ */
+const excelDateToJSDate = (serial) => {
+    const excelStartDate = new Date(1900, 0, 1);
+    const jsDate = new Date(excelStartDate.getTime() + (serial - 1) * 24 * 60 * 60 * 1000);
+    return jsDate;
+};
+/**
+ * Formats a date to YYYY-MM-DD format
+ * @param {any} inputDate - Date string or object
+ * @returns {string} Formatted date string (e.g., "2023-05-15")
+ */
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+/**
+ * Formats a date to YYYY-MM-DD HH:MM:SS format
+ * @param {any} inputDate - Date string or object
+ * @returns {string} Formatted datetime string (e.g., "2023-05-15 14:30:45")
+ */
+function formatDateWithTime(inputDate) {
+    const date = new Date(inputDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+/**
+ * Generates a unique number based on current timestamp and index
+ * @param {number} index - Additional number to ensure uniqueness
+ * @returns {string} Unique number string combining timestamp and index
+ */
+function generateUniqueNumber(index) {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+    const hour = currentDate.getHours();
+    const minute = currentDate.getMinutes();
+    const second = currentDate.getSeconds();
+    const millisecond = currentDate.getMilliseconds();
+    const uniqueNumber = `${year}${month}${day}${hour}${minute}${second}${millisecond}${index}`;
+    return uniqueNumber;
+}
+/**
+ * Calculates time difference between two dates in hours and minutes
+ * @param {Date} start - Start date
+ * @param {Date} end - End date
+ * @returns {string} Formatted time difference (e.g., "2 H and 30 M")
+ */
+function diffTime(start, end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffMs = endDate.getTime() - startDate.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    if (diffHours >= 1) {
+        return `${diffHours} H and ${diffMinutes} M`;
+    }
+    if (diffHours < 1 && diffMinutes >= 1) {
+        return `${diffMinutes} M`;
+    }
+    return '0 M';
+}
+/**
+ * Converts a File object to Base64 string (Note: currently incomplete implementation)
+ * @param {any} selectedFile - File object to convert
+ * @returns {any} Should return Base64 string (implementation needs fixing)
+ */
+function convertFileToBase64(selectedFile) {
+    const reader = new FileReader();
+    reader.onload = (e) => e.target.result;
+    reader.readAsDataURL(selectedFile);
+}
+/**
+ * Converts a date to relative time string (e.g., "2 hours ago")
+ * @param {any} date - Date to compare with current time
+ * @returns {string} Relative time string
+ */
+function timeAgo(date) {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    const units = [
+        { name: 'year', seconds: 31536000 },
+        { name: 'month', seconds: 2592000 },
+        { name: 'week', seconds: 604800 },
+        { name: 'day', seconds: 86400 },
+        { name: 'hour', seconds: 3600 },
+        { name: 'minute', seconds: 60 },
+        { name: 'second', seconds: 1 },
+    ];
+    for (const unit of units) {
+        const interval = Math.floor(diffInSeconds / unit.seconds);
+        if (interval >= 1) {
+            return ` ${interval} ${unit.name}${interval !== 1 ? 's' : ''} ago`;
+        }
+    }
+    return 'just now';
+}
+/**
+ * Formats a timestamp to HH:MM:SS format (UTC time)
+ * @param {string} timestamp - ISO date string
+ * @returns {string} Formatted time string (e.g., "14:30:45")
+ */
+function formatinitialTakeTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+// File type checking utilities
+const imageExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'tiff',
+    'webp',
+    'svg',
+];
+const videoExtensions = [
+    'mp4',
+    'avi',
+    'mov',
+    'wmv',
+    'flv',
+    'mkv',
+    'webm',
+];
+const documentExtensions = ['pdf', 'docx'];
+/**
+ * Checks if a file path has an image extension
+ * @param {string} path - File path to check
+ * @returns {boolean} True if path ends with image extension
+ */
+function isImagePath(path) {
+    if (!path) {
+        return false;
+    }
+    const parts = path.split('.');
+    if (parts.length < 2) {
+        return false;
+    }
+    const extension = parts.pop()?.toLowerCase() || '';
+    return imageExtensions.includes(extension);
+}
+/**
+ * Checks if a file path has a video extension
+ * @param {string} path - File path to check
+ * @returns {boolean} True if path ends with video extension
+ */
+function isVedioPath(path) {
+    if (!path) {
+        return false;
+    }
+    const parts = path.split('.');
+    if (parts.length < 2) {
+        return false;
+    }
+    const extension = parts.pop()?.toLowerCase() || '';
+    return videoExtensions.includes(extension);
+}
+/**
+ * Checks if a file path has a document extension
+ * @param {string} path - File path to check
+ * @returns {boolean} True if path ends with document extension
+ */
+function isDocumentPath(path) {
+    if (!path) {
+        return false;
+    }
+    const parts = path.split('.');
+    if (parts.length < 2) {
+        return false;
+    }
+    const extension = parts.pop()?.toLowerCase() || '';
+    return documentExtensions.includes(extension);
+}
+/**
+ * Converts Base64 data URI to Blob object
+ * @param {string} dataURI - Base64 encoded data URI
+ * @returns {Blob} Blob object representing the image
+ */
+// export function b64toBlob(dataURI: string, mimeType: string): Blob {
+//   const byteString = atob(dataURI);
+//   const ab = new ArrayBuffer(byteString.length);
+//   const ia = new Uint8Array(ab);
+//   for (let i = 0; i < byteString.length; i++) {
+//     ia[i] = byteString.charCodeAt(i);
+//   }
+//   return new Blob([ab], { type: mimeType });
+// }
+function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
+/**
+ * Initiates a download of a given Blob object by creating a temporary anchor element
+ * and triggering a click event on it. The file will be saved with the specified file name.
+ *
+ * @param blob - The Blob object to be downloaded.
+ * @param fileName - The desired name for the downloaded file. Defaults to 'download' if not provided.
+ */
+function downloadBlob(blob, fileName) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || 'download';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+}
+/**
+ * Converts a Blob object to Base64 data URI
+ * @param {Blob} blob - Blob object to convert
+ * @returns {Promise<string>} Promise resolving to Base64 encoded data URI
+ */
+function blobToB64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+                // Remove the data URL prefix if present
+                const base64 = reader.result.replace(/^data:.*;base64,/, '');
+                resolve(base64);
+            }
+            else {
+                reject(new Error('Failed to convert Blob to Base64'));
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+/**
+ * Simple logger function that console.logs the input
+ * @param {any} [data=''] - Data to log (defaults to empty string)
+ */
+function logger(data = '') {
+    console.log(data);
+}
+/**
+ * Extracts all validation errors from a FormGroup
+ * @param {FormGroup} form - Angular FormGroup to inspect
+ * @returns {Array} Array of error objects containing control name, error type and value
+ */
+function getFormValidationErrors(form) {
+    const result = [];
+    Object.keys(form.controls).forEach((key) => {
+        const controlErrors = form.get(key)?.errors ?? null;
+        if (controlErrors) {
+            Object.keys(controlErrors).forEach((keyError) => {
+                result.push({
+                    control: key,
+                    error: keyError,
+                    value: controlErrors[keyError],
+                });
+            });
+        }
+    });
+    return result;
+}
+/**
+ * Converts FormGroup values to FormData (handles File objects specially)
+ * @param {FormGroup} formGroup - Angular FormGroup to convert
+ * @returns {FormData} FormData object containing all form values
+ */
+function convertFormGroupToFormData(formGroup) {
+    const formData = new FormData();
+    Object.keys(formGroup.controls).forEach((key) => {
+        const control = formGroup.get(key);
+        if (control) {
+            if (control.value instanceof File) {
+                formData.append(key, control.value);
+            }
+            else {
+                formData.append(key, control.value == null ? '' : control.value);
+            }
+        }
+    });
+    return formData;
+}
+
+const AuthInterceptor = (request, next) => {
+    const token = localStorage.getItem(AuthConstant.TOKEN);
+    const translate = localStorage.getItem(I18nConstant.LANGUAGE);
+    const skipToken = request.context.get(SKIP_TOKEN);
+    const showSuccessToaster = request.context.get(SHOW_SUCCESS_TOASTER);
+    const toastService = inject(ToastService);
+    // 'Content-Type': 'application/json',
+    const headersConfig = {
+        'accept-language': translate === I18nConstant.EN ? 'en-US' : 'e.g',
+    };
+    if (!skipToken) {
+        headersConfig['Authorization'] = `Bearer ${token}`;
+    }
+    const clonedRequest = request.clone({
+        setHeaders: headersConfig,
+    });
+    return next(clonedRequest).pipe(map((event) => {
+        //&& isPlatformBrowser(PLATFORM_ID)
+        if (event instanceof HttpResponse) {
+            const body = event.body;
+            if (body.status === 'SUCCESS' || body.success) {
+                body['success'] = true;
+            }
+            else {
+                body['success'] = false;
+            }
+            //  body['statusCode'] = event.status;
+            // console.log('body: ', body['success'] );
+            //    console.log('request.method: ', request.method);
+            if (body &&
+                body.success &&
+                (request.method === 'POST' ||
+                    request.method === 'PUT' ||
+                    request.method === 'DELETE')) {
+                if (showSuccessToaster) {
+                    toastService.toast(`${body.message}`, 'top-center', 'success', 4000);
+                }
+                // if (!body.success) {
+                //   if (body.errors && body.errors.length > 0) {
+                //     body.errors.forEach((error) => {
+                //       toastService.toast(`${error.msg}`, 'top-center', 'error', 2000);
+                //     });
+                //   } else {
+                //     toastService.toast(`Unknown Error`, 'top-center', 'error', 2000);
+                //   }
+                // }
+            }
+        }
+        return event;
+    }));
+};
+
+const ErrorInterceptor = (req, next) => {
+    let authService = inject(AuthService);
+    let authContextService = inject(AuthContextService);
+    let router = inject(Router);
+    let toastService = inject(ToastService);
+    return next(req).pipe(
+    // retry({
+    //   count: 3,
+    //   delay: (error) => {
+    //     if (error.status === 503) {
+    //       // Retry logic for 503 errors
+    //       return timer(1000); // Retry after 1 second
+    //     }
+    //     return throwError(() => error);
+    //   },
+    // }),
+    catchError((error) => {
+        // if (error && isPlatformBrowser(PLATFORM_ID)) {
+        // } else {
+        // }
+        //      if (error.status === 503) {
+        //   toastService.toast('Service unavailable. Please try again later.', 'top-center', 'error', 2000);
+        // }
+        switch (error.status) {
+            case 400:
+                toastService.toast(error.error.errorMessage, 'top-center', 'error', 2000);
+                break;
+            case 401:
+                // access token expired / au auth
+                authService.handleRefreshToken();
+                //  authContextService.clearData();
+                // window.dispatchEvent(new CustomEvent('auth-logout'));
+                // router.navigate(['/auth/login']);
+                break;
+            case 403:
+                // no permission
+                toastService.toast(`User don't have permission`, 'top-center', 'error', 2000);
+                authService.handlePermissionConfig();
+                console.error('No Permission');
+                break;
+            case 406:
+                // refresh expired
+                authContextService.clearData();
+                window.dispatchEvent(new CustomEvent('auth-logout'));
+                router.navigate(['/auth']);
+                break;
+            case 404:
+                console.error('End Point Not Found');
+                break;
+            case 503:
+                toastService.toast(`Please Contact Support Team`, 'top-center', 'error', 2000);
+                break;
+            default:
+                toastService.toast(`Please Contact Support Team`, 'top-center', 'error', 2000);
+        }
+        // refresh token + code
+        // access token
+        // 503 -- service idle -- error message
+        // 404 -- end point not found // /
+        // if (error.error && isPlatformBrowser(PLATFORM_ID)) {
+        //   if (error.error.errors) {
+        //     const errorMessages = Object.values(error.error.errors).flat();
+        //     errorMessages.forEach((errorMessage: any) => {
+        //       console.error(errorMessage);
+        //     });
+        //   } else if (error?.error?.message) {
+        //     console.error(error.error.message);
+        //   } else {
+        //     console.error('Something went wrong');
+        //   }
+        // }
+        return throwError(error);
+    }));
+};
+
+let totalRequests = 0;
+const loadingInterceptor = (req, next) => {
+    const loadingService = inject(LoadingService);
+    // console.log('loadingService: ', loadingService);
+    // If the custom header is present, skip the loader
+    // by this =>     context: new HttpContext().set(SKIP_LOADER, true),
+    const skipLoader = req.context.get(SKIP_LOADER);
+    if (skipLoader) {
+        return next(req);
+    }
+    totalRequests++;
+    loadingService.loading.set(true);
+    return next(req).pipe(finalize(() => {
+        totalRequests--;
+        if (totalRequests == 0) {
+            loadingService.loading.set(false);
+            loadingService.currentLoadingSection.set(null);
+        }
+    }));
+};
+
+const NetworkConnectionInterceptor = (req, next) => {
+    const startTime = Date.now();
+    return next(req).pipe(tap(() => {
+        const elapsedTime = Date.now() - startTime;
+        const threshold = 5000;
+        if (elapsedTime > threshold) {
+            console.log('Slow network detected');
+        }
+    }));
+};
+
 const authGuard = () => {
     const platformId = inject(PLATFORM_ID);
     const router = inject(Router);
@@ -5467,5 +5834,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomModalComponent, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomPaginationComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, LoadingService, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
+export { API_BASE_URL, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

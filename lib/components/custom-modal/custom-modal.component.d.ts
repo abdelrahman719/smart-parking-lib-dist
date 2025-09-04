@@ -1,18 +1,24 @@
-import { EventEmitter } from '@angular/core';
+import { ComponentRef, EventEmitter, Provider, Type, ViewContainerRef } from '@angular/core';
 import * as i0 from "@angular/core";
 export declare class CustomModalComponent {
     modalTitle: string;
-    showDot: boolean;
-    headerButton: string;
+    modalIcon: string;
     overlayClickClose: boolean;
     hideEvent: EventEmitter<void>;
-    headerButtonClick: EventEmitter<void>;
+    closed: EventEmitter<void>;
     isVisible: boolean;
+    private contentReadySubject;
+    readonly contentReady$: import("rxjs").Observable<void>;
+    private hostVcRef;
+    private dynamicChildRef?;
+    set contentHost(vcr: ViewContainerRef | null);
     open(): void;
     close(): void;
     closeInternal(): void;
-    onHeaderButtonClick(): void;
     onOverlayClick(event: MouseEvent): void;
+    /** Attach child and provide MODAL_REF so it can close itself */
+    attachContent<T>(component: Type<T>, extraProviders?: Provider[]): ComponentRef<T>;
+    private clearDynamicContent;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomModalComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomModalComponent, "modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "showDot": { "alias": "showDot"; "required": false; }; "headerButton": { "alias": "headerButton"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; }, { "hideEvent": "hideEvent"; "headerButtonClick": "headerButtonClick"; }, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomModalComponent, "modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; }, { "hideEvent": "hideEvent"; "closed": "closed"; }, never, ["*"], true, never>;
 }

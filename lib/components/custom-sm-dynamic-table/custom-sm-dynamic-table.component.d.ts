@@ -11,6 +11,7 @@ export interface ISmTableColumn {
 export interface ISmDynmaicTableConfig {
     columns: ISmTableColumn[];
     data: any[];
+    dataStatus: 'LOADING' | 'EMPTY' | 'HAS_DATA' | 'No_Filter_Result';
 }
 export declare class CustomSmDynamicTableComponent {
     private sanitizer;

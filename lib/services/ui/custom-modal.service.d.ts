@@ -1,5 +1,6 @@
 import { ComponentRef, Type, InjectionToken } from '@angular/core';
 import { CustomModalComponent } from '../../components';
+import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export interface ModalRefApi<T = unknown> {
     close: (result?: T) => void;
@@ -18,9 +19,11 @@ export interface ModalRef<TChild> {
     afterClosed: Promise<void>;
 }
 export declare class CustomModalService {
+    private translate;
     private readonly applicationRef;
     private readonly environmentInjector;
     /** Open any component inside the modal (child must be standalone or resolvable). */
+    constructor(translate: TranslateService);
     openComponentInModal<TChild, TInputs = unknown>(childComponent: Type<TChild>, options?: ModalOpenOptions<TInputs>): Promise<ModalRef<TChild>>;
     private createHostElement;
     private createModal;

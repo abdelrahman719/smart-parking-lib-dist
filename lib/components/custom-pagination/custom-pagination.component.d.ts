@@ -25,6 +25,9 @@ export declare class CustomPaginationComponent {
     firstPage(): void;
     lastPage(): void;
     onPageSizeChange(event: Event): void;
+    private zeroBasedPage;
+    pageStart(): number;
+    pageEnd(): number;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomPaginationComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomPaginationComponent, "custom-pagination", never, { "maxVisiblePages": { "alias": "maxVisiblePages"; "required": false; }; "page": { "alias": "page"; "required": true; }; "pageSize": { "alias": "pageSize"; "required": false; }; "totalCount": { "alias": "totalCount"; "required": true; }; "baseValue": { "alias": "baseValue"; "required": false; }; "hideTotalCount": { "alias": "hideTotalCount"; "required": false; "isSignal": true; }; "showPageSize": { "alias": "showPageSize"; "required": false; }; }, { "pageChange": "pageChange"; }, never, never, true, never>;
 }

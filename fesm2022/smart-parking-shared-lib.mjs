@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ContentChild, Injector, ViewContainerRef, ViewChild, inject, HostBinding, ViewEncapsulation, model, output, ApplicationRef, EnvironmentInjector, createComponent, Pipe } from '@angular/core';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ContentChild, Injector, ViewContainerRef, ViewChild, inject, HostBinding, ViewEncapsulation, model, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent, Pipe } from '@angular/core';
 import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, take, firstValueFrom, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
@@ -3709,11 +3709,11 @@ class CustomConfirmPopupComponent {
         console.log('DONE', event);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomConfirmPopupComponent, deps: [{ token: i1$4.DomSanitizer }, { token: LoadingService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomConfirmPopupComponent, isStandalone: true, selector: "custom-confirm-popup", inputs: { message: { classPropertyName: "message", publicName: "message", isSignal: false, isRequired: true, transformFunction: null }, type: { classPropertyName: "type", publicName: "type", isSignal: false, isRequired: true, transformFunction: null }, modalIcon: { classPropertyName: "modalIcon", publicName: "modalIcon", isSignal: false, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: false, isRequired: false, transformFunction: null }, confirmButtonText: { classPropertyName: "confirmButtonText", publicName: "confirmButtonText", isSignal: false, isRequired: false, transformFunction: null }, cancelButtonText: { classPropertyName: "cancelButtonText", publicName: "cancelButtonText", isSignal: false, isRequired: false, transformFunction: null }, successMsg: { classPropertyName: "successMsg", publicName: "successMsg", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { confirmEvent: "confirmEvent", cancelEvent: "cancelEvent", extraEvent: "extraEvent", overlayClicked: "overlayClicked", closed: "closed" }, ngImport: i0, template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle | translate }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message | translate }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Yes\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomConfirmPopupComponent, isStandalone: true, selector: "custom-confirm-popup", inputs: { message: { classPropertyName: "message", publicName: "message", isSignal: false, isRequired: true, transformFunction: null }, type: { classPropertyName: "type", publicName: "type", isSignal: false, isRequired: true, transformFunction: null }, modalIcon: { classPropertyName: "modalIcon", publicName: "modalIcon", isSignal: false, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: false, isRequired: false, transformFunction: null }, confirmButtonText: { classPropertyName: "confirmButtonText", publicName: "confirmButtonText", isSignal: false, isRequired: false, transformFunction: null }, cancelButtonText: { classPropertyName: "cancelButtonText", publicName: "cancelButtonText", isSignal: false, isRequired: false, transformFunction: null }, successMsg: { classPropertyName: "successMsg", publicName: "successMsg", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { confirmEvent: "confirmEvent", cancelEvent: "cancelEvent", extraEvent: "extraEvent", overlayClicked: "overlayClicked", closed: "closed" }, ngImport: i0, template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle | translate }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message | translate }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Yes\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomConfirmPopupComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-confirm-popup', imports: [CommonModule, TranslateModule], template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle | translate }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message | translate }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Yes\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"] }]
+            args: [{ selector: 'custom-confirm-popup', imports: [CommonModule, TranslateModule], template: "<div class=\"modal-overlay flex flex-row justify-start align-starty\" *ngIf=\"isVisible\" (click)=\"onOverlayClick($event)\">\r\n\r\n<div class=\"flex flex-row\">\r\n\r\n  <div class=\"modal-content\">\r\n    <div class=\"modal-header\">\r\n      <div class=\"left-header\">\r\n        @if(modalIcon){\r\n\r\n        <img class=\"modal-icon\" [src]=\"modalIcon\" alt=\"\" />\r\n        }\r\n        <p class=\"modal-title\">{{ modalTitle | translate }}</p>\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"btn-close-icon\"\r\n        aria-label=\"Close\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"16\"\r\n          viewBox=\"0 0 16 16\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M1.00098 1L15 14.9991\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M0.999964 14.9991L14.999 1\"\r\n            stroke=\"#595959\"\r\n            stroke-width=\"1.5\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </svg>\r\n      </button>\r\n    </div>\r\n    <div class=\"modal-message\">\r\n      <p>{{ message | translate }}</p>\r\n    </div>\r\n    <div class=\"modal-actions\">\r\n      @if (type !=='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"cancelEvent.emit(); close()\"\r\n      >\r\n        Cancel\r\n      </button>\r\n      } @if(type==='delete'){\r\n      <button\r\n        class=\"smp-btn smp-btn-danger\"\r\n        (click)=\"checkSuccess()\"\r\n        [disabled]=\"this.loadingService.loading() && successPressed\"\r\n      >\r\n        Yes , Delete\r\n      </button>\r\n      }@else if (type==='info'){\r\n\r\n      <button\r\n        class=\"smp-btn smp-btn-white\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Ok\r\n      </button>\r\n      }@else if (type==='save'){\r\n           <button\r\n        class=\"smp-btn smp-btn-success\"\r\n        (click)=\"checkSuccess()\"\r\n      >\r\n        Yes\r\n      </button>\r\n        }\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n</div>\r\n", styles: [".modal-overlay{font-size:.9em;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000b3;display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto}.modal-content{position:relative;background:#fff;border-radius:1.2rem;min-width:52rem;max-width:90vw;padding:1.5rem;display:flex;align-items:start;flex-direction:column;height:max-content;max-height:90vh;overflow-y:auto;gap:1.5rem}.modal-main-content{height:100%;overflow-x:hidden;overflow-y:auto}.modal-header{display:flex;width:100%;align-items:center;justify-content:space-between;position:relative}.left-header{display:flex;justify-content:center;align-items:center}.modal-title{flex:1;font-size:2rem;font-weight:600;width:min-content;text-wrap:nowrap}.modal-icon{width:3.4rem;height:3.4rem;margin:1rem}.btn-close-icon{width:1.8rem;height:auto;cursor:pointer;margin:1rem}.btn-close-icon svg{width:100%!important;height:auto;display:block}.modal-message{font-size:1.6rem;color:#1f1f1f;font-weight:600;margin:0 1.4rem}.modal-actions{display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1rem;width:100%}.smp-btn{font-size:1.6rem;font-weight:600;padding:1rem 1.8rem}\n"] }]
         }], ctorParameters: () => [{ type: i1$4.DomSanitizer }, { type: LoadingService }], propDecorators: { message: [{
                 type: Input,
                 args: [{ required: true }]
@@ -5314,6 +5314,200 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 args: ['numberInputRef']
             }] } });
 
+class CustomOtpInputFormComponent {
+    parentForm;
+    controlName;
+    showError = false;
+    length = 5;
+    boxes;
+    valueArr = [];
+    sub;
+    // --- lifecycle ---
+    ngOnInit() {
+        this.valueArr = Array(this.length).fill('');
+        this.assertControl();
+        this.syncBoxesFromControl(this.control.value || '');
+        // reflect external writes (e.g., patchValue)
+        this.sub = this.control.valueChanges.subscribe((v) => this.syncBoxesFromControl(v ?? ''));
+    }
+    ngAfterViewInit() {
+        if (!this.control.disabled) {
+            setTimeout(() => this.focusBox(0), 500);
+        }
+    }
+    ngOnDestroy() {
+        this.sub?.unsubscribe();
+    }
+    // --- convenience ---
+    get control() {
+        return this.parentForm.get(this.controlName);
+    }
+    assertControl() {
+        const c = this.parentForm.get(this.controlName);
+        if (!c)
+            throw new Error(`[otp-input] control "${this.controlName}" not found in parentForm.`);
+    }
+    // --- DOM helpers ---
+    getBox(i) {
+        return this.boxes?.get(i)?.nativeElement ?? null;
+    }
+    focusBox(i) {
+        const el = this.getBox(i);
+        if (el)
+            el.focus();
+    }
+    selectBox(i) {
+        const el = this.getBox(i);
+        if (el)
+            el.select();
+    }
+    move(i, delta) {
+        const next = Math.min(this.length - 1, Math.max(0, i + delta));
+        this.focusBox(next);
+        return next;
+    }
+    // --- value helpers ---
+    emitFormValue() {
+        const val = this.valueArr.join('');
+        if (this.control.value !== val)
+            this.control.setValue(val, { emitEvent: true });
+    }
+    setAt(i, ch) {
+        this.valueArr[i] = ch;
+        this.emitFormValue();
+    }
+    clearAt(i) {
+        this.valueArr[i] = '';
+        this.emitFormValue();
+    }
+    syncBoxesFromControl(val) {
+        const normalized = (val ?? '').toString().slice(0, this.length);
+        this.valueArr = Array(this.length).fill('');
+        normalized
+            .split('')
+            .forEach((ch, i) => (this.valueArr[i] = /\d/.test(ch) ? ch : ''));
+        // reflect in DOM if view is ready
+        queueMicrotask(() => {
+            this.boxes?.forEach((r, i) => (r.nativeElement.value = this.valueArr[i] ?? ''));
+        });
+    }
+    // --- sanitation ---
+    onlyDigit(s) {
+        const m = s.match(/\d/);
+        return m ? m[0] : '';
+    }
+    extractDigits(s) {
+        return (s.match(/\d/g) ?? []).slice(0, this.length);
+    }
+    // --- paste/multi-fill ---
+    fillFromIndex(start, text) {
+        const digits = this.extractDigits(text);
+        if (!digits.length)
+            return;
+        let idx = start;
+        for (const d of digits) {
+            if (idx >= this.length)
+                break;
+            this.valueArr[idx] = d;
+            const el = this.getBox(idx);
+            if (el)
+                el.value = d;
+            idx++;
+        }
+        this.emitFormValue();
+        const nextEmpty = this.valueArr.findIndex((c, j) => j >= start && c === '');
+        if (nextEmpty !== -1) {
+            this.focusBox(nextEmpty);
+            this.selectBox(nextEmpty);
+        }
+        else {
+            const last = Math.min(this.length - 1, idx);
+            this.focusBox(last);
+        }
+    }
+    // --- event handlers ---
+    onInput(e, i) {
+        const input = e.target;
+        const raw = input.value;
+        if (raw.length > 1) {
+            this.fillFromIndex(i, raw); // handles IME/paste into single box
+            return;
+        }
+        const d = this.onlyDigit(raw);
+        input.value = d;
+        this.setAt(i, d);
+        if (d && i < this.length - 1) {
+            this.move(i, +1);
+            this.selectBox(i + 1);
+        }
+    }
+    onKeyDown(e, i) {
+        const input = e.target;
+        switch (e.key) {
+            case 'Backspace':
+                if (input.value) {
+                    input.value = '';
+                    this.clearAt(i);
+                }
+                else if (i > 0) {
+                    const prev = this.move(i, -1);
+                    const prevEl = this.getBox(prev);
+                    prevEl.value = '';
+                    this.clearAt(prev);
+                    this.selectBox(prev);
+                }
+                e.preventDefault();
+                break;
+            case 'Delete':
+                input.value = '';
+                this.clearAt(i);
+                e.preventDefault();
+                break;
+            case 'ArrowLeft':
+                this.move(i, -1);
+                e.preventDefault();
+                break;
+            case 'ArrowRight':
+                this.move(i, +1);
+                e.preventDefault();
+                break;
+            default:
+                if (e.key.length === 1 && !/\d/.test(e.key))
+                    e.preventDefault();
+                break;
+        }
+    }
+    onPaste(e, i) {
+        const text = e.clipboardData?.getData('text') ?? '';
+        if (!text)
+            return;
+        e.preventDefault();
+        this.fillFromIndex(i, text);
+    }
+    get indexes() {
+        return Array.from({ length: this.length }, (_, i) => i);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomOtpInputFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomOtpInputFormComponent, isStandalone: true, selector: "custom-otp-input-form", inputs: { parentForm: "parentForm", controlName: "controlName", showError: "showError", length: "length" }, viewQueries: [{ propertyName: "boxes", predicate: ["otpBox"], descendants: true }], ngImport: i0, template: "<!-- otp-input.component.html -->\r\n<div\r\n  class=\"otp-wrap\"\r\n  [class.disabled]=\"control.disabled\"\r\n\r\n  role=\"group\"\r\n  aria-label=\"One-time passcode input\"\r\n>\r\n  @for (i of indexes; track i; let idx = $index) {\r\n\r\n<div class=\"otp-cell\" >\r\n\r\n  <input\r\n  [class.has-error]=\"showError\"\r\n    #otpBox\r\n    class=\"otp-box\"\r\n    type=\"tel\"\r\n    inputmode=\"numeric\"\r\n    autocomplete=\"one-time-code\"\r\n     placeholder=\" \"\r\n    [disabled]=\"control.disabled\"\r\n    (input)=\"onInput($event, idx)\"\r\n    (keydown)=\"onKeyDown($event, idx)\"\r\n    (paste)=\"onPaste($event, idx)\"\r\n    [attr.aria-label]=\"'Digit ' + (idx + 1) + ' of ' + length\"\r\n  />\r\n</div>\r\n\r\n  }\r\n</div>\r\n", styles: [":host{display:block}.otp-wrap{display:flex;align-items:center;justify-content:center;gap:.9rem}.otp-box{text-align:center;width:5.4rem;height:5.4rem;font-size:2.4rem;border-radius:1.6rem;line-height:3.2rem;border:1px solid #D9D9D9;background:#fff;padding:.9rem 0;outline:none;transition:border-color .15s ease,box-shadow .15s ease}.otp-box:focus{border:1px solid #20c4b5;position:relative}.otp-box:not(:placeholder-shown){border-color:#1f1f1f;color:#1f1f1f}.otp-box.has-error:not(:placeholder-shown){background-color:#f8e9e8;border-color:#b42318;color:#b42318}.otp-cell{position:relative}.otp-cell:focus-within:after{content:\" \";position:absolute;top:80%;inset-inline-start:50%;transform:translate(-50%);height:2px;width:2.3rem;background:#20c4b5;animation:underlinePulse 1s ease-in-out infinite}@keyframes underlinePulse{0%{opacity:0}25%{opacity:.5}50%{opacity:1}75%{opacity:.5}to{opacity:0}}.disabled .otp-box{opacity:.6;cursor:not-allowed}\n"], dependencies: [{ kind: "ngmodule", type: ReactiveFormsModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomOtpInputFormComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-otp-input-form', imports: [ReactiveFormsModule, NgStyle], template: "<!-- otp-input.component.html -->\r\n<div\r\n  class=\"otp-wrap\"\r\n  [class.disabled]=\"control.disabled\"\r\n\r\n  role=\"group\"\r\n  aria-label=\"One-time passcode input\"\r\n>\r\n  @for (i of indexes; track i; let idx = $index) {\r\n\r\n<div class=\"otp-cell\" >\r\n\r\n  <input\r\n  [class.has-error]=\"showError\"\r\n    #otpBox\r\n    class=\"otp-box\"\r\n    type=\"tel\"\r\n    inputmode=\"numeric\"\r\n    autocomplete=\"one-time-code\"\r\n     placeholder=\" \"\r\n    [disabled]=\"control.disabled\"\r\n    (input)=\"onInput($event, idx)\"\r\n    (keydown)=\"onKeyDown($event, idx)\"\r\n    (paste)=\"onPaste($event, idx)\"\r\n    [attr.aria-label]=\"'Digit ' + (idx + 1) + ' of ' + length\"\r\n  />\r\n</div>\r\n\r\n  }\r\n</div>\r\n", styles: [":host{display:block}.otp-wrap{display:flex;align-items:center;justify-content:center;gap:.9rem}.otp-box{text-align:center;width:5.4rem;height:5.4rem;font-size:2.4rem;border-radius:1.6rem;line-height:3.2rem;border:1px solid #D9D9D9;background:#fff;padding:.9rem 0;outline:none;transition:border-color .15s ease,box-shadow .15s ease}.otp-box:focus{border:1px solid #20c4b5;position:relative}.otp-box:not(:placeholder-shown){border-color:#1f1f1f;color:#1f1f1f}.otp-box.has-error:not(:placeholder-shown){background-color:#f8e9e8;border-color:#b42318;color:#b42318}.otp-cell{position:relative}.otp-cell:focus-within:after{content:\" \";position:absolute;top:80%;inset-inline-start:50%;transform:translate(-50%);height:2px;width:2.3rem;background:#20c4b5;animation:underlinePulse 1s ease-in-out infinite}@keyframes underlinePulse{0%{opacity:0}25%{opacity:.5}50%{opacity:1}75%{opacity:.5}to{opacity:0}}.disabled .otp-box{opacity:.6;cursor:not-allowed}\n"] }]
+        }], propDecorators: { parentForm: [{
+                type: Input,
+                args: [{ required: true }]
+            }], controlName: [{
+                type: Input,
+                args: [{ required: true }]
+            }], showError: [{
+                type: Input
+            }], length: [{
+                type: Input
+            }], boxes: [{
+                type: ViewChildren,
+                args: ['otpBox']
+            }] } });
+
 // confirm-dialog.service.ts
 class ConfirmDialogService {
     applicationRef = inject(ApplicationRef);
@@ -6211,5 +6405,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

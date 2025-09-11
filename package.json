@@ -1,6 +1,6 @@
 {
   "name": "smart-parking-shared-lib",
-  "version": "0.0.0-watch+1757596421784",
+  "version": "0.0.0-watch+1757596982449",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",

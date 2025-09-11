@@ -5137,7 +5137,7 @@ class CustomPhoneFormComponent {
         this.isOpen = false;
         this.pushToForm();
         //  this.markTouched();
-        queueMicrotask(() => this.numberInputRef?.nativeElement?.focus());
+        //    queueMicrotask(() => this.numberInputRef?.nativeElement?.focus());
     }
     clearCountry(e) {
         e.stopPropagation();

@@ -12,6 +12,7 @@ export declare class CustomActionsDropdownComponent {
     horizontalDots: boolean;
     hasActionTemplate: boolean;
     expandSide: 'RIGHT' | 'LEFT';
+    expandDirection: 'TOP' | 'BOTTOM';
     isOpen: boolean;
     constructor(sanitizer: DomSanitizer);
     sanitizeSvg(svg: string): SafeHtml;
@@ -21,5 +22,5 @@ export declare class CustomActionsDropdownComponent {
         callback: (ctx: any) => void;
     }, event: MouseEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomActionsDropdownComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomActionsDropdownComponent, "custom-actions-dropdown", never, { "actions": { "alias": "actions"; "required": false; }; "context": { "alias": "context"; "required": false; }; "horizontalDots": { "alias": "horizontalDots"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; "expandSide": { "alias": "expandSide"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomActionsDropdownComponent, "custom-actions-dropdown", never, { "actions": { "alias": "actions"; "required": false; }; "context": { "alias": "context"; "required": false; }; "horizontalDots": { "alias": "horizontalDots"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; "expandSide": { "alias": "expandSide"; "required": false; }; "expandDirection": { "alias": "expandDirection"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

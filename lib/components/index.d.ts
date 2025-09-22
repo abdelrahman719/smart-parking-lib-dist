@@ -54,3 +54,5 @@ export * from './custom-main-pages-filter/custom-main-pages-filter.component';
 export * from './custom-sm-dynamic-table/custom-sm-dynamic-table.component';
 export * from './custom-phone-form/custom-phone-form.component';
 export * from './custom-otp-input-form/custom-otp-input-form.component';
+export * from './custom-counter-input/custom-counter-input.component';
+export * from './custom-smp-file-upload/custom-smp-file-upload.component';

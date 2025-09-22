@@ -18,10 +18,13 @@ export interface IPaginatedGlobalAuthResponse<T> {
 }
 export interface IGlobalAppsResponse<T> {
     timestamp: string;
+    httpStatus: string;
+    code: string;
     status: 'SUCCESS' | 'ERROR' | string;
-    message: string;
+    messageEn: string;
     messageAr: string;
     data: T;
+    count: number;
 }
 export interface IPaginatedGlobalAppsResponse<T> {
     timestamp: string;

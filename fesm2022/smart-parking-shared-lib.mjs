@@ -2467,9 +2467,9 @@ class CustomBreadcrumbComponent {
     saveBtnClicked = new EventEmitter();
     cancelBtnClicked = new EventEmitter();
     breadcrumbItemClicked = (item) => {
-        // route to url
-        // console.log('Breadcrumb item clicked:', item);
-        this.router.navigate([item.url]);
+        if (item.url) {
+            this.router.navigate([item.url]);
+        }
     };
     constructor(router) {
         this.router = router;

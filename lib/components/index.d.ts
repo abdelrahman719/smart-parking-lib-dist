@@ -56,3 +56,4 @@ export * from './custom-phone-form/custom-phone-form.component';
 export * from './custom-otp-input-form/custom-otp-input-form.component';
 export * from './custom-counter-input/custom-counter-input.component';
 export * from './custom-smp-file-upload/custom-smp-file-upload.component';
+export * from './custom-toast-viewport/custom-toast-viewport.component';

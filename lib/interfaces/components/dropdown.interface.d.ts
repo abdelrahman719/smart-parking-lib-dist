@@ -2,6 +2,7 @@ export interface IDropdownOption {
     id: number | string;
     nameAr: string;
     nameEn: string;
+    serialNumber?: string;
     enumValue?: string;
 }
 export interface ITabDropdownOption extends IDropdownOption {

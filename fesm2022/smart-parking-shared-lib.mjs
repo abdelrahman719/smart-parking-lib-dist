@@ -375,6 +375,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                     args: [API_BASE_URL$1]
                 }] }] });
 
+let __toastIdCounter = 0;
+function genId() {
+    __toastIdCounter = (__toastIdCounter + 1) % 1_000_000;
+    return (Date.now().toString(36) +
+        '-' +
+        __toastIdCounter.toString(36).padStart(4, '0') +
+        '-' +
+        Math.random().toString(36).slice(2, 8));
+}
 class ToastService {
     message = signal('Default message');
     type = signal('info');
@@ -386,7 +395,7 @@ class ToastService {
     leaveMs = 200;
     toast(message, position, ToastType = 'info', duration) {
         const item = {
-            id: crypto.randomUUID(),
+            id: genId(),
             message,
             position,
             type: ToastType,

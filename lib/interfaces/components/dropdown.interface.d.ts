@@ -4,6 +4,7 @@ export interface IDropdownOption {
     nameEn: string;
     serialNumber?: string;
     enumValue?: string;
+    iconPath?: string;
 }
 export interface ITabDropdownOption extends IDropdownOption {
     disabled: boolean;

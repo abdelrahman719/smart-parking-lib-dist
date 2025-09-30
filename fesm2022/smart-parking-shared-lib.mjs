@@ -6767,7 +6767,7 @@ const ErrorInterceptor = (req, next) => {
                 }
             case 401:
                 // access token expired / au auth
-                //   authService.handleRefreshToken();
+                authService.handleRefreshToken();
                 //  authContextService.clearData();
                 // window.dispatchEvent(new CustomEvent('auth-logout'));
                 // router.navigate(['/auth/login']);

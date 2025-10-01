@@ -6918,7 +6918,7 @@ function toDate(input) {
     if (input instanceof Date)
         return isNaN(input.getTime()) ? null : input;
     const d = new Date(input);
-    return isNaN(d.getTime()) ? null : d;
+    return isNaN(d.getTime()) ? null : new Date(d.getTime() - d.getTimezoneOffset() * 60000);
 }
 function plural(n, unit) {
     return n === 1 ? `${n} ${unit}` : `${n} ${unit}s`;

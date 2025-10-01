@@ -1,14 +1,14 @@
 import { EventEmitter } from '@angular/core';
 import { CustomFileUploadComponent } from '../custom-file-upload/custom-file-upload.component';
-import { ExistingResolvedItem } from '../../interfaces';
+import { ISmpAttachmentAfterResolving } from '../../interfaces';
 import * as i0 from "@angular/core";
 export declare class CustomSmpFileUploadComponent extends CustomFileUploadComponent {
     editMode: boolean;
-    existingItems: ExistingResolvedItem[];
+    existingItems: ISmpAttachmentAfterResolving[];
     removedExistingIds: EventEmitter<string[]>;
     private removedExisting;
     isEditMode(): boolean;
-    existingPreviewSrc(item: ExistingResolvedItem): any;
+    existingPreviewSrc(item: ISmpAttachmentAfterResolving): any;
     removeExistingAt(index: number): void;
     private emitRemovedExisting;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmpFileUploadComponent, never>;

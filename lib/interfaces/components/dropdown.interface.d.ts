@@ -7,7 +7,9 @@ export interface IDropdownOption {
     iconPath?: string;
     latitude?: number;
     longitude?: number;
+    status?: StatusType;
 }
+export type StatusType = 'ACTIVE' | 'INACTIVE';
 export interface ITabDropdownOption extends IDropdownOption {
     disabled: boolean;
 }

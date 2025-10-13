@@ -1855,7 +1855,7 @@ class CustomInputFormComponent {
         }
     }
     preventInvalidNumberInput(event) {
-        if (this.type === 'number' && this.numberType === 'currency') {
+        if (this.type === 'number' && (this.numberType === 'currency' || this.numberType === 'time')) {
             const invalidKeys = ['-', '+', 'e', 'E'];
             if (invalidKeys.includes(event.key)) {
                 event.preventDefault();

@@ -9,10 +9,11 @@ interface StyleDef {
 export declare class CustomStatusLabelComponent {
     status: string;
     uppercase: boolean;
+    extraText: string;
     private normalize;
     get key(): StatusKey;
     get s(): StyleDef;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomStatusLabelComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomStatusLabelComponent, "custom-status-label", never, { "status": { "alias": "status"; "required": true; }; "uppercase": { "alias": "uppercase"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomStatusLabelComponent, "custom-status-label", never, { "status": { "alias": "status"; "required": true; }; "uppercase": { "alias": "uppercase"; "required": false; }; "extraText": { "alias": "extraText"; "required": false; }; }, {}, never, never, true, never>;
 }
 export {};

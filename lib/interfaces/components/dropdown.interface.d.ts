@@ -9,6 +9,13 @@ export interface IDropdownOption {
     longitude?: number;
     status?: StatusType;
 }
+export interface IUserLookup {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+}
 export type StatusType = 'ACTIVE' | 'INACTIVE';
 export interface ITabDropdownOption extends IDropdownOption {
     disabled: boolean;

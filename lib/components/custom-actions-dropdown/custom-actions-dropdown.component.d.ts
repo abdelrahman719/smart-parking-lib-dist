@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { ElementRef, Renderer2, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as i0 from "@angular/core";
 export interface IActions {
@@ -14,11 +14,13 @@ export declare class CustomActionsDropdownComponent {
     context: any;
     horizontalDots: boolean;
     hasActionTemplate: boolean;
+    injectedTrigger: boolean;
     expandSide: 'RIGHT' | 'LEFT';
     expandDirection: 'TOP' | 'BOTTOM';
     actionsPopup?: ElementRef<HTMLDivElement>;
     triggerWrapper?: ElementRef<HTMLDivElement>;
     actionDropdownContainer?: ElementRef<HTMLDivElement>;
+    triggerTemplate: TemplateRef<any> | null;
     private isAppendedToBody;
     isOpen: import("@angular/core").WritableSignal<boolean>;
     showAnimation: import("@angular/core").WritableSignal<boolean>;
@@ -34,5 +36,5 @@ export declare class CustomActionsDropdownComponent {
     }, event: MouseEvent): void;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomActionsDropdownComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomActionsDropdownComponent, "custom-actions-dropdown", never, { "actions": { "alias": "actions"; "required": false; }; "context": { "alias": "context"; "required": false; }; "horizontalDots": { "alias": "horizontalDots"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; "expandSide": { "alias": "expandSide"; "required": false; }; "expandDirection": { "alias": "expandDirection"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomActionsDropdownComponent, "custom-actions-dropdown", never, { "actions": { "alias": "actions"; "required": false; }; "context": { "alias": "context"; "required": false; }; "horizontalDots": { "alias": "horizontalDots"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; "injectedTrigger": { "alias": "injectedTrigger"; "required": false; }; "expandSide": { "alias": "expandSide"; "required": false; }; "expandDirection": { "alias": "expandDirection"; "required": false; }; }, {}, ["triggerTemplate"], ["*"], true, never>;
 }

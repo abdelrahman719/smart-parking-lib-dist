@@ -1,4 +1,4 @@
-import { IDropdownOption } from '../../interfaces';
+import { IDropdownOption, IUserLookup } from '../../interfaces';
 import * as i0 from "@angular/core";
 export interface FilterChange {
     searchText: string;
@@ -16,6 +16,13 @@ export interface FilterConfigItem {
     showClear?: boolean;
     dropdownContainerClass?: string;
     dropdownOptionsClass?: string;
+    isUserMode?: boolean;
+    userOptions?: IUserLookup[];
+}
+interface FilterState {
+    searchText: string;
+    selectedIdsLegacy: any[];
+    selectionsMap: Record<string, any>;
 }
 export declare class CustomMainPagesFilterComponent {
     dropdownOptions: import("@angular/core").InputSignal<IDropdownOption[]>;
@@ -23,12 +30,22 @@ export declare class CustomMainPagesFilterComponent {
     dropdownPlaceholder: import("@angular/core").InputSignal<string>;
     defaultBehaviorFlag: import("@angular/core").InputSignal<boolean>;
     configs: import("@angular/core").InputSignal<FilterConfigItem[]>;
+    moreConfigs: import("@angular/core").InputSignal<FilterConfigItem[]>;
+    showMore: import("@angular/core").InputSignal<boolean>;
+    externalFiltersHasValue: import("@angular/core").InputSignal<boolean>;
+    hasFiltered: import("@angular/core").InputSignal<boolean>;
     filterChange: import("@angular/core").OutputEmitterRef<FilterChange>;
-    searchText: string;
+    filterReset: import("@angular/core").OutputEmitterRef<boolean>;
+    searchText: import("@angular/core").WritableSignal<string>;
     private selectedIdsLegacy;
-    selectionsMap: import("@angular/core").WritableSignal<Record<string, any[]>>;
+    selectionsMap: import("@angular/core").WritableSignal<Record<string, any>>;
     private dropdownChange$;
     private searchChange$;
+    initialState: import("@angular/core").WritableSignal<FilterState>;
+    hasAnyFilterValue: import("@angular/core").Signal<boolean>;
+    hasChangedFromInitial: import("@angular/core").Signal<boolean>;
+    shouldDisableApply: import("@angular/core").Signal<boolean>;
+    shouldDisableReset: import("@angular/core").Signal<boolean>;
     constructor();
     ngOnInit(): void;
     onSearch(value: string): void;
@@ -37,10 +54,15 @@ export declare class CustomMainPagesFilterComponent {
     onConfigOneSelectionChange(key: string, obj: any): void;
     private initializeSelectionsFromConfigs;
     private setSelectionForKey;
-    private setOneSelectionForKey;
     private buildLegacyPayload;
     private buildConfigPayload;
-    private emitChange;
+    emitChange(): void;
+    resetFilters(): void;
+    private captureInitialState;
+    private hasValue;
+    private valuesEqual;
+    private arraysEqual;
+    private deepClone;
     getPlaceholder(c: FilterConfigItem): string;
     /** Normalize UI flags */
     getEnableFilter(c: FilterConfigItem): boolean;
@@ -50,5 +72,6 @@ export declare class CustomMainPagesFilterComponent {
     getOptionsClass(c: FilterConfigItem): string;
     getSelectedForKey(key: string): any[];
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMainPagesFilterComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesFilterComponent, "custom-main-pages-filter", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesFilterComponent, "custom-main-pages-filter", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "moreConfigs": { "alias": "moreConfigs"; "required": false; "isSignal": true; }; "showMore": { "alias": "showMore"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, ["[extraFilters]", "[extraFiltersMore]"], true, never>;
 }
+export {};

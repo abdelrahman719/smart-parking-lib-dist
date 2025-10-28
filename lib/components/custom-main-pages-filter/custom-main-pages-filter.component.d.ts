@@ -28,10 +28,12 @@ export declare class CustomMainPagesFilterComponent {
     dropdownOptions: import("@angular/core").InputSignal<IDropdownOption[]>;
     dropdownSelectedValues: import("@angular/core").InputSignal<any[]>;
     dropdownPlaceholder: import("@angular/core").InputSignal<string>;
+    searchInputPlaceholder: import("@angular/core").InputSignal<string>;
     defaultBehaviorFlag: import("@angular/core").InputSignal<boolean>;
     configs: import("@angular/core").InputSignal<FilterConfigItem[]>;
     moreConfigs: import("@angular/core").InputSignal<FilterConfigItem[]>;
     showMore: import("@angular/core").InputSignal<boolean>;
+    validateNumber: import("@angular/core").InputSignal<boolean>;
     externalFiltersHasValue: import("@angular/core").InputSignal<boolean>;
     hasFiltered: import("@angular/core").InputSignal<boolean>;
     filterChange: import("@angular/core").OutputEmitterRef<FilterChange>;
@@ -72,6 +74,6 @@ export declare class CustomMainPagesFilterComponent {
     getOptionsClass(c: FilterConfigItem): string;
     getSelectedForKey(key: string): any[];
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMainPagesFilterComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesFilterComponent, "custom-main-pages-filter", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "moreConfigs": { "alias": "moreConfigs"; "required": false; "isSignal": true; }; "showMore": { "alias": "showMore"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, ["[extraFilters]", "[extraFiltersMore]"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesFilterComponent, "custom-main-pages-filter", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "searchInputPlaceholder": { "alias": "searchInputPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "moreConfigs": { "alias": "moreConfigs"; "required": false; "isSignal": true; }; "showMore": { "alias": "showMore"; "required": false; "isSignal": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, ["[extraFilters]", "[extraFiltersMore]"], true, never>;
 }
 export {};

@@ -6584,18 +6584,57 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
         }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
 
 // shared-lib/translation.service.ts
+var Lang;
+(function (Lang) {
+    Lang["ar"] = "ar";
+    Lang["en"] = "en";
+})(Lang || (Lang = {}));
 class TranslationService {
+    rtl = true;
     translate = inject(TranslateService);
-    initialize(defaultLang = 'en') {
-        this.translate.setDefaultLang(defaultLang);
-        const browserLang = this.translate.getBrowserLang();
-        this.translate.use(browserLang?.match(/en|es/) ? browserLang : defaultLang);
+    constructor() { }
+    setDefaultLang(defaultLang = Lang.en) {
+        const lang = this.localStorageLang
+            ? this.localStorageLang
+            : defaultLang;
+        this.onChangeLang(lang);
     }
-    changeLanguage(lang) {
+    changeLang(lang) {
+        if (!lang)
+            return;
         this.translate.use(lang);
+        this.setDirection(lang);
+        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
+        this.localStorageLang = lang;
     }
-    get(key, params) {
-        return this.translate.instant(key, params);
+    switchLanguage() {
+        if (this.translate.currentLang === Lang.ar)
+            this.onChangeLang(Lang.en);
+        else
+            this.onChangeLang(Lang.ar);
+    }
+    get localStorageLang() {
+        return localStorage.getItem('lang') || '';
+    }
+    set localStorageLang(lang) {
+        localStorage.setItem('lang', lang);
+    }
+    onChangeLang(lang) {
+        if (!lang)
+            return;
+        this.translate.use(lang);
+        this.setDirection(lang);
+        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
+        this.localStorageLang = lang;
+    }
+    setDirection(lang) {
+        if (lang === Lang.en)
+            this.rtl = false;
+        else
+            this.rtl = true;
+        document
+            .getElementsByTagName('html')[0]
+            .setAttribute('dir', lang === Lang.en ? 'ltr' : 'rtl');
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, providedIn: 'root' });
@@ -6603,7 +6642,7 @@ class TranslationService {
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: TranslationService, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
-        }] });
+        }], ctorParameters: () => [] });
 
 class SidenavService {
     _isCollapsed = signal(false);
@@ -7351,5 +7390,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

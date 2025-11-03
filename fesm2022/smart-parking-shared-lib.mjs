@@ -7338,9 +7338,9 @@ const PermissionGuard = (route, state) => {
     const toastService = inject(ToastService);
     const hasPermission = authService.hasCategory(route);
     if (hasPermission) {
-        setTimeout(() => {
-            toastService.toast(`You  have permission`, 'top-center', 'success', 2000);
-        }, 500);
+        //   setTimeout(()=>{
+        //   toastService.toast(`You  have permission`, 'top-center', 'success', 2000);
+        // },500)
         return true;
     }
     else {

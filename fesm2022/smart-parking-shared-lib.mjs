@@ -516,7 +516,7 @@ class AuthService {
             permissions: [
                 PERMISSIONS.PARKING_ZONE_VIEW,
                 PERMISSIONS.PARKING_ZONE_CREATE,
-                //  PERMISSIONS.PARKING_ZONE_UPDATE,
+                PERMISSIONS.PARKING_ZONE_UPDATE,
                 PERMISSIONS.PARKING_ZONE_DELETE,
             ],
         };

@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ContentChild, Injector, ViewContainerRef, ViewChild, inject, HostBinding, ViewEncapsulation, ElementRef, model, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent, Pipe } from '@angular/core';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, Pipe, inject, ContentChild, Injector, ViewContainerRef, ViewChild, HostBinding, ViewEncapsulation, ElementRef, model, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent } from '@angular/core';
 import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, take, firstValueFrom, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
@@ -59,83 +59,44 @@ var Roles;
     Roles["SUPERVISOR"] = "SUPERVISOR";
     Roles["OPERATOR"] = "OPERATOR";
 })(Roles || (Roles = {}));
-var Types;
-(function (Types) {
-    Types["ADMIN"] = "ADMIN";
-    Types["PLANNER"] = "PLANNER";
-    Types["SUPERVISOR"] = "SUPERVISOR";
-    Types["OPERATOR"] = "OPERATOR";
-})(Types || (Types = {}));
-var Resources;
-(function (Resources) {
-    Resources["USER"] = "user";
-    Resources["TASK"] = "task";
-    Resources["PLAN"] = "plan";
-    Resources["VEHICLE"] = "vehicle";
-    Resources["EQUIPMENT"] = "Equipment";
-    // TODO: Check if needed
-    Resources["MOBILE_TASK"] = "mobile:task";
-    Resources["MOBILE_USER"] = "mobile:user";
-    Resources["MOBILE_LANDING"] = "mobile:landing";
-})(Resources || (Resources = {}));
-var actionPermission;
-(function (actionPermission) {
-    actionPermission["VIEW_DETAILS"] = "view-details";
-    actionPermission["CREATE"] = "create";
-    actionPermission["VIEW_LIST"] = "view-list";
-    actionPermission["UPDATE"] = "update";
-    actionPermission["DELETE"] = "delete";
-    actionPermission["START"] = "start";
-    actionPermission["PAUSE"] = "pause";
-    actionPermission["RESUME"] = "resume";
-    actionPermission["STOP"] = "stop";
-    actionPermission["VIEW_PROFILE"] = "view-profile";
-    actionPermission["VIEW_LANDING"] = "view-landing";
-})(actionPermission || (actionPermission = {}));
-var Permissions;
-(function (Permissions) {
-    // all user access
-    Permissions["all"] = "all";
-    // User
-    Permissions["UserReadSelf"] = "user:read:self";
-    Permissions["UserViewProfileSelf"] = "user:view-profile:self";
-    Permissions["UserViewListOrganization"] = "user:view-list:ORGANIZATION";
-    Permissions["UserCreateOrganization"] = "user:create:ORGANIZATION";
-    // team
-    Permissions["teamViewListORGANIZATION"] = "team:view-list:ORGANIZATION";
-    Permissions["teamCreateORGANIZATION"] = "team:create:ORGANIZATION";
-    // zone
-    Permissions["zoneCreateTeam"] = "zone:create:team";
-    Permissions["zoneViewListTeam"] = "zone:view-list:team";
-    Permissions["zoneCreateBulkTeam"] = "zone:create-bulk:team";
-    // Task
-    Permissions["TaskCreateTeam"] = "task:create:team";
-    Permissions["TaskViewListSelf"] = "task:view-list:self";
-    Permissions["TaskViewDetailsSelf"] = "task:view-details:self";
-    // Plan
-    Permissions["PlanCreateDraftTeam"] = "plan:create-draft:team";
-    Permissions["PlanCreatePublishTeam"] = "plan:create-publish:team";
-    Permissions["PlanViewGanttChartSelf"] = "plan:view-gantt-chart:self";
-    Permissions["PlanViewDetailsSelf"] = "plan:view-details:self";
-    Permissions["PlanUpdateSelf"] = "plan:update:self";
-    // Vehicle
-    Permissions["VehicleCreateOrganization"] = "vehicle:create:organization";
-    Permissions["VehicleViewListOrganization"] = "vehicle:view-list:organization";
-    // Equipment
-    Permissions["EquipmentCreateOrganization"] = "equipment:create:organization";
-    Permissions["EquipmentViewListOrganization"] = "equipment:view-list:organization";
-    // Mobile User
-    Permissions["MobileUserViewProfileSelf"] = "mobile:user:view-profile:self";
-    // Mobile Landing
-    Permissions["MobileLandingViewLandingSelf"] = "mobile:landing:view-landing:self";
-    // Mobile Task
-    Permissions["MobileTaskViewListSelf"] = "mobile:task:view-list:self";
-    Permissions["MobileTaskViewDetailsSelf"] = "mobile:task:view-details:self";
-    Permissions["MobileTaskStartSelf"] = "mobile:task:start:self";
-    Permissions["MobileTaskPauseSelf"] = "mobile:task:pause:self";
-    Permissions["MobileTaskResumeSelf"] = "mobile:task:resume:self";
-    Permissions["MobileTaskStopSelf"] = "mobile:task:stop:self";
-})(Permissions || (Permissions = {}));
+// export enum Types {
+//   ADMIN = 'ADMIN',
+//   PLANNER = 'PLANNER',
+//   SUPERVISOR = 'SUPERVISOR',
+//   OPERATOR = 'OPERATOR',
+// }
+// export enum Resources { // tab permissions
+//   USER = 'user',
+//   TASK = 'task',
+//   PLAN = 'plan',
+//   VEHICLE = 'vehicle',
+//   EQUIPMENT = 'Equipment',
+//   MOBILE_TASK = 'mobile:task',
+//   MOBILE_USER = 'mobile:user',
+//   MOBILE_LANDING = 'mobile:landing',
+// }
+// export enum actionPermission {
+//   VIEW_DETAILS = 'view-details',
+//   CREATE = 'create',
+//   VIEW_LIST = 'view-list',
+//   UPDATE = 'update',
+//   DELETE = 'delete',
+//   START = 'start',
+//   PAUSE = 'pause',
+//   RESUME = 'resume',
+//   STOP = 'stop',
+//   VIEW_PROFILE = 'view-profile',
+//   VIEW_LANDING = 'view-landing',
+// }
+var PERMISSIONS;
+(function (PERMISSIONS) {
+    PERMISSIONS["all"] = "all";
+    PERMISSIONS["PARKING_ZONE_VIEW"] = "zone:view";
+    PERMISSIONS["PARKING_ZONE_CREATE"] = "zone:create";
+    PERMISSIONS["PARKING_ZONE_UPDATE"] = "zone:update";
+    PERMISSIONS["PARKING_ZONE_DELETE"] = "zone:delete";
+    PERMISSIONS["VIEW_POLICIES"] = "poilcies:view";
+})(PERMISSIONS || (PERMISSIONS = {}));
 
 var ComponentFormErrorConstant;
 (function (ComponentFormErrorConstant) {
@@ -477,7 +438,7 @@ class AuthService {
     storageService;
     toastService;
     Roles = Roles;
-    Permissions = Permissions;
+    PERMISSIONS = PERMISSIONS;
     constructor(authContextService, authBeService, router, storageService, toastService) {
         this.authContextService = authContextService;
         this.authBeService = authBeService;
@@ -534,45 +495,34 @@ class AuthService {
         });
     }
     handlePermissionConfig() {
-        this.authBeService.validateToken().subscribe({
-            next: (res) => {
-                if (res.success) {
-                    this.authContextService.savePermissionsAndRoles(res.data);
-                }
-                else {
-                    this.toastService.toast(`You do not have permission to perform this action`, 'top-center', 'error', 2000);
-                }
-            },
-        });
-        // const dummySessionData: ISessionData = {
-        //   roles: [Roles.ADMIN],
-        //   permissions: [
-        //     Permissions.UserReadSelf,
-        //     Permissions.VehicleCreateOrganization,
-        //     Permissions.EquipmentViewListOrganization,
-        //     Permissions.MobileTaskStartSelf,
-        //     Permissions.MobileTaskResumeSelf,
-        //     Permissions.MobileTaskViewListSelf,
-        //     Permissions.TaskViewListSelf,
-        //     Permissions.MobileUserViewProfileSelf,
-        //     Permissions.PlanCreatePublishTeam,
-        //     Permissions.TaskCreateTeam,
-        //     Permissions.EquipmentCreateOrganization,
-        //     Permissions.PlanCreateDraftTeam,
-        //     Permissions.MobileTaskPauseSelf,
-        //     Permissions.MobileLandingViewLandingSelf,
-        //     Permissions.PlanUpdateSelf,
-        //     Permissions.MobileTaskStopSelf,
-        //     Permissions.VehicleViewListOrganization,
-        //     Permissions.MobileTaskViewDetailsSelf,
-        //     Permissions.TaskViewDetailsSelf,
-        //     Permissions.PlanViewGanttChartSelf,
-        //     Permissions.PlanViewDetailsSelf,
-        //   ],
-        // };
-        //     setTimeout(()=>{
-        //       this.authContextService.savePermissionsAndRoles(  dummySessionData as ISessionData)
-        //     },500)
+        // this.authBeService.validateToken().subscribe({
+        //   next: (res) => {
+        //     if (res.success) {
+        //       this.authContextService.savePermissionsAndRoles(
+        //         res.data as ISessionData
+        //       );
+        //     } else {
+        //       this.toastService.toast(
+        //         `You do not have permission to perform this action`,
+        //         'top-center',
+        //         'error',
+        //         2000
+        //       );
+        //     }
+        //   },
+        // });
+        const dummySessionData = {
+            roles: [Roles.ADMIN],
+            permissions: [
+                PERMISSIONS.PARKING_ZONE_VIEW,
+                PERMISSIONS.PARKING_ZONE_CREATE,
+                //  PERMISSIONS.PARKING_ZONE_UPDATE,
+                PERMISSIONS.PARKING_ZONE_DELETE,
+            ],
+        };
+        setTimeout(() => {
+            this.authContextService.savePermissionsAndRoles(dummySessionData);
+        }, 500);
     }
     // Get Auth Data
     isLoggedIn() {
@@ -1546,6 +1496,88 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 args: [{ required: true }]
             }] } });
 
+const SECOND = 1_000;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+function toDate(input) {
+    if (!input)
+        return null;
+    if (input instanceof Date)
+        return isNaN(input.getTime()) ? null : input;
+    const d = new Date(input);
+    return isNaN(d.getTime()) ? null : new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+}
+function plural(n, unit) {
+    return n === 1 ? `${n} ${unit}` : `${n} ${unit}s`;
+}
+function formatAbsolute(date, locale = 'en') {
+    const day = String(date.getDate()).padStart(2, '0');
+    const mon = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date);
+    const year = date.getFullYear();
+    return `${day} ${mon}, ${year}`;
+}
+/**
+ * Main formatter
+ */
+function formatActivityTime(input, opts) {
+    const date = toDate(input);
+    if (!date)
+        return '-';
+    const now = opts?.now ?? new Date();
+    const diffMs = now.getTime() - date.getTime();
+    // Future timestamps: show absolute date
+    if (diffMs < 0)
+        return formatAbsolute(date, opts?.locale);
+    const activeNowMs = (opts?.activeNowSeconds ?? 60) * SECOND;
+    if (diffMs <= activeNowMs)
+        return 'active now';
+    if (diffMs < HOUR) {
+        const mins = Math.floor(diffMs / MINUTE);
+        return `${plural(mins, 'min')} ago`;
+    }
+    if (diffMs < DAY) {
+        const hrs = Math.floor(diffMs / HOUR);
+        return `${plural(hrs, 'hr')} ago`;
+    }
+    return formatAbsolute(date, opts?.locale);
+}
+
+class ActivityTimePipe {
+    transform(value, options) {
+        return formatActivityTime(value, options);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, deps: [], target: i0.ɵɵFactoryTarget.Pipe });
+    static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, isStandalone: true, name: "activityTime" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, decorators: [{
+            type: Pipe,
+            args: [{
+                    name: 'activityTime'
+                }]
+        }] });
+
+class LocalizePipe {
+    translate;
+    constructor(translate) {
+        this.translate = translate;
+    }
+    transform(value, field, lang) {
+        if (!value)
+            return '';
+        const suffix = lang.charAt(0).toUpperCase() + lang.slice(1);
+        return value[`${field}${suffix}`] || '';
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LocalizePipe, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Pipe });
+    static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.14", ngImport: i0, type: LocalizePipe, isStandalone: true, name: "localize" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: LocalizePipe, decorators: [{
+            type: Pipe,
+            args: [{
+                    name: 'localize',
+                }]
+        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
+
 class CustomDropdownComponent {
     label;
     labelClass = '';
@@ -1567,6 +1599,7 @@ class CustomDropdownComponent {
     filteredOptions = [];
     filterText = '';
     filteredUserOptions = [];
+    translationService = inject(TranslationService);
     ngOnInit() {
         if (this.isUserMode) {
             this.filteredUserOptions = [...this.userOptions];
@@ -1641,11 +1674,11 @@ class CustomDropdownComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomDropdownComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomDropdownComponent, isStandalone: true, selector: "custom-dropdown", inputs: { label: "label", labelClass: "labelClass", dropdownOptionsClass: "dropdownOptionsClass", dropdownHeaderClass: "dropdownHeaderClass", selectedClass: "selectedClass", dropdownContainerClass: "dropdownContainerClass", placeholder: "placeholder", enableFilter: "enableFilter", showClear: "showClear", options: "options", name: "name", value: "value", height: "height", userOptions: "userOptions", isUserMode: "isUserMode", reset: "reset" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<!-- custom-dropdown.component.html -->\r\n<div style=\"width: 100%; height: auto\" [ngStyle]=\"{ '--height': height }\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <span [class]=\"'selected-value ' + selectedClass\">\r\n        @if(isUserMode) {\r\n        {{\r\n          selectedUser\r\n            ? selectedUser.firstName + \" \" + selectedUser.lastName\r\n            : placeholder\r\n        }}\r\n        } @else {\r\n        {{ selectedOption?.nameEn || placeholder }}\r\n        }\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if((selectedOption || selectedUser) && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          width=\"8\"\r\n          height=\"6\"\r\n          viewBox=\"0 0 8 6\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M0.860142 1.10988C0.985051 0.985709 1.15402 0.916015 1.33014 0.916015C1.50627 0.916015 1.67523 0.985709 1.80014 1.10988L4.19348 3.46988L6.55348 1.10988C6.67838 0.98571 6.84735 0.916016 7.02348 0.916016C7.1996 0.916016 7.36857 0.98571 7.49347 1.10988C7.55596 1.17185 7.60556 1.24559 7.6394 1.32683C7.67325 1.40807 7.69067 1.4952 7.69067 1.58321C7.69067 1.67122 7.67325 1.75836 7.6394 1.8396C7.60556 1.92083 7.55596 1.99457 7.49347 2.05654L4.66681 4.88321C4.60483 4.9457 4.5311 4.99529 4.44986 5.02914C4.36862 5.06298 4.28148 5.08041 4.19347 5.08041C4.10547 5.08041 4.01833 5.06298 3.93709 5.02914C3.85585 4.99529 3.78212 4.9457 3.72014 4.88321L0.860142 2.05654C0.797656 1.99457 0.748061 1.92083 0.714215 1.83959C0.680369 1.75836 0.662943 1.67122 0.662943 1.58321C0.662943 1.4952 0.680369 1.40807 0.714215 1.32683C0.748061 1.24559 0.797657 1.17185 0.860142 1.10988Z\"\r\n            fill=\"#4B4F55\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Search\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n        <div class=\"search-icon-container\" style=\"width: 1.6rem; height: 1.6rem;\">\r\n          <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<g opacity=\"0.4\">\r\n<path d=\"M7.33325 0.832031C3.74351 0.832031 0.833428 3.74233 0.833252 7.33203C0.833252 10.9219 3.7434 13.832 7.33325 13.832C8.9482 13.832 10.4241 13.2415 11.5608 12.2666L14.3127 15.0195C14.508 15.2146 14.8245 15.2146 15.0198 15.0195C15.215 14.8243 15.2149 14.5078 15.0198 14.3125L12.2688 11.5605C13.2435 10.4238 13.8333 8.94682 13.8333 7.33203C13.8331 3.74242 10.9229 0.832176 7.33325 0.832031ZM7.33325 1.83203C10.3706 1.83218 12.8331 4.2947 12.8333 7.33203C12.8333 10.3695 10.3707 12.8319 7.33325 12.832C4.29569 12.832 1.83325 10.3696 1.83325 7.33203C1.83343 4.29461 4.29579 1.83203 7.33325 1.83203Z\" fill=\"#1F1F1F\"/>\r\n</g>\r\n</svg>\r\n\r\n        </div>\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @if(!isUserMode){ @for(option of filteredOptions; track option.id){\r\n        <div\r\n          class=\"dropdown-option\"\r\n          [class.selected]=\"option.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(option)\"\r\n        >\r\n          {{ option.nameEn }}\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        } } @if(isUserMode){ @for(user of filteredUserOptions; track user.id){\r\n        <div\r\n          class=\"dropdown-option user-option-container\"\r\n          [class.selected]=\"user.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(user)\"\r\n        >\r\n          <div class=\"user-img\">\r\n            <img style=\"width: 100%; height: 100%;\"\r\n            src=\"https://cdn.iconscout.com/icon/free/png-256/free-avatar-icon-svg-download-png-456318.png?f=webp\" alt=\"\">\r\n\r\n          </div>\r\n          <div class=\"user-info\">\r\n            <p style=\"font-size: 1.4em;color: #1f1f1f;text-wrap: nowrap;\">{{ user.firstName }} {{ user.lastName }}</p>\r\n            <p style=\"font-size: 1.2em;color: #5f6268;text-wrap: nowrap;\">\r\n              {{ user.email }}\r\n            </p>\r\n            <p style=\"font-size: 1.2em;color: #602650;\">\r\n              {{ user.phoneNumber }}\r\n            </p>\r\n          </div>\r\n        </div>\r\n        } @if(filteredUserOptions.length === 0){\r\n        <div class=\"no-options\">No users found</div>\r\n        } }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3);margin-inline-start:.5em}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;width:1.5rem;height:1.5rem;margin-inline-start:.3em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a;width:fit-content}.filter-container{padding:.8em;position:relative}.search-icon-container{position:absolute;top:50%;inset-inline-start:2.5rem;transform:translateY(-50%)}.filter-input{width:100%;padding:.8rem 3.5rem;border:1px solid #82828233;border-radius:.8rem;outline:none}.options-list{padding:4px 0}.dropdown-option{cursor:pointer;min-height:var(--height);width:100%;display:flex;justify-content:start;align-items:center;font-family:var(--FM-Light);padding:.3em .5em}.dropdown-option:hover{background-color:#f7f7f8;color:var(--smp-color-primary)}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;color:#707070;margin-bottom:.3em;font-weight:500;display:block}.user-option-container{display:flex;align-items:center;gap:.5em;width:100%}.user-img{width:2.8em;height:2.8em;border-radius:50%}.user-info{display:flex;flex-direction:column;gap:.5em;font-size:1rem}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomDropdownComponent, isStandalone: true, selector: "custom-dropdown", inputs: { label: "label", labelClass: "labelClass", dropdownOptionsClass: "dropdownOptionsClass", dropdownHeaderClass: "dropdownHeaderClass", selectedClass: "selectedClass", dropdownContainerClass: "dropdownContainerClass", placeholder: "placeholder", enableFilter: "enableFilter", showClear: "showClear", options: "options", name: "name", value: "value", height: "height", userOptions: "userOptions", isUserMode: "isUserMode", reset: "reset" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<!-- custom-dropdown.component.html -->\r\n<div style=\"width: 100%; height: auto\" [ngStyle]=\"{ '--height': height }\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <span [class]=\"'selected-value ' + selectedClass\">\r\n        @if(isUserMode) {\r\n        {{\r\n          selectedUser\r\n            ? selectedUser.firstName + \" \" + selectedUser.lastName\r\n            : placeholder\r\n        }}\r\n        } @else {\r\n        {{ (selectedOption  | localize:'name' : translationService.currentLang()) || placeholder }}\r\n        }\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if((selectedOption || selectedUser) && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          width=\"8\"\r\n          height=\"6\"\r\n          viewBox=\"0 0 8 6\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M0.860142 1.10988C0.985051 0.985709 1.15402 0.916015 1.33014 0.916015C1.50627 0.916015 1.67523 0.985709 1.80014 1.10988L4.19348 3.46988L6.55348 1.10988C6.67838 0.98571 6.84735 0.916016 7.02348 0.916016C7.1996 0.916016 7.36857 0.98571 7.49347 1.10988C7.55596 1.17185 7.60556 1.24559 7.6394 1.32683C7.67325 1.40807 7.69067 1.4952 7.69067 1.58321C7.69067 1.67122 7.67325 1.75836 7.6394 1.8396C7.60556 1.92083 7.55596 1.99457 7.49347 2.05654L4.66681 4.88321C4.60483 4.9457 4.5311 4.99529 4.44986 5.02914C4.36862 5.06298 4.28148 5.08041 4.19347 5.08041C4.10547 5.08041 4.01833 5.06298 3.93709 5.02914C3.85585 4.99529 3.78212 4.9457 3.72014 4.88321L0.860142 2.05654C0.797656 1.99457 0.748061 1.92083 0.714215 1.83959C0.680369 1.75836 0.662943 1.67122 0.662943 1.58321C0.662943 1.4952 0.680369 1.40807 0.714215 1.32683C0.748061 1.24559 0.797657 1.17185 0.860142 1.10988Z\"\r\n            fill=\"#4B4F55\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Search\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n        <div class=\"search-icon-container\" style=\"width: 1.6rem; height: 1.6rem;\">\r\n          <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<g opacity=\"0.4\">\r\n<path d=\"M7.33325 0.832031C3.74351 0.832031 0.833428 3.74233 0.833252 7.33203C0.833252 10.9219 3.7434 13.832 7.33325 13.832C8.9482 13.832 10.4241 13.2415 11.5608 12.2666L14.3127 15.0195C14.508 15.2146 14.8245 15.2146 15.0198 15.0195C15.215 14.8243 15.2149 14.5078 15.0198 14.3125L12.2688 11.5605C13.2435 10.4238 13.8333 8.94682 13.8333 7.33203C13.8331 3.74242 10.9229 0.832176 7.33325 0.832031ZM7.33325 1.83203C10.3706 1.83218 12.8331 4.2947 12.8333 7.33203C12.8333 10.3695 10.3707 12.8319 7.33325 12.832C4.29569 12.832 1.83325 10.3696 1.83325 7.33203C1.83343 4.29461 4.29579 1.83203 7.33325 1.83203Z\" fill=\"#1F1F1F\"/>\r\n</g>\r\n</svg>\r\n\r\n        </div>\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @if(!isUserMode){ @for(option of filteredOptions; track option.id){\r\n        <div\r\n          class=\"dropdown-option\"\r\n          [class.selected]=\"option.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(option)\"\r\n        >\r\n          {{ option | localize:'name' : translationService.currentLang() }}\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        } } @if(isUserMode){ @for(user of filteredUserOptions; track user.id){\r\n        <div\r\n          class=\"dropdown-option user-option-container\"\r\n          [class.selected]=\"user.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(user)\"\r\n        >\r\n          <div class=\"user-img\">\r\n            <img style=\"width: 100%; height: 100%;\"\r\n            src=\"https://cdn.iconscout.com/icon/free/png-256/free-avatar-icon-svg-download-png-456318.png?f=webp\" alt=\"\">\r\n\r\n          </div>\r\n          <div class=\"user-info\">\r\n            <p style=\"font-size: 1.4em;color: #1f1f1f;text-wrap: nowrap;\">{{ user.firstName }} {{ user.lastName }}</p>\r\n            <p style=\"font-size: 1.2em;color: #5f6268;text-wrap: nowrap;\">\r\n              {{ user.email }}\r\n            </p>\r\n            <p style=\"font-size: 1.2em;color: #602650;\">\r\n              {{ user.phoneNumber }}\r\n            </p>\r\n          </div>\r\n        </div>\r\n        } @if(filteredUserOptions.length === 0){\r\n        <div class=\"no-options\">No users found</div>\r\n        } }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3);margin-inline-start:.5em}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;width:1.5rem;height:1.5rem;margin-inline-start:.3em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a;width:fit-content}.filter-container{padding:.8em;position:relative}.search-icon-container{position:absolute;top:50%;inset-inline-start:2.5rem;transform:translateY(-50%)}.filter-input{width:100%;padding:.8rem 3.5rem;border:1px solid #82828233;border-radius:.8rem;outline:none}.options-list{padding:4px 0}.dropdown-option{cursor:pointer;min-height:var(--height);width:100%;display:flex;justify-content:start;align-items:center;font-family:var(--FM-Light);padding:.3em .5em}.dropdown-option:hover{background-color:#f7f7f8;color:var(--smp-color-primary)}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;color:#707070;margin-bottom:.3em;font-weight:500;display:block}.user-option-container{display:flex;align-items:center;gap:.5em;width:100%}.user-img{width:2.8em;height:2.8em;border-radius:50%}.user-info{display:flex;flex-direction:column;gap:.5em;font-size:1rem}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }, { kind: "pipe", type: LocalizePipe, name: "localize" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomDropdownComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-dropdown', standalone: true, imports: [NgStyle, FormsModule, ClickOutsideDirective], template: "<!-- custom-dropdown.component.html -->\r\n<div style=\"width: 100%; height: auto\" [ngStyle]=\"{ '--height': height }\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <span [class]=\"'selected-value ' + selectedClass\">\r\n        @if(isUserMode) {\r\n        {{\r\n          selectedUser\r\n            ? selectedUser.firstName + \" \" + selectedUser.lastName\r\n            : placeholder\r\n        }}\r\n        } @else {\r\n        {{ selectedOption?.nameEn || placeholder }}\r\n        }\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if((selectedOption || selectedUser) && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          width=\"8\"\r\n          height=\"6\"\r\n          viewBox=\"0 0 8 6\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M0.860142 1.10988C0.985051 0.985709 1.15402 0.916015 1.33014 0.916015C1.50627 0.916015 1.67523 0.985709 1.80014 1.10988L4.19348 3.46988L6.55348 1.10988C6.67838 0.98571 6.84735 0.916016 7.02348 0.916016C7.1996 0.916016 7.36857 0.98571 7.49347 1.10988C7.55596 1.17185 7.60556 1.24559 7.6394 1.32683C7.67325 1.40807 7.69067 1.4952 7.69067 1.58321C7.69067 1.67122 7.67325 1.75836 7.6394 1.8396C7.60556 1.92083 7.55596 1.99457 7.49347 2.05654L4.66681 4.88321C4.60483 4.9457 4.5311 4.99529 4.44986 5.02914C4.36862 5.06298 4.28148 5.08041 4.19347 5.08041C4.10547 5.08041 4.01833 5.06298 3.93709 5.02914C3.85585 4.99529 3.78212 4.9457 3.72014 4.88321L0.860142 2.05654C0.797656 1.99457 0.748061 1.92083 0.714215 1.83959C0.680369 1.75836 0.662943 1.67122 0.662943 1.58321C0.662943 1.4952 0.680369 1.40807 0.714215 1.32683C0.748061 1.24559 0.797657 1.17185 0.860142 1.10988Z\"\r\n            fill=\"#4B4F55\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Search\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n        <div class=\"search-icon-container\" style=\"width: 1.6rem; height: 1.6rem;\">\r\n          <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<g opacity=\"0.4\">\r\n<path d=\"M7.33325 0.832031C3.74351 0.832031 0.833428 3.74233 0.833252 7.33203C0.833252 10.9219 3.7434 13.832 7.33325 13.832C8.9482 13.832 10.4241 13.2415 11.5608 12.2666L14.3127 15.0195C14.508 15.2146 14.8245 15.2146 15.0198 15.0195C15.215 14.8243 15.2149 14.5078 15.0198 14.3125L12.2688 11.5605C13.2435 10.4238 13.8333 8.94682 13.8333 7.33203C13.8331 3.74242 10.9229 0.832176 7.33325 0.832031ZM7.33325 1.83203C10.3706 1.83218 12.8331 4.2947 12.8333 7.33203C12.8333 10.3695 10.3707 12.8319 7.33325 12.832C4.29569 12.832 1.83325 10.3696 1.83325 7.33203C1.83343 4.29461 4.29579 1.83203 7.33325 1.83203Z\" fill=\"#1F1F1F\"/>\r\n</g>\r\n</svg>\r\n\r\n        </div>\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @if(!isUserMode){ @for(option of filteredOptions; track option.id){\r\n        <div\r\n          class=\"dropdown-option\"\r\n          [class.selected]=\"option.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(option)\"\r\n        >\r\n          {{ option.nameEn }}\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        } } @if(isUserMode){ @for(user of filteredUserOptions; track user.id){\r\n        <div\r\n          class=\"dropdown-option user-option-container\"\r\n          [class.selected]=\"user.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(user)\"\r\n        >\r\n          <div class=\"user-img\">\r\n            <img style=\"width: 100%; height: 100%;\"\r\n            src=\"https://cdn.iconscout.com/icon/free/png-256/free-avatar-icon-svg-download-png-456318.png?f=webp\" alt=\"\">\r\n\r\n          </div>\r\n          <div class=\"user-info\">\r\n            <p style=\"font-size: 1.4em;color: #1f1f1f;text-wrap: nowrap;\">{{ user.firstName }} {{ user.lastName }}</p>\r\n            <p style=\"font-size: 1.2em;color: #5f6268;text-wrap: nowrap;\">\r\n              {{ user.email }}\r\n            </p>\r\n            <p style=\"font-size: 1.2em;color: #602650;\">\r\n              {{ user.phoneNumber }}\r\n            </p>\r\n          </div>\r\n        </div>\r\n        } @if(filteredUserOptions.length === 0){\r\n        <div class=\"no-options\">No users found</div>\r\n        } }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3);margin-inline-start:.5em}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;width:1.5rem;height:1.5rem;margin-inline-start:.3em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a;width:fit-content}.filter-container{padding:.8em;position:relative}.search-icon-container{position:absolute;top:50%;inset-inline-start:2.5rem;transform:translateY(-50%)}.filter-input{width:100%;padding:.8rem 3.5rem;border:1px solid #82828233;border-radius:.8rem;outline:none}.options-list{padding:4px 0}.dropdown-option{cursor:pointer;min-height:var(--height);width:100%;display:flex;justify-content:start;align-items:center;font-family:var(--FM-Light);padding:.3em .5em}.dropdown-option:hover{background-color:#f7f7f8;color:var(--smp-color-primary)}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;color:#707070;margin-bottom:.3em;font-weight:500;display:block}.user-option-container{display:flex;align-items:center;gap:.5em;width:100%}.user-img{width:2.8em;height:2.8em;border-radius:50%}.user-info{display:flex;flex-direction:column;gap:.5em;font-size:1rem}\n"] }]
+            args: [{ selector: 'custom-dropdown', standalone: true, imports: [NgStyle, FormsModule, ClickOutsideDirective, LocalizePipe], template: "<!-- custom-dropdown.component.html -->\r\n<div style=\"width: 100%; height: auto\" [ngStyle]=\"{ '--height': height }\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'dropdown-container ' + dropdownContainerClass\">\r\n    <div\r\n      [class]=\"'dropdown-header ' + dropdownHeaderClass\"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <span [class]=\"'selected-value ' + selectedClass\">\r\n        @if(isUserMode) {\r\n        {{\r\n          selectedUser\r\n            ? selectedUser.firstName + \" \" + selectedUser.lastName\r\n            : placeholder\r\n        }}\r\n        } @else {\r\n        {{ (selectedOption  | localize:'name' : translationService.currentLang()) || placeholder }}\r\n        }\r\n      </span>\r\n      <div class=\"dropdown-icons\">\r\n        @if((selectedOption || selectedUser) && showClear){\r\n        <span class=\"clear-icon\" (click)=\"clearSelection($event)\">\r\n          <svg\r\n            width=\"inherit\"\r\n            height=\"inherit\"\r\n            viewBox=\"0 0 17 17\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g clip-path=\"url(#clip0_30_1710)\">\r\n              <path\r\n                d=\"M15.0539 1.8631L1.69678 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n              <path\r\n                d=\"M1.69678 1.8631L15.0539 15.2202\"\r\n                stroke=\"#999999\"\r\n                stroke-width=\"2\"\r\n                stroke-linecap=\"round\"\r\n                stroke-linejoin=\"round\"\r\n              />\r\n            </g>\r\n            <defs>\r\n              <clipPath id=\"clip0_30_1710\">\r\n                <rect\r\n                  width=\"15.5833\"\r\n                  height=\"15.5833\"\r\n                  fill=\"white\"\r\n                  transform=\"translate(0.583496 0.75)\"\r\n                />\r\n              </clipPath>\r\n            </defs>\r\n          </svg>\r\n        </span>\r\n        }\r\n        <svg\r\n          width=\"8\"\r\n          height=\"6\"\r\n          viewBox=\"0 0 8 6\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M0.860142 1.10988C0.985051 0.985709 1.15402 0.916015 1.33014 0.916015C1.50627 0.916015 1.67523 0.985709 1.80014 1.10988L4.19348 3.46988L6.55348 1.10988C6.67838 0.98571 6.84735 0.916016 7.02348 0.916016C7.1996 0.916016 7.36857 0.98571 7.49347 1.10988C7.55596 1.17185 7.60556 1.24559 7.6394 1.32683C7.67325 1.40807 7.69067 1.4952 7.69067 1.58321C7.69067 1.67122 7.67325 1.75836 7.6394 1.8396C7.60556 1.92083 7.55596 1.99457 7.49347 2.05654L4.66681 4.88321C4.60483 4.9457 4.5311 4.99529 4.44986 5.02914C4.36862 5.06298 4.28148 5.08041 4.19347 5.08041C4.10547 5.08041 4.01833 5.06298 3.93709 5.02914C3.85585 4.99529 3.78212 4.9457 3.72014 4.88321L0.860142 2.05654C0.797656 1.99457 0.748061 1.92083 0.714215 1.83959C0.680369 1.75836 0.662943 1.67122 0.662943 1.58321C0.662943 1.4952 0.680369 1.40807 0.714215 1.32683C0.748061 1.24559 0.797657 1.17185 0.860142 1.10988Z\"\r\n            fill=\"#4B4F55\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if(isOpen){\r\n    <div\r\n      #dropdownOptions\r\n      [class]=\"'dropdown-options ' + dropdownOptionsClass\"\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"isOpen = false\"\r\n    >\r\n      @if(enableFilter){\r\n      <div class=\"filter-container\">\r\n        <input\r\n          type=\"text\"\r\n          class=\"filter-input\"\r\n          placeholder=\"Search\"\r\n          #filterInput\r\n          (input)=\"filterText = filterInput.value; filterOptions()\"\r\n        />\r\n        <div class=\"search-icon-container\" style=\"width: 1.6rem; height: 1.6rem;\">\r\n          <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<g opacity=\"0.4\">\r\n<path d=\"M7.33325 0.832031C3.74351 0.832031 0.833428 3.74233 0.833252 7.33203C0.833252 10.9219 3.7434 13.832 7.33325 13.832C8.9482 13.832 10.4241 13.2415 11.5608 12.2666L14.3127 15.0195C14.508 15.2146 14.8245 15.2146 15.0198 15.0195C15.215 14.8243 15.2149 14.5078 15.0198 14.3125L12.2688 11.5605C13.2435 10.4238 13.8333 8.94682 13.8333 7.33203C13.8331 3.74242 10.9229 0.832176 7.33325 0.832031ZM7.33325 1.83203C10.3706 1.83218 12.8331 4.2947 12.8333 7.33203C12.8333 10.3695 10.3707 12.8319 7.33325 12.832C4.29569 12.832 1.83325 10.3696 1.83325 7.33203C1.83343 4.29461 4.29579 1.83203 7.33325 1.83203Z\" fill=\"#1F1F1F\"/>\r\n</g>\r\n</svg>\r\n\r\n        </div>\r\n      </div>\r\n      }\r\n\r\n      <div class=\"options-list\">\r\n        @if(!isUserMode){ @for(option of filteredOptions; track option.id){\r\n        <div\r\n          class=\"dropdown-option\"\r\n          [class.selected]=\"option.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(option)\"\r\n        >\r\n          {{ option | localize:'name' : translationService.currentLang() }}\r\n        </div>\r\n        } @if(filteredOptions.length === 0){\r\n        <div class=\"no-options\">No options found</div>\r\n        } } @if(isUserMode){ @for(user of filteredUserOptions; track user.id){\r\n        <div\r\n          class=\"dropdown-option user-option-container\"\r\n          [class.selected]=\"user.id === value\"\r\n          (click)=\"$event.stopPropagation(); selectOption(user)\"\r\n        >\r\n          <div class=\"user-img\">\r\n            <img style=\"width: 100%; height: 100%;\"\r\n            src=\"https://cdn.iconscout.com/icon/free/png-256/free-avatar-icon-svg-download-png-456318.png?f=webp\" alt=\"\">\r\n\r\n          </div>\r\n          <div class=\"user-info\">\r\n            <p style=\"font-size: 1.4em;color: #1f1f1f;text-wrap: nowrap;\">{{ user.firstName }} {{ user.lastName }}</p>\r\n            <p style=\"font-size: 1.2em;color: #5f6268;text-wrap: nowrap;\">\r\n              {{ user.email }}\r\n            </p>\r\n            <p style=\"font-size: 1.2em;color: #602650;\">\r\n              {{ user.phoneNumber }}\r\n            </p>\r\n          </div>\r\n        </div>\r\n        } @if(filteredUserOptions.length === 0){\r\n        <div class=\"no-options\">No users found</div>\r\n        } }\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".dropdown-container{position:relative;width:100%}.dropdown-header{height:var(--height);width:100%;border-radius:.375em;border:1px solid #82828233;padding:0 1em;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background-color:#fff}.selected-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151;font-size:.95em}.dropdown-icons{display:flex;align-items:center;gap:8px;height:calc(var(--height) / 3);margin-inline-start:.5em}.clear-icon{color:#9ca3af;font-size:1.2rem;cursor:pointer;width:1.5rem;height:1.5rem;margin-inline-start:.3em}.clear-icon:hover{color:#6b7280}.dropdown-options{position:absolute;top:100%;left:0;right:0;max-height:16em;overflow-y:auto;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;z-index:10;box-shadow:0 4px 6px #0000001a;width:fit-content}.filter-container{padding:.8em;position:relative}.search-icon-container{position:absolute;top:50%;inset-inline-start:2.5rem;transform:translateY(-50%)}.filter-input{width:100%;padding:.8rem 3.5rem;border:1px solid #82828233;border-radius:.8rem;outline:none}.options-list{padding:4px 0}.dropdown-option{cursor:pointer;min-height:var(--height);width:100%;display:flex;justify-content:start;align-items:center;font-family:var(--FM-Light);padding:.3em .5em}.dropdown-option:hover{background-color:#f7f7f8;color:var(--smp-color-primary)}.dropdown-option.selected{background-color:#e5e7eb;font-weight:500}.no-options{padding:8px 16px;color:#9ca3af;font-style:italic}.custom-label{font-size:1em;color:#707070;margin-bottom:.3em;font-weight:500;display:block}.user-option-container{display:flex;align-items:center;gap:.5em;width:100%}.user-img{width:2.8em;height:2.8em;border-radius:50%}.user-info{display:flex;flex-direction:column;gap:.5em;font-size:1rem}\n"] }]
         }], propDecorators: { label: [{
                 type: Input
             }], labelClass: [{
@@ -5218,7 +5251,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
             }] } });
 
 class CustomPagesHeaderComponent {
+    authService;
     headerTitle = input('');
+    addPermission = input(PERMISSIONS.all);
     btnTitle = input('');
     hasTabs = input(false);
     hideBtn = input(false);
@@ -5229,7 +5264,8 @@ class CustomPagesHeaderComponent {
     selectedTabInput = input({});
     tabSelected = new EventEmitter();
     addAction = new EventEmitter();
-    constructor() {
+    constructor(authService) {
+        this.authService = authService;
         effect(() => {
             if (this.pageTabs().length) {
                 console.log('tabs', this.pageTabs());
@@ -5246,13 +5282,13 @@ class CustomPagesHeaderComponent {
     onAddClick() {
         this.addAction.emit();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPagesHeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomPagesHeaderComponent, isStandalone: true, selector: "custom-pages-header", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, hideBtn: { classPropertyName: "hideBtn", publicName: "hideBtn", isSignal: true, isRequired: false, transformFunction: null }, listCounter: { classPropertyName: "listCounter", publicName: "listCounter", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null }, selectedTabInput: { classPropertyName: "selectedTabInput", publicName: "selectedTabInput", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction" }, ngImport: i0, template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput() || selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    @if(!hideBtn()){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n     @if(!hideBtn()){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPagesHeaderComponent, deps: [{ token: AuthService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.14", type: CustomPagesHeaderComponent, isStandalone: true, selector: "custom-pages-header", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, addPermission: { classPropertyName: "addPermission", publicName: "addPermission", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, hideBtn: { classPropertyName: "hideBtn", publicName: "hideBtn", isSignal: true, isRequired: false, transformFunction: null }, listCounter: { classPropertyName: "listCounter", publicName: "listCounter", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null }, selectedTabInput: { classPropertyName: "selectedTabInput", publicName: "selectedTabInput", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction" }, ngImport: i0, template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    @if(!hideBtn() && authService.canDoAction([addPermission()])){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n     @if(!hideBtn() && authService.canDoAction([addPermission()])){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: CustomPagesHeaderComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-pages-header', imports: [CustomTabsComponent, TranslateModule], template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput() || selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    @if(!hideBtn()){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n     @if(!hideBtn()){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"] }]
-        }], ctorParameters: () => [], propDecorators: { tabSelected: [{
+            args: [{ selector: 'custom-pages-header', imports: [CustomTabsComponent, TranslateModule], template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    @if(!hideBtn() && authService.canDoAction([addPermission()])){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n     @if(!hideBtn() && authService.canDoAction([addPermission()])){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"] }]
+        }], ctorParameters: () => [{ type: AuthService }], propDecorators: { tabSelected: [{
                 type: Output
             }], addAction: [{
                 type: Output
@@ -6591,6 +6627,7 @@ var Lang;
 })(Lang || (Lang = {}));
 class TranslationService {
     rtl = true;
+    currentLang = signal('en');
     translate = inject(TranslateService);
     constructor() { }
     setDefaultLang(defaultLang = Lang.en) {
@@ -6598,12 +6635,14 @@ class TranslationService {
             ? this.localStorageLang
             : defaultLang;
         this.onChangeLang(lang);
+        this.currentLang.set(lang);
     }
     changeLang(lang) {
         if (!lang)
             return;
         this.translate.use(lang);
         this.setDirection(lang);
+        this.currentLang.set(lang);
         document.getElementsByTagName('html')[0].setAttribute('lang', lang);
         this.localStorageLang = lang;
     }
@@ -7299,14 +7338,16 @@ const PermissionGuard = (route, state) => {
     const toastService = inject(ToastService);
     const hasPermission = authService.hasCategory(route);
     if (hasPermission) {
+        setTimeout(() => {
+            toastService.toast(`You  have permission`, 'top-center', 'success', 2000);
+        }, 500);
         return true;
     }
     else {
-        router.navigate(['/']);
         setTimeout(() => {
             toastService.toast(`You don't have permission`, 'top-center', 'error', 2000);
         }, 500);
-        //router.navigate(['error/403']);
+        router.navigate(['/403']);
         return false;
     }
 };
@@ -7325,70 +7366,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImpo
                 }]
         }], ctorParameters: () => [] });
 
-const SECOND = 1_000;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-function toDate(input) {
-    if (!input)
-        return null;
-    if (input instanceof Date)
-        return isNaN(input.getTime()) ? null : input;
-    const d = new Date(input);
-    return isNaN(d.getTime()) ? null : new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-}
-function plural(n, unit) {
-    return n === 1 ? `${n} ${unit}` : `${n} ${unit}s`;
-}
-function formatAbsolute(date, locale = 'en') {
-    const day = String(date.getDate()).padStart(2, '0');
-    const mon = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date);
-    const year = date.getFullYear();
-    return `${day} ${mon}, ${year}`;
-}
-/**
- * Main formatter
- */
-function formatActivityTime(input, opts) {
-    const date = toDate(input);
-    if (!date)
-        return '-';
-    const now = opts?.now ?? new Date();
-    const diffMs = now.getTime() - date.getTime();
-    // Future timestamps: show absolute date
-    if (diffMs < 0)
-        return formatAbsolute(date, opts?.locale);
-    const activeNowMs = (opts?.activeNowSeconds ?? 60) * SECOND;
-    if (diffMs <= activeNowMs)
-        return 'active now';
-    if (diffMs < HOUR) {
-        const mins = Math.floor(diffMs / MINUTE);
-        return `${plural(mins, 'min')} ago`;
-    }
-    if (diffMs < DAY) {
-        const hrs = Math.floor(diffMs / HOUR);
-        return `${plural(hrs, 'hr')} ago`;
-    }
-    return formatAbsolute(date, opts?.locale);
-}
-
-class ActivityTimePipe {
-    transform(value, options) {
-        return formatActivityTime(value, options);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, deps: [], target: i0.ɵɵFactoryTarget.Pipe });
-    static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, isStandalone: true, name: "activityTime" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.14", ngImport: i0, type: ActivityTimePipe, decorators: [{
-            type: Pipe,
-            args: [{
-                    name: 'activityTime'
-                }]
-        }] });
-
 /**
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PermissionGuard, Permissions, Resources, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, Types, USE_TOKEN, UserDataService, UserStatus, actionPermission, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, someFieldsContainData, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

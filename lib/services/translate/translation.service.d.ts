@@ -5,6 +5,7 @@ export declare enum Lang {
 }
 export declare class TranslationService {
     rtl: boolean;
+    currentLang: import("@angular/core").WritableSignal<"en" | "ar">;
     private translate;
     constructor();
     setDefaultLang(defaultLang?: string): void;

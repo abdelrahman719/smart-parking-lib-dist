@@ -1,5 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { IDropdownOption, IUserLookup } from '../../interfaces';
+import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
 export declare class CustomDropdownComponent {
     label?: string;
@@ -22,6 +23,7 @@ export declare class CustomDropdownComponent {
     filteredOptions: IDropdownOption[];
     filterText: string;
     filteredUserOptions: IUserLookup[];
+    translationService: TranslationService;
     ngOnInit(): void;
     get selectedOption(): IDropdownOption | null;
     get selectedUser(): IUserLookup | null;

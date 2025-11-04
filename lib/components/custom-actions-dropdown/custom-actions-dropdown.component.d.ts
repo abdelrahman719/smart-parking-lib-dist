@@ -1,5 +1,6 @@
 import { ElementRef, Renderer2, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export interface IActions {
     label: string;
@@ -10,6 +11,7 @@ export declare class CustomActionsDropdownComponent {
     private sanitizer;
     private renderer;
     private elRef;
+    private translate;
     actions: IActions[];
     context: any;
     horizontalDots: boolean;
@@ -24,7 +26,7 @@ export declare class CustomActionsDropdownComponent {
     private isAppendedToBody;
     isOpen: import("@angular/core").WritableSignal<boolean>;
     showAnimation: import("@angular/core").WritableSignal<boolean>;
-    constructor(sanitizer: DomSanitizer, renderer: Renderer2, elRef: ElementRef);
+    constructor(sanitizer: DomSanitizer, renderer: Renderer2, elRef: ElementRef, translate: TranslateService);
     sanitizeSvg(svg: string): SafeHtml;
     openDropdown(): void;
     closeDropdown(): void;

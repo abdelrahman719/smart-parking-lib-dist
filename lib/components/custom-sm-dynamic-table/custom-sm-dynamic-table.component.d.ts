@@ -15,7 +15,7 @@ export interface ISmDynmaicTableConfig {
 }
 export declare class CustomSmDynamicTableComponent {
     private sanitizer;
-    config: ISmDynmaicTableConfig;
+    config: import("@angular/core").InputSignal<ISmDynmaicTableConfig>;
     actionsList: IActions[];
     hasCheckBox: boolean;
     tableMaxHeight: string;
@@ -41,5 +41,5 @@ export declare class CustomSmDynamicTableComponent {
     private findStatusKey;
     isRowInactive(row: any): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
 }

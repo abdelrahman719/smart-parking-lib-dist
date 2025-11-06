@@ -1,5 +1,6 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
 import { ITabDropdownOption } from '../../interfaces';
+import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
 export declare class CustomTabsComponent {
     tabsList: ITabDropdownOption[];
@@ -10,6 +11,7 @@ export declare class CustomTabsComponent {
     };
     tabSelected: EventEmitter<ITabDropdownOption>;
     selectedTab: ITabDropdownOption;
+    translationService: TranslationService;
     ngOnInit(): void;
     selectTab(tab: ITabDropdownOption): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomTabsComponent, never>;

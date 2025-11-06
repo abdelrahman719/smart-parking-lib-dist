@@ -1,6 +1,7 @@
 import { EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError, IDropdownOption } from '../../interfaces';
+import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
 export declare class CustomDropdownFormComponent {
     parentForm: FormGroup | any;
@@ -26,6 +27,7 @@ export declare class CustomDropdownFormComponent {
     filteredOptions: IDropdownOption[];
     filterText: string;
     value: any;
+    translationService: TranslationService;
     ngOnInit(): void;
     ngOnChanges(changes: SimpleChanges): void;
     private setupFormControlSubscription;

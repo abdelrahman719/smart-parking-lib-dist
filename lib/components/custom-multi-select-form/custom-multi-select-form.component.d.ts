@@ -1,6 +1,8 @@
 import { EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError, IDropdownOption } from '../../interfaces';
+import { TranslationService } from '../../services';
+import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export declare class CustomMultiSelectFormComponent {
     parentForm: FormGroup;
@@ -33,6 +35,8 @@ export declare class CustomMultiSelectFormComponent {
     removedItems: EventEmitter<IDropdownOption[]>;
     valueChange: EventEmitter<IDropdownOption[]>;
     set selectedItems(editData: IDropdownOption[]);
+    translationService: TranslationService;
+    translateService: TranslateService;
     ngOnInit(): void;
     get selectedOptions(): IDropdownOption[];
     getSelectedLabel(option: IDropdownOption): string;

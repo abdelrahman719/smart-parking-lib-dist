@@ -1,8 +1,10 @@
 import { EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError } from '../../interfaces';
+import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export declare class CustomCalenderFormComponent {
+    private translationService;
     label: string;
     placeholder: string;
     filterDesign: boolean;
@@ -23,14 +25,14 @@ export declare class CustomCalenderFormComponent {
     showCalendarForm: boolean;
     currentMonth: Date;
     days: Date[];
-    weekdays: string[];
     private _value;
     private onChange;
     private onTouched;
-    constructor();
+    constructor(translationService: TranslateService);
     ngOnInit(): void;
     get value(): Date | null;
     set value(val: Date | null);
+    get weekdays(): string[];
     writeValue(value: Date | null): void;
     registerOnChange(fn: any): void;
     registerOnTouched(fn: any): void;

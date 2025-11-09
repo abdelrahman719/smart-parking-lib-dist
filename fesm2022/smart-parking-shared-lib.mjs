@@ -93,11 +93,38 @@ var Roles;
 var PERMISSIONS;
 (function (PERMISSIONS) {
     PERMISSIONS["all"] = "all";
-    PERMISSIONS["PARKING_ZONE_VIEW"] = "zone:view";
-    PERMISSIONS["PARKING_ZONE_CREATE"] = "zone:create";
-    PERMISSIONS["PARKING_ZONE_UPDATE"] = "zone:update";
-    PERMISSIONS["PARKING_ZONE_DELETE"] = "zone:delete";
-    PERMISSIONS["VIEW_POLICIES"] = "poilcies:view";
+    // User Management
+    PERMISSIONS["USER_MANAGEMENT_CREATE"] = "USER-MANAGEMENT:CREATE";
+    PERMISSIONS["USER_MANAGEMENT_UPDATE"] = "USER-MANAGEMENT:UPDATE";
+    PERMISSIONS["USER_MANAGEMENT_DELETE"] = "USER-MANAGEMENT:DELETE";
+    PERMISSIONS["USER_MANAGEMENT_VIEW"] = "USER-MANAGEMENT:VIEW";
+    // Parking Zone
+    PERMISSIONS["PARKING_ZONE_CREATE"] = "PARKING-ZONE:CREATE";
+    PERMISSIONS["PARKING_ZONE_UPDATE"] = "PARKING-ZONE:UPDATE";
+    PERMISSIONS["PARKING_ZONE_DELETE"] = "PARKING-ZONE:DELETE";
+    PERMISSIONS["PARKING_ZONE_VIEW"] = "PARKING-ZONE:VIEW";
+    // Policies
+    PERMISSIONS["POLICIES_CREATE"] = "POLICIES:CREATE";
+    PERMISSIONS["POLICIES_UPDATE"] = "POLICIES:UPDATE";
+    PERMISSIONS["POLICIES_DELETE"] = "POLICIES:DELETE";
+    PERMISSIONS["POLICIES_VIEW"] = "POLICIES:VIEW";
+    // Assets
+    PERMISSIONS["ASSETS_CREATE"] = "ASSETS:CREATE";
+    PERMISSIONS["ASSETS_UPDATE"] = "ASSETS:UPDATE";
+    PERMISSIONS["ASSETS_DELETE"] = "ASSETS:DELETE";
+    PERMISSIONS["ASSETS_VIEW"] = "ASSETS:VIEW";
+    // Violation Rule
+    PERMISSIONS["VIOLATION_RULE_CREATE"] = "VIOLATION-RULE:CREATE";
+    PERMISSIONS["VIOLATION_RULE_UPDATE"] = "VIOLATION-RULE:UPDATE";
+    PERMISSIONS["VIOLATION_RULE_DELETE"] = "VIOLATION-RULE:DELETE";
+    PERMISSIONS["VIOLATION_RULE_VIEW"] = "VIOLATION-RULE:VIEW";
+    // Violation
+    PERMISSIONS["VIOLATION_DELETE"] = "VIOLATION:DELETE";
+    PERMISSIONS["VIOLATION_VIEW"] = "VIOLATION:VIEW";
+    PERMISSIONS["VIOLATION_UPDATE"] = "VIOLATION:UPDATE";
+    // Complain
+    PERMISSIONS["COMPLAIN_VIEW"] = "COMPLAIN:VIEW";
+    PERMISSIONS["COMPLAIN_UPDATE"] = "COMPLAIN:UPDATE";
 })(PERMISSIONS || (PERMISSIONS = {}));
 
 var ComponentFormErrorConstant;
@@ -497,22 +524,22 @@ class AuthService {
         });
     }
     handlePermissionConfig() {
-        // this.authBeService.validateToken().subscribe({
-        //   next: (res) => {
-        //     if (res.success) {
-        //       this.authContextService.savePermissionsAndRoles(
-        //         res.data as ISessionData
-        //       );
-        //     } else {
-        //       this.toastService.toast(
-        //         `You do not have permission to perform this action`,
-        //         'top-center',
-        //         'error',
-        //         2000
-        //       );
-        //     }
-        //   },
-        // });
+        this.authBeService.validateToken().subscribe({
+            next: (res) => {
+                if (res.success) {
+                    this.authContextService.savePermissionsAndRoles(res.data);
+                    window.dispatchEvent(new CustomEvent('permissions-changed'));
+                }
+                //  else {
+                //   this.toastService.toast(
+                //     `You do not have permission to perform this action`,
+                //     'top-center',
+                //     'error',
+                //     2000
+                //   );
+                // }
+            },
+        });
         // const dummySessionData: ISessionData = {
         //   roles: [Roles.ADMIN],
         //   permissions: [
@@ -557,15 +584,14 @@ class AuthService {
                 '[]'));
     }
     getCurrentRoles() {
-        return (JSON.parse(this.storageService.getsessionItem(AuthConstant.USER_ROLES) ||
-            '[]'));
+        return JSON.parse(this.storageService.getsessionItem(AuthConstant.USER_ROLES) || '[]');
     }
     hasAnyCurrentRole(targetRoles) {
         const currentRoles = this.getCurrentRoles();
         if (!Array.isArray(currentRoles) || currentRoles.length === 0) {
             return false;
         }
-        return currentRoles.some(role => targetRoles.includes(role));
+        return currentRoles.some((role) => targetRoles.includes(role));
     }
     // PERMISSION MANAGEMENT
     hasCategory(route) {
@@ -5378,11 +5404,11 @@ class CustomPagesHeaderComponent {
         this.addAction.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.15", ngImport: i0, type: CustomPagesHeaderComponent, deps: [{ token: AuthService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.15", type: CustomPagesHeaderComponent, isStandalone: true, selector: "custom-pages-header", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, addPermission: { classPropertyName: "addPermission", publicName: "addPermission", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, hideBtn: { classPropertyName: "hideBtn", publicName: "hideBtn", isSignal: true, isRequired: false, transformFunction: null }, listCounter: { classPropertyName: "listCounter", publicName: "listCounter", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null }, selectedTabInput: { classPropertyName: "selectedTabInput", publicName: "selectedTabInput", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction" }, ngImport: i0, template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n    @if(!hideBtn()){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n     @if(!hideBtn()){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.15", type: CustomPagesHeaderComponent, isStandalone: true, selector: "custom-pages-header", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, addPermission: { classPropertyName: "addPermission", publicName: "addPermission", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, hideBtn: { classPropertyName: "hideBtn", publicName: "hideBtn", isSignal: true, isRequired: false, transformFunction: null }, listCounter: { classPropertyName: "listCounter", publicName: "listCounter", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null }, selectedTabInput: { classPropertyName: "selectedTabInput", publicName: "selectedTabInput", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction" }, ngImport: i0, template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n    @if(!hideBtn()  && authService.canDoAction([addPermission()])){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n     @if(!hideBtn()  && authService.canDoAction([addPermission()])){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"], dependencies: [{ kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.15", ngImport: i0, type: CustomPagesHeaderComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-pages-header', imports: [CustomTabsComponent, TranslateModule], template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n    @if(!hideBtn()){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n     @if(!hideBtn()){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"] }]
+            args: [{ selector: 'custom-pages-header', imports: [CustomTabsComponent, TranslateModule], template: "@if(hasTabs()){\r\n<div class=\"\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}\r\n    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span>\r\n  </h1>\r\n  <div class=\"right\">\r\n    @if(pageTabs().length){\r\n\r\n      <custom-tabs\r\n        [tabsList]=\"pageTabs()\"\r\n        [selectedTab]=\"selectedTabInput().id ?  selectedTabInput() : selectedTab()\"\r\n        (tabSelected)=\"selectTab($event)\"\r\n      >\r\n      </custom-tabs>\r\n    }\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n    @if(!hideBtn()  && authService.canDoAction([addPermission()])){\r\n\r\n      <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\">\r\n\r\n\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n   }\r\n  </div>\r\n</div>\r\n}@else {\r\n<div class=\"header-container\">\r\n  <h1 class=\"page-title\">{{headerTitle() | translate}}    <span class=\"ms-[.5em]\">\r\n      @if(listCounter()){\r\n        ({{listCounter()}})\r\n      }\r\n    </span></h1>\r\n    <!-- && authService.canDoAction([addPermission()]) -->\r\n     @if(!hideBtn()  && authService.canDoAction([addPermission()])){\r\n\r\n\r\n  <button class=\"smp-btn smp-btn-primary btn-flex\" type=\"button\" (click)=\"onAddClick()\" >\r\n    <span class=\"add-icon-wrapper\"\r\n      ><svg\r\n        width=\"auto\"\r\n        height=\"auto\"\r\n        viewBox=\"0 0 18 18\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <path\r\n          d=\"M4.5 9H13.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M9 13.5V4.5\"\r\n          stroke=\"white\"\r\n          stroke-width=\"1.125\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </span>\r\n   {{btnTitle() | translate}}\r\n  </button>\r\n  }\r\n</div>\r\n}\r\n", styles: [".header-container{display:flex;justify-content:space-between;align-items:center;flex-direction:row}.left{display:flex;justify-content:space-between;align-items:start;flex-direction:column}.right{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}.page-title{font-size:1.9rem;color:var(--smp-color-primary)}.btn-flex{display:flex;align-items:center;gap:.8rem;padding:1rem 1.8rem;width:fit-content;font-size:1.4rem}.add-icon-wrapper{width:1.8rem;height:auto}.add-icon-wrapper svg{width:100%!important;height:auto;display:block}\n"] }]
         }], ctorParameters: () => [{ type: AuthService }], propDecorators: { tabSelected: [{
                 type: Output
             }], addAction: [{

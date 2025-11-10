@@ -44,6 +44,7 @@ var AuthConstant;
     AuthConstant["USER_DATA"] = "user";
     AuthConstant["USER_PERMISSIONS"] = "permissions";
     AuthConstant["USER_ROLES"] = "roles";
+    AuthConstant["USER_ROLES_DETAILS"] = "rolesDetails";
     AuthConstant["EXPIRES_AT"] = "expiresIn";
 })(AuthConstant || (AuthConstant = {}));
 var UserStatus;
@@ -56,40 +57,11 @@ var UserStatus;
 var Roles;
 (function (Roles) {
     Roles["ADMIN"] = "ADMIN";
-    Roles["SUPER_ADMIN"] = "SUPER_ADMIN";
-    Roles["PLANNER"] = "PLANNER";
-    Roles["SUPERVISOR"] = "SUPERVISOR";
+    Roles["SUPER_ADMIN"] = "SUPER-ADMIN";
+    Roles["INSPECTOR"] = "INSPECTOR";
     Roles["OPERATOR"] = "OPERATOR";
+    Roles["SUPPORT_AGENT"] = "SUPPORT-AGENT";
 })(Roles || (Roles = {}));
-// export enum Types {
-//   ADMIN = 'ADMIN',
-//   PLANNER = 'PLANNER',
-//   SUPERVISOR = 'SUPERVISOR',
-//   OPERATOR = 'OPERATOR',
-// }
-// export enum Resources { // tab permissions
-//   USER = 'user',
-//   TASK = 'task',
-//   PLAN = 'plan',
-//   VEHICLE = 'vehicle',
-//   EQUIPMENT = 'Equipment',
-//   MOBILE_TASK = 'mobile:task',
-//   MOBILE_USER = 'mobile:user',
-//   MOBILE_LANDING = 'mobile:landing',
-// }
-// export enum actionPermission {
-//   VIEW_DETAILS = 'view-details',
-//   CREATE = 'create',
-//   VIEW_LIST = 'view-list',
-//   UPDATE = 'update',
-//   DELETE = 'delete',
-//   START = 'start',
-//   PAUSE = 'pause',
-//   RESUME = 'resume',
-//   STOP = 'stop',
-//   VIEW_PROFILE = 'view-profile',
-//   VIEW_LANDING = 'view-landing',
-// }
 var PERMISSIONS;
 (function (PERMISSIONS) {
     PERMISSIONS["all"] = "all";
@@ -279,6 +251,7 @@ class AuthContextService {
         let permissions = {
             roles: data.roles,
             permissions: data.permissions,
+            rolesDetails: data.rolesDetails
         };
         this.userPermissionsAndRoles$.set(permissions);
         this.storageService.setSession(permissions);
@@ -581,6 +554,9 @@ class AuthService {
     }
     getCurrentRoles() {
         return JSON.parse(this.storageService.getsessionItem(AuthConstant.USER_ROLES) || '[]');
+    }
+    getCurrentRolesDetails() {
+        return JSON.parse(this.storageService.getsessionItem(AuthConstant.USER_ROLES_DETAILS) || '[]');
     }
     hasAnyCurrentRole(targetRoles) {
         const currentRoles = this.getCurrentRoles();

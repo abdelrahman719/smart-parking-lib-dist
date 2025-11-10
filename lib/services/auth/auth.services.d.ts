@@ -26,6 +26,7 @@ export declare class AuthService {
     getCurrentUser(): IUserData;
     getCurrentPermissions(): any[];
     getCurrentRoles(): any[];
+    getCurrentRolesDetails(): any[];
     hasAnyCurrentRole(targetRoles: Roles[]): boolean;
     hasCategory(route: ActivatedRouteSnapshot): boolean;
     canDoAction(action: string[]): boolean;

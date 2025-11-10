@@ -4,6 +4,7 @@ export declare enum AuthConstant {
     USER_DATA = "user",
     USER_PERMISSIONS = "permissions",
     USER_ROLES = "roles",
+    USER_ROLES_DETAILS = "rolesDetails",
     EXPIRES_AT = "expiresIn"
 }
 export declare enum UserStatus {
@@ -13,10 +14,10 @@ export declare enum UserStatus {
 }
 export declare enum Roles {
     ADMIN = "ADMIN",
-    SUPER_ADMIN = "SUPER_ADMIN",
-    PLANNER = "PLANNER",
-    SUPERVISOR = "SUPERVISOR",
-    OPERATOR = "OPERATOR"
+    SUPER_ADMIN = "SUPER-ADMIN",
+    INSPECTOR = "INSPECTOR",
+    OPERATOR = "OPERATOR",
+    SUPPORT_AGENT = "SUPPORT-AGENT"
 }
 export declare enum PERMISSIONS {
     all = "all",

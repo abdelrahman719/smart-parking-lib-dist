@@ -14,6 +14,17 @@ export interface IValidationData {
     user: IUserData;
     roles: Roles[];
     permissions: PERMISSIONS[];
+    rolesDetails: {
+        id: number;
+        name: Roles;
+        nameAr: string;
+        description: string;
+        descriptionAr: string;
+        type: string;
+        isActive: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }[];
 }
 export interface IUserData {
     id: number;
@@ -34,6 +45,17 @@ export interface IUserData {
 export interface ISessionData {
     roles: Roles[];
     permissions: PERMISSIONS[];
+    rolesDetails: {
+        id: number;
+        name: Roles;
+        nameAr: string;
+        description: string;
+        descriptionAr: string;
+        type: string;
+        isActive: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }[];
 }
 export interface ILocalData {
     accessToken: string;

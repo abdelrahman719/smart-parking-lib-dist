@@ -7463,7 +7463,7 @@ const PermissionGuard = (route, state) => {
         setTimeout(() => {
             toastService.toast(`You don't have permission`, 'top-center', 'error', 2000);
         }, 500);
-        router.navigate(['/403']);
+        // router.navigate(['/403']);
         return false;
     }
 };

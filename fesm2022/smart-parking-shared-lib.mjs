@@ -7286,9 +7286,14 @@ const AuthInterceptor = (request, next) => {
                     request.method === 'PUT' ||
                     request.method === 'DELETE')) {
                 // this works for registeration app
-                if (showSuccessToaster && body.message) {
-                    toastService.toast(`${body.message}`, 'top-center', 'success', 4000);
-                }
+                // if (showSuccessToaster && body.message ) {
+                //   toastService.toast(
+                //     `${body.message}`,
+                //     'top-center',
+                //     'success',
+                //     4000
+                //   );
+                // }
                 // if (!body.success) {
                 //   if (body.errors && body.errors.length > 0) {
                 //     body.errors.forEach((error) => {

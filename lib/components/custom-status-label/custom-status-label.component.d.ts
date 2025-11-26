@@ -1,5 +1,5 @@
 import * as i0 from "@angular/core";
-type StatusKey = 'paid' | 'not_paid' | 'active' | 'inactive' | 'open' | 'inprogress' | 'closed';
+type StatusKey = 'paid' | 'not_paid' | 'active' | 'inactive' | 'open' | 'inprogress' | 'closed' | 'running' | 'incoming' | 'past';
 interface StyleDef {
     color: string;
     bg?: string;

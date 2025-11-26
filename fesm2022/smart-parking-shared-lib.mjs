@@ -5672,6 +5672,24 @@ const STYLES = {
         label: 'Closed',
     },
     open: { color: '#ffffff', bg: '#602650', border: '#602650', label: 'Open' },
+    running: {
+        color: '#FFFFFF',
+        bg: '#602650',
+        border: '#602650',
+        label: 'Running',
+    },
+    incoming: {
+        color: '#25c7bc',
+        bg: '#eafaf9',
+        border: '#eafaf9',
+        label: 'Incoming',
+    },
+    past: {
+        color: '#1F1F1F',
+        bg: '#e9e9e9',
+        border: '#e9e9e9',
+        label: 'Past',
+    },
 };
 class CustomStatusLabelComponent {
     status;
@@ -5690,6 +5708,9 @@ class CustomStatusLabelComponent {
             'in-progress': 'inprogress',
             'in progress': 'inprogress',
             closed: 'closed',
+            running: 'running',
+            incoming: 'incoming',
+            past: 'past',
         };
         return (map[status] ?? 'open');
     }

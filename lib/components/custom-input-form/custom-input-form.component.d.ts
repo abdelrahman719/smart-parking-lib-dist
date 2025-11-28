@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { IComponentFormError } from '../../interfaces';
 import * as i0 from "@angular/core";
 export declare class CustomInputFormComponent {
-    numberType: 'currency' | 'time';
+    numberType: 'currency' | 'time' | 'discount' | null;
     time: boolean;
     class: string;
     labelClass: string;

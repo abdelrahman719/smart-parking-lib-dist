@@ -5712,7 +5712,7 @@ class CustomStatusLabelComponent {
             incoming: 'incoming',
             past: 'past',
         };
-        return (map[status] ?? 'open');
+        return (map[status] ?? 'inactive');
     }
     get key() {
         return this.normalize(this.status);

@@ -5659,6 +5659,12 @@ const STYLES = {
         border: '#B42318',
         label: 'Inactive',
     },
+    deleted: {
+        color: '#B42318',
+        bg: '#f8e9e8',
+        border: '#B42318',
+        label: 'Deleted',
+    },
     inprogress: {
         color: '#ffffff',
         bg: '#1F1F1F',
@@ -5690,6 +5696,12 @@ const STYLES = {
         border: '#e9e9e9',
         label: 'Past',
     },
+    default: {
+        color: '#1F1F1F',
+        bg: '#e9e9e9',
+        border: '#e9e9e9',
+        label: 'Default',
+    },
 };
 class CustomStatusLabelComponent {
     status;
@@ -5703,6 +5715,7 @@ class CustomStatusLabelComponent {
             not_payed: 'not_paid',
             active: 'active',
             inactive: 'inactive',
+            deleted: 'deleted',
             open: 'open',
             inprogress: 'inprogress',
             'in-progress': 'inprogress',
@@ -5711,6 +5724,7 @@ class CustomStatusLabelComponent {
             running: 'running',
             incoming: 'incoming',
             past: 'past',
+            default: 'default',
         };
         return (map[status] ?? 'inactive');
     }

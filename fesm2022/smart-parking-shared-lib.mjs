@@ -5684,11 +5684,11 @@ const STYLES = {
         border: '#602650',
         label: 'Running',
     },
-    incoming: {
+    upcoming: {
         color: '#25c7bc',
         bg: '#eafaf9',
         border: '#eafaf9',
-        label: 'Incoming',
+        label: 'Upcoming',
     },
     past: {
         color: '#1F1F1F',
@@ -5722,7 +5722,7 @@ class CustomStatusLabelComponent {
             'in progress': 'inprogress',
             closed: 'closed',
             running: 'running',
-            incoming: 'incoming',
+            upcoming: 'upcoming',
             past: 'past',
             default: 'default',
         };

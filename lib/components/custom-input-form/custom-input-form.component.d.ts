@@ -21,6 +21,7 @@ export declare class CustomInputFormComponent {
     containRequiredError(): boolean;
     showPassword: boolean;
     ngOnInit(): void;
+    emitValue(event: Event): void;
     togglePasswordVisibility(): void;
     preventInvalidNumberInput(event: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomInputFormComponent, never>;

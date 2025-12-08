@@ -5,6 +5,7 @@ export declare class CustomToggleSwitchComponent {
     label: string;
     labelPosition: 'left' | 'right';
     disabled: boolean;
+    hasConfirmation: boolean;
     size: 'small' | 'medium' | 'large';
     onColor: string;
     offColor: string;
@@ -12,5 +13,5 @@ export declare class CustomToggleSwitchComponent {
     valueChange: EventEmitter<boolean>;
     toggle(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomToggleSwitchComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomToggleSwitchComponent, "custom-toggle-switch", never, { "value": { "alias": "value"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelPosition": { "alias": "labelPosition"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "size": { "alias": "size"; "required": true; }; "onColor": { "alias": "onColor"; "required": false; }; "offColor": { "alias": "offColor"; "required": false; }; "thumbColor": { "alias": "thumbColor"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomToggleSwitchComponent, "custom-toggle-switch", never, { "value": { "alias": "value"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelPosition": { "alias": "labelPosition"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "hasConfirmation": { "alias": "hasConfirmation"; "required": false; }; "size": { "alias": "size"; "required": true; }; "onColor": { "alias": "onColor"; "required": false; }; "offColor": { "alias": "offColor"; "required": false; }; "thumbColor": { "alias": "thumbColor"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }

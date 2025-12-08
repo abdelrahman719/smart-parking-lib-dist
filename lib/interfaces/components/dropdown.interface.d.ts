@@ -4,7 +4,19 @@ export interface IDropdownOption {
     nameEn: string;
     serialNumber?: string;
     enumValue?: string;
+    iconPath?: string;
+    latitude?: number;
+    longitude?: number;
+    status?: StatusType;
 }
+export interface IUserLookup {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+}
+export type StatusType = 'ACTIVE' | 'INACTIVE';
 export interface ITabDropdownOption extends IDropdownOption {
     disabled: boolean;
 }

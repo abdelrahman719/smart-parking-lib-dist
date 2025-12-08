@@ -1,6 +1,8 @@
 import { EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError, IDropdownOption } from '../../interfaces';
+import { TranslationService } from '../../services';
+import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export declare class CustomMultiSelectFormComponent {
     parentForm: FormGroup;
@@ -23,10 +25,18 @@ export declare class CustomMultiSelectFormComponent {
     customSelectedItems: IDropdownOption[];
     filterText: string;
     disabled: boolean;
+    disableToggle: boolean;
     chipsBelow: boolean;
+    wrapShips: boolean;
     itemRemovable: boolean;
+    showSerialWithName: boolean;
+    showInactive: boolean;
+    disableInactiveSelection: boolean;
     removedItems: EventEmitter<IDropdownOption[]>;
+    valueChange: EventEmitter<IDropdownOption[]>;
     set selectedItems(editData: IDropdownOption[]);
+    translationService: TranslationService;
+    translateService: TranslateService;
     ngOnInit(): void;
     get selectedOptions(): IDropdownOption[];
     getSelectedLabel(option: IDropdownOption): string;
@@ -42,5 +52,5 @@ export declare class CustomMultiSelectFormComponent {
     removeSelected(id: string | number): void;
     removeSelectedChip(id: string | number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMultiSelectFormComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMultiSelectFormComponent, "custom-multi-select-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "filterDesign": { "alias": "filterDesign"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "height": { "alias": "height"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "chipsBelow": { "alias": "chipsBelow"; "required": false; }; "itemRemovable": { "alias": "itemRemovable"; "required": false; }; "selectedItems": { "alias": "selectedItems"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "removedItems": "removedItems"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMultiSelectFormComponent, "custom-multi-select-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "filterDesign": { "alias": "filterDesign"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "height": { "alias": "height"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "disableToggle": { "alias": "disableToggle"; "required": false; }; "chipsBelow": { "alias": "chipsBelow"; "required": false; }; "wrapShips": { "alias": "wrapShips"; "required": false; }; "itemRemovable": { "alias": "itemRemovable"; "required": false; }; "showSerialWithName": { "alias": "showSerialWithName"; "required": false; }; "showInactive": { "alias": "showInactive"; "required": false; }; "disableInactiveSelection": { "alias": "disableInactiveSelection"; "required": false; }; "selectedItems": { "alias": "selectedItems"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "removedItems": "removedItems"; "valueChange": "valueChange"; }, never, never, true, never>;
 }

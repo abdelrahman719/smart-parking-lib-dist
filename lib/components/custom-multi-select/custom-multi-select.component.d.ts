@@ -1,5 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { IDropdownOption } from '../../interfaces';
+import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
 export declare class CustomMultiSelectComponent {
     label?: string;
@@ -18,6 +19,7 @@ export declare class CustomMultiSelectComponent {
     isOpen: boolean;
     filteredOptions: IDropdownOption[];
     filterText: string;
+    translationService: TranslationService;
     ngOnInit(): void;
     get selectedOptions(): IDropdownOption[];
     getSelectedLabels(): string;

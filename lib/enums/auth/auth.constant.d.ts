@@ -4,7 +4,6 @@ export declare enum AuthConstant {
     USER_DATA = "user",
     USER_PERMISSIONS = "permissions",
     USER_ROLES = "roles",
-    USER_ROLES_DETAILS = "rolesDetails",
     EXPIRES_AT = "expiresIn"
 }
 export declare enum UserStatus {
@@ -14,33 +13,69 @@ export declare enum UserStatus {
 }
 export declare enum Roles {
     ADMIN = "ADMIN",
-    SUPER_ADMIN = "SUPER-ADMIN",
-    INSPECTOR = "INSPECTOR",
-    OPERATOR = "OPERATOR",
-    SUPPORT_AGENT = "SUPPORT-AGENT"
+    SUPER_ADMIN = "SUPER_ADMIN",
+    PLANNER = "PLANNER",
+    SUPERVISOR = "SUPERVISOR",
+    OPERATOR = "OPERATOR"
 }
-export declare enum PERMISSIONS {
+export declare enum Types {
+    ADMIN = "ADMIN",
+    PLANNER = "PLANNER",
+    SUPERVISOR = "SUPERVISOR",
+    OPERATOR = "OPERATOR"
+}
+export declare enum Resources {
+    USER = "user",
+    TASK = "task",
+    PLAN = "plan",
+    VEHICLE = "vehicle",
+    EQUIPMENT = "Equipment",
+    MOBILE_TASK = "mobile:task",
+    MOBILE_USER = "mobile:user",
+    MOBILE_LANDING = "mobile:landing"
+}
+export declare enum actionPermission {
+    VIEW_DETAILS = "view-details",
+    CREATE = "create",
+    VIEW_LIST = "view-list",
+    UPDATE = "update",
+    DELETE = "delete",
+    START = "start",
+    PAUSE = "pause",
+    RESUME = "resume",
+    STOP = "stop",
+    VIEW_PROFILE = "view-profile",
+    VIEW_LANDING = "view-landing"
+}
+export declare enum Permissions {
     all = "all",
-    USER_MANAGEMENT_CREATE = "USER-MANAGEMENT:CREATE",
-    USER_MANAGEMENT_UPDATE = "USER-MANAGEMENT:UPDATE",
-    USER_MANAGEMENT_DELETE = "USER-MANAGEMENT:DELETE",
-    USER_MANAGEMENT_VIEW = "USER-MANAGEMENT:VIEW",
-    PARKING_ZONE_CREATE = "PARKING-ZONE:CREATE",
-    PARKING_ZONE_UPDATE = "PARKING-ZONE:UPDATE",
-    PARKING_ZONE_DELETE = "PARKING-ZONE:DELETE",
-    PARKING_ZONE_VIEW = "PARKING-ZONE:VIEW",
-    POLICIES_CREATE = "POLICIES:CREATE",
-    POLICIES_UPDATE = "POLICIES:UPDATE",
-    POLICIES_DELETE = "POLICIES:DELETE",
-    POLICIES_VIEW = "POLICIES:VIEW",
-    ASSETS_CREATE = "ASSETS:CREATE",
-    ASSETS_UPDATE = "ASSETS:UPDATE",
-    ASSETS_DELETE = "ASSETS:DELETE",
-    ASSETS_VIEW = "ASSETS:VIEW",
-    VIOLATION_CREATE = "VIOLATION:CREATE",
-    VIOLATION_DELETE = "VIOLATION:DELETE",
-    VIOLATION_VIEW = "VIOLATION:VIEW",
-    VIOLATION_UPDATE = "VIOLATION:UPDATE",
-    COMPLAIN_VIEW = "COMPLAIN:VIEW",
-    COMPLAIN_UPDATE = "COMPLAIN:UPDATE"
+    UserReadSelf = "user:read:self",
+    UserViewProfileSelf = "user:view-profile:self",
+    UserViewListOrganization = "user:view-list:ORGANIZATION",
+    UserCreateOrganization = "user:create:ORGANIZATION",
+    teamViewListORGANIZATION = "team:view-list:ORGANIZATION",
+    teamCreateORGANIZATION = "team:create:ORGANIZATION",
+    zoneCreateTeam = "zone:create:team",
+    zoneViewListTeam = "zone:view-list:team",
+    zoneCreateBulkTeam = "zone:create-bulk:team",
+    TaskCreateTeam = "task:create:team",
+    TaskViewListSelf = "task:view-list:self",
+    TaskViewDetailsSelf = "task:view-details:self",
+    PlanCreateDraftTeam = "plan:create-draft:team",
+    PlanCreatePublishTeam = "plan:create-publish:team",
+    PlanViewGanttChartSelf = "plan:view-gantt-chart:self",
+    PlanViewDetailsSelf = "plan:view-details:self",
+    PlanUpdateSelf = "plan:update:self",
+    VehicleCreateOrganization = "vehicle:create:organization",
+    VehicleViewListOrganization = "vehicle:view-list:organization",
+    EquipmentCreateOrganization = "equipment:create:organization",
+    EquipmentViewListOrganization = "equipment:view-list:organization",
+    MobileUserViewProfileSelf = "mobile:user:view-profile:self",
+    MobileLandingViewLandingSelf = "mobile:landing:view-landing:self",
+    MobileTaskViewListSelf = "mobile:task:view-list:self",
+    MobileTaskViewDetailsSelf = "mobile:task:view-details:self",
+    MobileTaskStartSelf = "mobile:task:start:self",
+    MobileTaskPauseSelf = "mobile:task:pause:self",
+    MobileTaskResumeSelf = "mobile:task:resume:self",
+    MobileTaskStopSelf = "mobile:task:stop:self"
 }

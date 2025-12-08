@@ -9,11 +9,11 @@ export interface ISmpAttachment {
     contentType: string;
     fileName: string;
 }
-export interface ISmpAttachmentFromServer {
+export interface ExistingServerItem {
     id: string;
     imagePath: string;
 }
-export interface ISmpAttachmentAfterResolving {
+export interface ExistingResolvedItem {
     id: string;
     imagePath: SafeUrl;
 }

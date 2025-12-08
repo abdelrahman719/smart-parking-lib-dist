@@ -15,7 +15,7 @@ export interface ISmDynmaicTableConfig {
 }
 export declare class CustomSmDynamicTableComponent {
     private sanitizer;
-    config: import("@angular/core").InputSignal<ISmDynmaicTableConfig>;
+    config: ISmDynmaicTableConfig;
     actionsList: IActions[];
     hasCheckBox: boolean;
     tableMaxHeight: string;
@@ -34,17 +34,12 @@ export declare class CustomSmDynamicTableComponent {
     checkedActionDeleteSvg: SafeHtml;
     expandSvg: SafeHtml;
     private statusKey;
-    heightFactor: import("@angular/core").WritableSignal<number>;
-    dynamicHeight: import("@angular/core").Signal<string>;
     constructor(sanitizer: DomSanitizer);
-    ngOnInit(): void;
     onAction(row: any, handler: (row: any) => void): void;
     getNestedValue(obj: any, path: string): any;
     ngOnChanges(changes: SimpleChanges): void;
     private findStatusKey;
     isRowInactive(row: any): boolean;
-    private updateFactor;
-    ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
 }

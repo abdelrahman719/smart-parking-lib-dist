@@ -44,7 +44,7 @@ export declare class CustomFilterDropdownComponent {
     getValidatorsFromConfig(validations?: IComponentFormError[]): (typeof Validators.required)[];
     getAvailableOptions(activeIndex: number): IDropdownOption[];
     addFilterRow(): void;
-    onFilterDropdownChange(selectedId: any, rowIndex: number): void;
+    onFilterDropdownChange(selectedId: IDropdownOption | null, rowIndex: number): void;
     removeFilterRow(rowIndex: number): void;
     isFilterFormEmpty(): boolean;
     clearAll(): void;

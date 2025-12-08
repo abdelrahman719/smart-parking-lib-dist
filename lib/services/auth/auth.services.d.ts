@@ -1,6 +1,6 @@
 import { StorageService } from './storage.services';
 import { IUserData } from '../../interfaces';
-import { PERMISSIONS, Roles } from '../../enums';
+import { Permissions, Roles } from '../../enums';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AuthBeService } from './auth.be.services';
 import { AuthContextService } from './auth-context.service';
@@ -13,7 +13,7 @@ export declare class AuthService {
     private storageService;
     private toastService;
     Roles: typeof Roles;
-    PERMISSIONS: typeof PERMISSIONS;
+    Permissions: typeof Permissions;
     constructor(authContextService: AuthContextService, authBeService: AuthBeService, router: Router, storageService: StorageService, toastService: ToastService);
     login(data: any): void;
     logOutUser(): void;
@@ -26,7 +26,6 @@ export declare class AuthService {
     getCurrentUser(): IUserData;
     getCurrentPermissions(): any[];
     getCurrentRoles(): any[];
-    getCurrentRolesDetails(): any[];
     hasAnyCurrentRole(targetRoles: Roles[]): boolean;
     hasCategory(route: ActivatedRouteSnapshot): boolean;
     canDoAction(action: string[]): boolean;

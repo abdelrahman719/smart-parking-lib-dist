@@ -1,7 +1,6 @@
 import { EventEmitter, SimpleChanges, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError, IDropdownOption } from '../../interfaces';
-import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
 export interface IPhoneCountryOption extends IDropdownOption {
     dialCode: string;
@@ -47,7 +46,6 @@ export declare class CustomPhoneFormComponent {
     selectedCountry: IPhoneCountryOption | null;
     phoneText: string;
     numberInputRef: ElementRef<HTMLInputElement>;
-    translationService: TranslationService;
     ngOnInit(): void;
     ngOnChanges(changes: SimpleChanges): void;
     private parentControl;

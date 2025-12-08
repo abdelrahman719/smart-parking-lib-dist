@@ -3,8 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { IComponentFormError } from '../../interfaces';
 import * as i0 from "@angular/core";
 export declare class CustomInputFormComponent {
-    numberType: 'currency' | 'time' | 'discount' | null;
-    time: boolean;
+    currency: boolean;
     class: string;
     labelClass: string;
     label: string;
@@ -21,9 +20,8 @@ export declare class CustomInputFormComponent {
     containRequiredError(): boolean;
     showPassword: boolean;
     ngOnInit(): void;
-    emitValue(event: Event): void;
     togglePasswordVisibility(): void;
-    preventInvalidNumberInput(event: KeyboardEvent): void;
+    preventInvalidCurrencyInput(event: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomInputFormComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomInputFormComponent, "custom-input-form", never, { "numberType": { "alias": "numberType"; "required": false; }; "time": { "alias": "time"; "required": false; }; "class": { "alias": "class"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "name": { "alias": "name"; "required": true; }; "type": { "alias": "type"; "required": false; }; "controlName": { "alias": "controlName"; "required": true; }; "parentForm": { "alias": "parentForm"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "pattern": { "alias": "pattern"; "required": false; }; "height": { "alias": "height"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomInputFormComponent, "custom-input-form", never, { "currency": { "alias": "currency"; "required": false; }; "class": { "alias": "class"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "name": { "alias": "name"; "required": true; }; "type": { "alias": "type"; "required": false; }; "controlName": { "alias": "controlName"; "required": true; }; "parentForm": { "alias": "parentForm"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "pattern": { "alias": "pattern"; "required": false; }; "height": { "alias": "height"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }

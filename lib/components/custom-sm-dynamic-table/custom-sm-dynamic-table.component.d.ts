@@ -43,6 +43,7 @@ export declare class CustomSmDynamicTableComponent {
     ngOnChanges(changes: SimpleChanges): void;
     private findStatusKey;
     isRowInactive(row: any): boolean;
+    disableActions(row: any): boolean;
     private updateFactor;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;

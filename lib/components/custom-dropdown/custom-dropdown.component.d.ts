@@ -16,6 +16,7 @@ export declare class CustomDropdownComponent {
     name?: string;
     value: any;
     valueChange: EventEmitter<IDropdownOption | IUserLookup | null>;
+    clear: EventEmitter<void>;
     height: string;
     userOptions: IUserLookup[];
     isUserMode: boolean;
@@ -33,5 +34,5 @@ export declare class CustomDropdownComponent {
     filterOptions(): void;
     set reset(value: boolean);
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDropdownComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDropdownComponent, "custom-dropdown", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "selectedClass": { "alias": "selectedClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "userOptions": { "alias": "userOptions"; "required": false; }; "isUserMode": { "alias": "isUserMode"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDropdownComponent, "custom-dropdown", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "selectedClass": { "alias": "selectedClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "userOptions": { "alias": "userOptions"; "required": false; }; "isUserMode": { "alias": "isUserMode"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; "clear": "clear"; }, never, never, true, never>;
 }

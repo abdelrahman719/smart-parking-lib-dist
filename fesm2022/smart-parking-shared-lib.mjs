@@ -2259,7 +2259,7 @@ class CustomMultiSelectFormComponent {
     // }
     getSelectedLabel(option) {
         const isEnglish = this.translationService.currentLang() === 'en';
-        console.log('isEnglish: ', isEnglish);
+        //console.log('isEnglish: ', isEnglish);
         const name = isEnglish ? option.nameEn : option.nameAr;
         const serial = option.serialNumber;
         if (this.showSerialWithName) {
@@ -2277,7 +2277,7 @@ class CustomMultiSelectFormComponent {
     }
     getSelectedLabels() {
         const isEnglish = this.translationService.currentLang() === 'en';
-        console.log('isEnglish: ', isEnglish);
+        // console.log('isEnglish: ', isEnglish);
         return this.selectedOptions.map(opt => isEnglish ? opt.nameEn : opt.nameAr);
     }
     isSelected(id) {
@@ -2485,10 +2485,10 @@ class CustomPaginationComponent {
         this.calculateTotalPages();
     }
     calculateTotalPages() {
-        debugger;
+        ;
         this.generatePageSizeOptions();
         const pageCount = Math.ceil(this.totalCount / this.pageSize);
-        console.log('pageCount: ', pageCount);
+        //  console.log('pageCount: ', pageCount);
         const pages = [];
         if (pageCount <= this.maxVisiblePages) {
             for (let i = 1; i <= pageCount; i++) {
@@ -2507,8 +2507,7 @@ class CustomPaginationComponent {
                 pages.push(i);
             }
         }
-        console.log('pages: ', pages);
-        debugger;
+        //   console.log('pages: ', pages);
         this.totalPages.set(pages);
     }
     generatePageSizeOptions() {
@@ -5236,17 +5235,16 @@ class CustomFilterDropdownComponent {
             filteredValues: this.filterForm.value,
             main: [],
         }));
-        console.log();
         this.filtersChanged.emit(this.activeFilters().filteredValues);
     }
     onDateChange(event, name) {
-        console.log('hi', event, name);
+        //console.log('hi', event, name);
     }
     onMultiSelectChange(event, name) {
-        console.log('hi', event, name);
+        //console.log('hi', event, name);
     }
     onDropdownChange(event, name) {
-        console.log('hi', event, name);
+        // console.log('hi', event, name);
     }
     filtersChangedEmit() {
         this.activeFilters.update((current) => ({
@@ -5415,7 +5413,7 @@ class CustomPagesHeaderComponent {
         this.authService = authService;
         effect(() => {
             if (this.pageTabs().length) {
-                console.log('tabs', this.pageTabs());
+                //  console.log('tabs' , this.pageTabs())
                 this.selectedTab.set(this.pageTabs()[0]);
             }
         });
@@ -7598,7 +7596,7 @@ const ErrorInterceptor = (req, next) => {
                     toastService.toast(error.error.errorMessage, 'top-center', 'error', 2000);
                     break;
                 }
-                else if (error.error.errors.length > 0) {
+                else if (error.error?.errors && error.error.errors.length > 0) {
                     error.error.errors.forEach((err) => {
                         const msg = err[`message${suffix}`] ||
                             err.message ||
@@ -7610,6 +7608,7 @@ const ErrorInterceptor = (req, next) => {
                 }
                 else {
                     const msg = error.error[`message${suffix}`] ||
+                        error.error.message ||
                         error.error.errorMessage ||
                         error.error.messageEn ||
                         'Unexpected error';
@@ -7617,11 +7616,7 @@ const ErrorInterceptor = (req, next) => {
                     break;
                 }
             case 401:
-                // access token expired / au auth
                 authService.handleRefreshToken();
-                //  authContextService.clearData();
-                // window.dispatchEvent(new CustomEvent('auth-logout'));
-                // router.navigate(['/auth/login']);
                 break;
             case 403:
                 // no permission
@@ -7691,7 +7686,7 @@ const NetworkConnectionInterceptor = (req, next) => {
         const elapsedTime = Date.now() - startTime;
         const threshold = 5000;
         if (elapsedTime > threshold) {
-            console.log('Slow network detected');
+            //  console.log('Slow network detected');
         }
     }));
 };

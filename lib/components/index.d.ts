@@ -59,3 +59,4 @@ export * from './custom-smp-file-upload/custom-smp-file-upload.component';
 export * from './custom-toast-viewport/custom-toast-viewport.component';
 export * from './custom-status-label/custom-status-label.component';
 export * from './custom-profile-img-input/custom-profile-img-input.component';
+export * from './image-viewer/image-viewer.component';

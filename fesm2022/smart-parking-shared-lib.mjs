@@ -7932,10 +7932,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
         }], ctorParameters: () => [] });
 
 function checkProductAccess(product) {
-    let tenantPlatformService = inject(TenantPlatformService);
-    if (!tenantPlatformService.isTenantPlatform()) {
-        return true;
-    }
     const userData = localStorage.getItem('userData');
     if (!userData) {
         window.location.hash = 'tenant-auth';

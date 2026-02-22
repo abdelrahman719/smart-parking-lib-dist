@@ -13,6 +13,7 @@ export interface ITenantUserSingleAuthResult {
     token?: string;
     refreshToken?: string;
     userId?: number;
+    user?: any;
     email?: string;
     error?: any;
 }

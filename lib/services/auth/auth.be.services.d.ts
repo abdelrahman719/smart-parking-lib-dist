@@ -15,6 +15,10 @@ export declare class AuthBeService {
         username: string;
         password: string;
     }): Observable<IGlobalAuthResponse<ILoginData>>;
+    tenantLogin(data: {
+        username: string;
+        password: string;
+    }): Observable<IGlobalAuthResponse<ILoginData>>;
     logout(): Observable<IGlobalAuthResponse<any>>;
     refreshToken(refreshToken: {
         refreshToken: string;

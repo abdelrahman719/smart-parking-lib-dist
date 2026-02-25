@@ -7669,7 +7669,7 @@ const ErrorInterceptor = (req, next) => {
             case 403:
                 // no permission
                 toastService.toast(`User don't have permission`, 'top-center', 'error', 2000);
-                authService.handlePermissionConfig();
+                //   authService.handlePermissionConfig();
                 console.error('No Permission');
                 break;
             case 406:
@@ -7953,19 +7953,24 @@ const noAuthTenantGuard = () => {
 };
 
 function checkProductAccess(product) {
+    const isTenantPlatform = window['env']?.['isTenantPlatform'] === true;
+    // Non-tenant system has no product gating — always allow access
+    if (!isTenantPlatform) {
+        return true;
+    }
     const userData = localStorage.getItem('userData');
     if (!userData) {
-        window.location.hash = 'tenant-auth';
+        window.location.hash = '/tenant-auth';
         return false;
     }
     const parsed = JSON.parse(userData);
     if (!parsed?.applications || parsed.applications.length === 0) {
-        window.location.hash = 'tenant-auth';
+        window.location.hash = '/tenant-auth';
         return false;
     }
     const hasAccess = parsed.applications.some((app) => app.includes(product));
     if (!hasAccess) {
-        window.location.hash = 'tenant-auth';
+        window.location.hash = '/tenant-auth';
         return false;
     }
     return true;

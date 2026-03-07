@@ -703,6 +703,9 @@ class CommonHttpService {
     CommonPutRequests(url, body, options) {
         return this.http.put(this.buildUrl(url), body, options);
     }
+    CommonPatchRequests(url, body, options) {
+        return this.http.patch(this.buildUrl(url), body, options);
+    }
     CommonGetRequests(url, options) {
         return this.http.get(this.buildUrl(url), options);
     }
@@ -746,6 +749,19 @@ class CommonHttpService {
             url += queryString == '' ? '' : '?' + queryString;
         }
         return this.http.put(this.buildUrl(url), body, options);
+    }
+    CommonPatchRequestsWithQuery(url, Model, body, options) {
+        if (Model) {
+            let queryString = Object.keys(Model)
+                .map((key) => (Model[key] != null && Model[key] != '' && Model[key] != undefined) ||
+                Model[key] === false
+                ? key + '=' + Model[key]
+                : null)
+                .filter((x) => x != null)
+                .join('&');
+            url += queryString == '' ? '' : '?' + queryString;
+        }
+        return this.http.patch(this.buildUrl(url), body, options);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CommonHttpService, deps: [{ token: i1.HttpClient }, { token: API_BASE_URL, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CommonHttpService, providedIn: 'root' });

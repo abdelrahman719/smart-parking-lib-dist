@@ -8,5 +8,6 @@ export * from './lib/directives/index';
 export * from './lib/guards/index';
 export * from './lib/dispatching-fe-components.service';
 export * from './lib/utilities/http-context';
+export * from './lib/utilities/saudiTime';
 export * from './lib/pipes';
 export * from './lib/tenant-domain';

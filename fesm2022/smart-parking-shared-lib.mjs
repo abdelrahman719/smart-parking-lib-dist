@@ -5849,6 +5849,7 @@ class CustomStatusLabelComponent {
             acknowledged: 'acknowledged',
             falsepositive: 'falsepositive',
             'false-positive': 'falsepositive',
+            'false_positive': 'falsepositive',
             'false positive': 'falsepositive',
         };
         return (map[status] ?? 'inactive');

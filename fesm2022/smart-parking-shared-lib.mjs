@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, Pipe, inject, ContentChild, Injector, ViewContainerRef, ViewChild, HostBinding, ViewEncapsulation, ElementRef, model, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent } from '@angular/core';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, Pipe, inject, ContentChild, Injector, ViewContainerRef, ViewChild, HostBinding, DestroyRef, ViewEncapsulation, ElementRef, model, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent } from '@angular/core';
 import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, take, firstValueFrom, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
@@ -14,8 +14,8 @@ import { isPlatformBrowser, CommonModule, registerLocaleData, NgStyle, NgClass, 
 import localeAr from '@angular/common/locales/ar';
 import localeEn from '@angular/common/locales/en';
 import * as i1$4 from '@angular/platform-browser';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 const ModuleRoutes = {
     AUTH: 'auth',
@@ -3930,36 +3930,83 @@ class CustomTimeInputFormComponent {
     labelClass = '';
     inputClass = '';
     validation = [];
-    // Updated to accept the object or a string for backward compatibility/defaulting
-    defaultTime = null;
-    minTime = null;
     height = '3.6em';
+    /**
+     * When true the component reads / writes / emits "HH:mm:ss" strings
+     * (e.g. "17:30:00") instead of ITimeObject.
+     * Default is false — keeps full backward compatibility.
+     */
+    stringMode = false;
+    /**
+     * Default value. Accepts ITimeObject or "HH:mm:ss" string.
+     * The component resolves it regardless of stringMode.
+     */
+    defaultTime = null;
+    /**
+     * Minimum allowed time. Accepts ITimeObject or "HH:mm:ss" string.
+     */
+    minTime = null;
+    /**
+     * Optional direct value binding — mirrors the range calendar pattern.
+     * Accepts ITimeObject or "HH:mm:ss" string, patches the form control
+     * and updates the display. Reacts to changes via ngOnChanges.
+     */
+    value = null;
+    /** Emits ITimeObject or "HH:mm:ss" string depending on stringMode */
     timeChange = new EventEmitter();
     showErrors = signal(false);
     dropdownOpen = signal(false);
     hours = hours;
     minutes = minutes;
-    // Internal state tracking
     selectedHour = null;
     selectedMinute = null;
-    ngOnInit() {
-        const control = this.parentForm.get(this.controlName);
-        // 1. Check Form Value first, then defaultTime Input
-        if (control?.value) {
-            this.extractValueFromObject(control.value);
-        }
-        else if (this.defaultTime) {
-            this.selectedHour = this.defaultTime.hour;
-            this.selectedMinute = this.defaultTime.minute;
-            this.setFormValue();
+    destroyRef = inject(DestroyRef);
+    ngOnChanges(changes) {
+        if (changes['value'] && !changes['value'].firstChange) {
+            this.applyValueInput(this.value);
         }
     }
+    ngOnInit() {
+        const control = this.parentForm.get(this.controlName);
+        if (control) {
+            // Priority: [value] input → form control value → defaultTime
+            const seed = this.value ?? control.value ?? this.defaultTime;
+            if (seed !== null && seed !== undefined) {
+                const obj = this.coerceToTimeObject(seed);
+                if (obj) {
+                    this.selectedHour = obj.hour;
+                    this.selectedMinute = obj.minute;
+                    this.patchControl(seed);
+                }
+            }
+            control.valueChanges
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((val) => {
+                if (val) {
+                    const obj = this.coerceToTimeObject(val);
+                    if (obj) {
+                        this.selectedHour = obj.hour;
+                        this.selectedMinute = obj.minute;
+                    }
+                }
+                else {
+                    this.selectedHour = null;
+                    this.selectedMinute = null;
+                }
+            });
+        }
+    }
+    // ── Dropdown ──────────────────────────────────────────────────────────────
     toggleDropdown() {
         this.dropdownOpen.set(!this.dropdownOpen());
         // Refresh internal state from form when opening
         const control = this.parentForm.get(this.controlName);
-        if (control?.value) {
-            this.extractValueFromObject(control.value);
+        if (this.dropdownOpen() && control?.value) {
+            const obj = this.coerceToTimeObject(control.value);
+            if (obj) {
+                this.selectedHour = obj.hour;
+                this.selectedMinute = obj.minute;
+            }
         }
         // Validation trigger on close
         if (!this.dropdownOpen() && control?.invalid) {
@@ -3967,55 +4014,44 @@ class CustomTimeInputFormComponent {
             control.markAsTouched();
         }
     }
-    extractValueFromObject(val) {
-        if (val && typeof val === 'object') {
-            this.selectedHour = val.hour;
-            this.selectedMinute = val.minute;
-        }
-    }
-    setFormValue() {
-        // Check if they are numbers (including 0)
-        if (typeof this.selectedHour === 'number' && typeof this.selectedMinute === 'number') {
-            const timeObject = {
-                hour: this.selectedHour,
-                minute: this.selectedMinute,
-                second: 0,
-                nano: 0
-            };
-            this.parentForm.get(this.controlName)?.setValue(timeObject);
-        }
-        else {
-            this.parentForm.get(this.controlName)?.setValue(null);
-        }
-    }
     confirmTime() {
         if (this.selectedHour !== null && this.selectedMinute !== null) {
-            const result = {
-                hour: Number(this.selectedHour),
-                minute: Number(this.selectedMinute),
-                second: 0,
-                nano: 0
-            };
             const control = this.parentForm.get(this.controlName);
-            if (control) {
-                control.setValue(result);
-                control.markAsDirty();
-                control.updateValueAndValidity();
+            if (this.stringMode) {
+                const str = this.toTimeString(this.selectedHour, this.selectedMinute);
+                control?.setValue(str);
+                control?.markAsDirty();
+                control?.updateValueAndValidity();
+                this.timeChange.emit(str);
             }
-            this.timeChange.emit(result);
+            else {
+                const obj = {
+                    hour: Number(this.selectedHour),
+                    minute: Number(this.selectedMinute),
+                    second: 0,
+                    nano: 0,
+                };
+                control?.setValue(obj);
+                control?.markAsDirty();
+                control?.updateValueAndValidity();
+                this.timeChange.emit(obj);
+            }
         }
         this.dropdownOpen.set(false);
     }
+    // ── Disabled checks ───────────────────────────────────────────────────────
     isHourDisabled(h) {
-        if (!this.minTime)
+        const min = this.coerceToTimeObject(this.minTime);
+        if (!min)
             return false;
-        return h < this.minTime.hour;
+        return h < min.hour;
     }
     isMinuteDisabled(m) {
-        if (!this.minTime)
+        const min = this.coerceToTimeObject(this.minTime);
+        if (!min)
             return false;
-        if (this.selectedHour === this.minTime.hour) {
-            return m < this.minTime.minute;
+        if (this.selectedHour === min.hour) {
+            return m < min.minute;
         }
         return false;
     }
@@ -4026,18 +4062,83 @@ class CustomTimeInputFormComponent {
             }
         }
     }
+    // ── Display ───────────────────────────────────────────────────────────────
     displayTime() {
-        // Use explicit null/undefined checks because 0 is a valid value
         if (this.selectedHour === null || this.selectedHour === undefined ||
             this.selectedMinute === null || this.selectedMinute === undefined) {
             return null;
         }
-        const h = this.selectedHour.toString().padStart(2, '0');
-        const m = this.selectedMinute.toString().padStart(2, '0');
-        return `${h}:${m}`;
+        return this.toTimeString(this.selectedHour, this.selectedMinute);
+    }
+    // ── Private helpers ───────────────────────────────────────────────────────
+    applyValueInput(val) {
+        const obj = this.coerceToTimeObject(val ?? null);
+        if (obj) {
+            this.selectedHour = obj.hour;
+            this.selectedMinute = obj.minute;
+        }
+        else {
+            this.selectedHour = null;
+            this.selectedMinute = null;
+        }
+        this.patchControl(val ?? null);
+    }
+    /**
+     * Writes the value into the form control in the correct shape.
+     * Always normalises to the active mode (string vs object) with emitEvent: false
+     * to avoid a valueChanges loop.
+     */
+    patchControl(val) {
+        const control = this.parentForm?.get(this.controlName);
+        if (!control)
+            return;
+        if (!val) {
+            control.setValue(null, { emitEvent: false });
+            return;
+        }
+        if (this.stringMode) {
+            const obj = this.coerceToTimeObject(val);
+            const str = obj ? this.toTimeString(obj.hour, obj.minute, obj.second ?? 0) : null;
+            control.setValue(str, { emitEvent: false });
+        }
+        else {
+            const obj = this.coerceToTimeObject(val);
+            control.setValue(obj, { emitEvent: false });
+        }
+    }
+    /**
+     * Converts ITimeObject | "HH:mm:ss" | "HH:mm" | null → ITimeObject | null.
+     * Safe to call with anything — returns null for invalid / empty input.
+     */
+    coerceToTimeObject(val) {
+        if (!val)
+            return null;
+        if (typeof val === 'string') {
+            // Accepts "HH:mm:ss" or "HH:mm"
+            const parts = val.split(':');
+            if (parts.length < 2)
+                return null;
+            const hour = parseInt(parts[0], 10);
+            const minute = parseInt(parts[1], 10);
+            const second = parts[2] ? parseInt(parts[2], 10) : 0;
+            if (isNaN(hour) || isNaN(minute))
+                return null;
+            return { hour, minute, second, nano: 0 };
+        }
+        if (typeof val === 'object' && 'hour' in val) {
+            return val;
+        }
+        return null;
+    }
+    /**
+     * Formats hour + minute (+ optional second) → "HH:mm:ss"
+     */
+    toTimeString(hour, minute, second = 0) {
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${pad(hour)}:${pad(minute)}:${pad(second)}`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTimeInputFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTimeInputFormComponent, isStandalone: true, selector: "custom-time-input-form", inputs: { parentForm: "parentForm", name: "name", controlName: "controlName", label: "label", labelClass: "labelClass", inputClass: "inputClass", validation: "validation", defaultTime: "defaultTime", minTime: "minTime", height: "height" }, outputs: { timeChange: "timeChange" }, ngImport: i0, template: "<div class=\"time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <div class=\"time-error-container\">\r\n      <custom-app-error\r\n        [showErrors]=\"showErrors()\"\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"controlName\"\r\n      />\r\n    </div>\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      placeholder=\"00:00\"\r\n    />\r\n    @if (\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched\r\n    ) {\r\n      <span class=\"input-icon error-icon\">\r\n        <svg\r\n          width=\"1.08em\"\r\n          height=\"1.08em\"\r\n          viewBox=\"0 0 22 22\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <g clip-path=\"url(#clip0_9085_34629)\">\r\n            <path\r\n              d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M11 7V11\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M11 15H11.01\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </g>\r\n          <defs>\r\n            <clipPath id=\"clip0_9085_34629\">\r\n              <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n            </clipPath>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n    }\r\n    <!-- <span\r\n      class=\"time-picker__input--time-icon\"\r\n      [class.time-icon-shifted]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_10062_19268)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#828282\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"#828282\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n      </svg>\r\n    </span> -->\r\n  </div>\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"toggleDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <select\r\n        [(ngModel)]=\"selectedHour\"\r\n        class=\"time-select\"\r\n        (ngModelChange)=\"onHourChange()\"\r\n      >\r\n        <option [ngValue]=\"null\" disabled>HH</option>\r\n        @for (h of hours; track h) {\r\n          <option [ngValue]=\"h\" [disabled]=\"isHourDisabled(h)\">\r\n            {{ h < 10 ? \"0\" + h : h }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <span>:</span>\r\n\r\n      <select [(ngModel)]=\"selectedMinute\" class=\"time-select\">\r\n        <option [ngValue]=\"null\" disabled>MM</option>\r\n        @for (m of minutes; track m) {\r\n          <option [ngValue]=\"m\" [disabled]=\"isMinuteDisabled(m)\">\r\n            {{ m < 10 ? \"0\" + m : m }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <button type=\"button\" (click)=\"confirmTime()\" class=\"confirm-btn\">\r\n        \u2714\r\n      </button>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-picker-container{position:relative;width:100%;cursor:pointer;min-width:15em}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.time-picker__input{position:relative}.custom-input{height:var(--height);width:100%;border-radius:calc(var(--height) / 9.6);border:1px solid #82828233;padding-left:.5em;padding-right:.5em;outline:none!important;box-shadow:none;font-size:1em;font-weight:400;cursor:pointer}.time-picker__input--time-icon{position:absolute;right:.5em;top:50%;transform:translateY(-50%);pointer-events:none}.time-dropdown-container{position:absolute;top:100%;inset-inline-start:0;width:100%;min-width:15em;display:flex;justify-content:space-between;align-items:center;gap:.3em;margin-top:4px;background:#fff;border-radius:.375em;border:1px solid #82828233;padding:.5em;z-index:100;box-shadow:0 4px 10px #0000000d}.time-select{width:30%;padding:.3em;font-size:1em;border-radius:.375em;border:1px solid #82828233;background:#f9f9f9}.confirm-btn{background:#1db3a9;border:none;color:#fff;font-size:2rem;border-radius:.375em;cursor:pointer;width:4rem}.time-period{font-size:.8em}.time-error-container{position:absolute;top:100%;left:1.15em;width:100%}.time-error-container custom-app-error{pointer-events:none}.time-picker__input{position:relative;display:flex;align-items:center}.input-icon.error-icon{position:absolute;right:10px;display:flex;align-items:center;pointer-events:none}.time-picker__input--time-icon{position:absolute;right:10px;cursor:pointer;display:flex;align-items:center}.time-icon-shifted{right:35px}.input-error{border:1px solid #EB0000!important;padding-right:60px!important}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$3.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$3.SelectControlValueAccessor, selector: "select:not([multiple])[formControlName],select:not([multiple])[formControl],select:not([multiple])[ngModel]", inputs: ["compareWith"] }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTimeInputFormComponent, isStandalone: true, selector: "custom-time-input-form", inputs: { parentForm: "parentForm", name: "name", controlName: "controlName", label: "label", labelClass: "labelClass", inputClass: "inputClass", validation: "validation", height: "height", stringMode: "stringMode", defaultTime: "defaultTime", minTime: "minTime", value: "value" }, outputs: { timeChange: "timeChange" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <div class=\"time-error-container\">\r\n      <custom-app-error\r\n        [showErrors]=\"showErrors()\"\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"controlName\"\r\n      />\r\n    </div>\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      placeholder=\"00:00\"\r\n    />\r\n    @if (\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched\r\n    ) {\r\n      <span class=\"input-icon error-icon\">\r\n        <svg\r\n          width=\"1.08em\"\r\n          height=\"1.08em\"\r\n          viewBox=\"0 0 22 22\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <g clip-path=\"url(#clip0_9085_34629)\">\r\n            <path\r\n              d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M11 7V11\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M11 15H11.01\"\r\n              stroke=\"#EB0000\"\r\n              stroke-width=\"1.3\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </g>\r\n          <defs>\r\n            <clipPath id=\"clip0_9085_34629\">\r\n              <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n            </clipPath>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n    }\r\n    <!-- <span\r\n      class=\"time-picker__input--time-icon\"\r\n      [class.time-icon-shifted]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      (click)=\"toggleDropdown()\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_10062_19268)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"#828282\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"#828282\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n      </svg>\r\n    </span> -->\r\n  </div>\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"toggleDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <select\r\n        [(ngModel)]=\"selectedHour\"\r\n        class=\"time-select\"\r\n        (ngModelChange)=\"onHourChange()\"\r\n      >\r\n        <option [ngValue]=\"null\" disabled>HH</option>\r\n        @for (h of hours; track h) {\r\n          <option [ngValue]=\"h\" [disabled]=\"isHourDisabled(h)\">\r\n            {{ h < 10 ? \"0\" + h : h }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <span>:</span>\r\n\r\n      <select [(ngModel)]=\"selectedMinute\" class=\"time-select\">\r\n        <option [ngValue]=\"null\" disabled>MM</option>\r\n        @for (m of minutes; track m) {\r\n          <option [ngValue]=\"m\" [disabled]=\"isMinuteDisabled(m)\">\r\n            {{ m < 10 ? \"0\" + m : m }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <button type=\"button\" (click)=\"confirmTime()\" class=\"confirm-btn\">\r\n        \u2714\r\n      </button>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-picker-container{position:relative;width:100%;cursor:pointer;min-width:15em}.custom-label{font-size:1em;font-weight:500;display:block;color:#707070;margin-bottom:.3em}.time-picker__input{position:relative}.custom-input{height:var(--height);width:100%;border-radius:calc(var(--height) / 9.6);border:1px solid #82828233;padding-left:.5em;padding-right:.5em;outline:none!important;box-shadow:none;font-size:1em;font-weight:400;cursor:pointer}.time-picker__input--time-icon{position:absolute;right:.5em;top:50%;transform:translateY(-50%);pointer-events:none}.time-dropdown-container{position:absolute;top:100%;inset-inline-start:0;width:100%;min-width:15em;display:flex;justify-content:space-between;align-items:center;gap:.3em;margin-top:4px;background:#fff;border-radius:.375em;border:1px solid #82828233;padding:.5em;z-index:100;box-shadow:0 4px 10px #0000000d}.time-select{width:30%;padding:.3em;font-size:1em;border-radius:.375em;border:1px solid #82828233;background:#f9f9f9}.confirm-btn{background:#1db3a9;border:none;color:#fff;font-size:2rem;border-radius:.375em;cursor:pointer;width:4rem}.time-period{font-size:.8em}.time-error-container{position:absolute;top:100%;left:1.15em;width:100%}.time-error-container custom-app-error{pointer-events:none}.time-picker__input{position:relative;display:flex;align-items:center}.input-icon.error-icon{position:absolute;right:10px;display:flex;align-items:center;pointer-events:none}.time-picker__input--time-icon{position:absolute;right:10px;cursor:pointer;display:flex;align-items:center}.time-icon-shifted{right:35px}.input-error{border:1px solid #EB0000!important;padding-right:60px!important}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$3.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$3.SelectControlValueAccessor, selector: "select:not([multiple])[formControlName],select:not([multiple])[formControl],select:not([multiple])[ngModel]", inputs: ["compareWith"] }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTimeInputFormComponent, decorators: [{
             type: Component,
@@ -4064,11 +4165,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 type: Input
             }], validation: [{
                 type: Input
+            }], height: [{
+                type: Input
+            }], stringMode: [{
+                type: Input
             }], defaultTime: [{
                 type: Input
             }], minTime: [{
                 type: Input
-            }], height: [{
+            }], value: [{
                 type: Input
             }], timeChange: [{
                 type: Output
@@ -7045,12 +7150,12 @@ class CustomCalendarRangeFormComponent {
             }
         }
     }
-    ngOnChanges(changes) {
-        // React to parent changing [value] after init
-        if (changes['value'] && !changes['value'].firstChange) {
-            this.applyValueInput(this.value);
-        }
-    }
+    // ngOnChanges(changes: SimpleChanges): void {
+    //   // React to parent changing [value] after init
+    //   if (changes['value'] && !changes['value'].firstChange) {
+    //     this.applyValueInput(this.value);
+    //   }
+    // }
     ngOnInit() {
         if (this.parentForm && this.controlName) {
             const control = this.parentForm.get(this.controlName);
@@ -7350,7 +7455,7 @@ class CustomCalendarRangeFormComponent {
             `${pad(date.getMilliseconds(), 3)}`);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomCalendarRangeFormComponent, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomCalendarRangeFormComponent, isStandalone: true, selector: "custom-calendar-range-form", inputs: { label: "label", placeholder: "placeholder", filterDesign: "filterDesign", labelClass: "labelClass", calendarPopUpClass: "calendarPopUpClass", calendarInputClass: "calendarInputClass", calendarContainerClass: "calendarContainerClass", componentClass: "componentClass", minDate: "minDate", maxDate: "maxDate", controlName: "controlName", parentForm: "parentForm", validation: "validation", name: "name", disabled: "disabled", height: "height", value: "value", stringMode: "stringMode", applyLabel: "applyLabel", cancelLabel: "cancelLabel" }, outputs: { valueChange: "valueChange" }, usesOnChanges: true, ngImport: i0, template: "<div style=\"width: 100%\" [class]=\"'' + componentClass\" [formGroup]=\"parentForm\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-form-label); font-size: 0.95em; font-weight: 500;\">*</span>\r\n    } @else {\r\n    <span style=\"color: var(--smp-color-form-label); font-size: 0.95em; font-weight: 500;\">&nbsp;</span>\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'custom-calendar-container ' + calendarContainerClass\" [ngStyle]=\"{ '--height': height }\">\r\n    <div class=\"calendar-error-container\">\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n    </div>\r\n\r\n    <div\r\n      [class]=\"'custom-calendar-input ' + calendarInputClass\"\r\n      [class.disabled]=\"disabled\"\r\n      [attr.aria-disabled]=\"disabled\"\r\n      (click)=\"!disabled && toggleCalendar()\"\r\n      [class.has-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      @if (!rangeValue?.fromDate && !rangeValue?.toDate) {\r\n        <span class=\"placeholder\">{{ placeholder }}</span>\r\n      }\r\n      @if (rangeValue?.fromDate || rangeValue?.toDate) {\r\n        <span class=\"calendar-value\">{{ formatDisplayRange() }}</span>\r\n      }\r\n      <div class=\"calendar-icon\" style=\"width: 1.4em; height: 1.3em;\">\r\n        <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 14 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <path d=\"M10.9995 0.832031C11.2755 0.832031 11.4993 1.05604 11.4995 1.33203V1.75684C12.0359 1.90889 12.4891 2.15441 12.8657 2.56152C13.3843 3.12218 13.6147 3.83103 13.7251 4.71875C13.8333 5.58861 13.8335 6.70363 13.8335 8.12598V8.53906C13.8335 9.96141 13.8333 11.0764 13.7251 11.9463C13.6147 12.8337 13.3841 13.542 12.8657 14.1025C12.342 14.6687 11.6714 14.9259 10.8325 15.0479C10.0205 15.1659 8.98247 15.166 7.67334 15.166H6.32568C5.01678 15.166 3.97942 15.1658 3.16748 15.0479C2.32847 14.9259 1.65801 14.6687 1.13428 14.1025C0.615764 13.542 0.385314 12.8338 0.274902 11.9463C0.166725 11.0764 0.166497 9.96141 0.166504 8.53906V8.12598C0.166497 6.7036 0.166725 5.58861 0.274902 4.71875C0.385302 3.83103 0.61567 3.12218 1.13428 2.56152C1.51073 2.15467 1.96338 1.90887 2.49951 1.75684V1.33203C2.49969 1.05612 2.72359 0.832163 2.99951 0.832031C3.27555 0.832031 3.49934 1.05604 3.49951 1.33203V1.57617C4.25687 1.49887 5.18886 1.49901 6.32568 1.49902H7.67334C8.81003 1.49901 9.74218 1.49892 10.4995 1.57617V1.33203C10.4997 1.05612 10.7236 0.832163 10.9995 0.832031ZM12.8022 5.81055C12.7588 5.82285 12.7139 5.83202 12.6665 5.83203H1.3335C1.28562 5.83203 1.23964 5.82311 1.1958 5.81055C1.16934 6.45289 1.1665 7.22221 1.1665 8.16113V8.50391C1.1665 9.96905 1.16753 11.0214 1.26709 11.8223C1.36538 12.6126 1.55251 13.0821 1.86865 13.4238C2.17962 13.7599 2.59814 13.954 3.31104 14.0576C4.04285 14.164 5.00795 14.166 6.3667 14.166H7.6333C8.99173 14.166 9.95625 14.1639 10.688 14.0576C11.4011 13.954 11.8203 13.76 12.1313 13.4238C12.4475 13.0821 12.6346 12.6126 12.7329 11.8223C12.8325 11.0214 12.8335 9.96902 12.8335 8.50391V8.16113C12.8335 7.22218 12.8287 6.45291 12.8022 5.81055ZM4.33936 10.666C4.70731 10.6662 5.0052 10.9641 5.00537 11.332C5.00537 11.7001 4.70741 11.9989 4.33936 11.999H4.3335C3.96531 11.999 3.6665 11.7002 3.6665 11.332C3.66668 10.964 3.96541 10.666 4.3335 10.666H4.33936ZM7.00244 10.666C7.37052 10.666 7.66926 10.964 7.66943 11.332C7.66943 11.7002 7.37063 11.999 7.00244 11.999H6.99658C6.62848 11.9989 6.33057 11.7002 6.33057 11.332C6.33074 10.9641 6.62859 10.6661 6.99658 10.666H7.00244ZM4.33936 7.99902C4.70741 7.99918 5.00537 8.29792 5.00537 8.66602C5.0052 9.03396 4.70731 9.33188 4.33936 9.33203H4.3335C3.96541 9.33203 3.66668 9.03406 3.6665 8.66602C3.6665 8.29783 3.96531 7.99902 4.3335 7.99902H4.33936ZM7.00244 7.99902C7.37063 7.99902 7.66943 8.29783 7.66943 8.66602C7.66926 9.03406 7.37052 9.33203 7.00244 9.33203H6.99658C6.62859 9.33193 6.33074 9.03399 6.33057 8.66602C6.33057 8.29789 6.62848 7.99912 6.99658 7.99902H7.00244ZM9.6665 7.99902C10.0347 7.99907 10.3335 8.29785 10.3335 8.66602C10.3333 9.03403 10.0345 9.33199 9.6665 9.33203H9.66064C9.29256 9.33203 8.99383 9.03406 8.99365 8.66602C8.99365 8.29783 9.29245 7.99902 9.66064 7.99902H9.6665ZM6.3667 2.49902C5.12141 2.49902 4.2069 2.50095 3.49951 2.58301V2.66602C3.49934 2.94201 3.27555 3.16602 2.99951 3.16602C2.77154 3.16591 2.58105 3.01239 2.521 2.80371C2.24871 2.91181 2.04187 3.05398 1.86865 3.24121C1.55294 3.58252 1.36548 4.05049 1.26709 4.83887C1.28878 4.83599 1.31102 4.83203 1.3335 4.83203H12.6665C12.6888 4.83203 12.7104 4.83604 12.7319 4.83887C12.6336 4.05065 12.447 3.5825 12.1313 3.24121C11.9578 3.05364 11.75 2.91189 11.4771 2.80371C11.4169 3.01226 11.2274 3.16602 10.9995 3.16602C10.7236 3.16588 10.4997 2.94193 10.4995 2.66602V2.58301C9.79223 2.50101 8.8782 2.49902 7.6333 2.49902H6.3667Z\" fill=\"#4B4F55\"/>\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if (showCalendarForm && !disabled) {\r\n    <div\r\n      [class]=\"'calendar-popup range-calendar-popup ' + calendarPopUpClass\"\r\n      #calendarPopUpForm\r\n      [clickOutside]=\"calendarPopUpForm\"\r\n      (clickOutsideEmitter)=\"cancelSelection()\"\r\n    >\r\n      <div [dir]=\"'ltr'\" class=\"calendar-header\">\r\n        <button type=\"button\" class=\"nav-button\" (click)=\"prevMonth()\">\r\n          <svg width=\"8\" height=\"12\" viewBox=\"0 0 8 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n            <path d=\"M6.5 11L1.5 6L6.5 1\" stroke=\"black\" stroke-opacity=\"0.72\" stroke-width=\"1.66667\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n          </svg>\r\n        </button>\r\n        <div class=\"month-title\">{{ getMonthName() }} {{ getYear() }}</div>\r\n        <button type=\"button\" class=\"nav-button\" (click)=\"nextMonth()\">\r\n          <svg width=\"8\" height=\"12\" viewBox=\"0 0 8 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n            <path d=\"M1.5 11L6.5 6L1.5 1\" stroke=\"black\" stroke-opacity=\"0.72\" stroke-width=\"1.66667\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n          </svg>\r\n        </button>\r\n      </div>\r\n\r\n      <div class=\"weekdays\">\r\n        @for (weekday of weekdays; track weekday) {\r\n        <div class=\"weekday\">{{ weekday }}</div>\r\n        }\r\n      </div>\r\n\r\n      <div class=\"days-grid\">\r\n        @for (day of days; track day) {\r\n        <div\r\n          class=\"day\"\r\n          [class.current-month]=\"isCurrentMonth(day)\"\r\n          [class.range-start]=\"isRangeStart(day)\"\r\n          [class.range-end]=\"isRangeEnd(day)\"\r\n          [class.in-range]=\"isInRange(day)\"\r\n          [class.single-selected]=\"isSingleSelected(day)\"\r\n          [class.disabled]=\"isDisabledRange(day) || disabled\"\r\n          [class.hovered]=\"isHovered(day)\"\r\n          (mouseenter)=\"onDayHover(day)\"\r\n          (mouseleave)=\"onDayLeave()\"\r\n          (click)=\"\r\n            $event.stopPropagation();\r\n            !isDisabledRange(day) && !disabled && selectRangeDate(day)\r\n          \"\r\n        >\r\n          <span class=\"day-number\">{{ day.getDate() }}</span>\r\n        </div>\r\n        }\r\n      </div>\r\n\r\n      <div class=\"calendar-actions\">\r\n        <button type=\"button\" class=\"action-btn cancel-btn\" (click)=\"cancelSelection()\">\r\n          {{ cancelLabel }}\r\n        </button>\r\n        <button\r\n          type=\"button\"\r\n          class=\"action-btn apply-btn\"\r\n          [disabled]=\"!tempFromDate\"\r\n          (click)=\"applySelection()\"\r\n        >\r\n          {{ applyLabel }}\r\n        </button>\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".custom-calendar-container{position:relative;width:100%;height:var(--height)}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.custom-calendar-input{position:relative;height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);padding:.2em 1em;display:flex;align-items:center;cursor:pointer;background-color:#fff}.custom-calendar-input.has-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826}.placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.calendar-value{font-size:1em}.calendar-icon{position:absolute;inset-inline-end:12px;height:calc(var(--height) / 2.4)}.custom-calendar-input.disabled{background:#f3f3f3;color:#b0b0b0;cursor:not-allowed;border-color:#e0e0e0}.calendar-error-container{position:absolute;top:100%;inset-inline-start:0;width:100%}.calendar-error-container custom-app-error{pointer-events:none}.calendar-popup{position:absolute;top:100%;left:0;right:0;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;padding:1rem;z-index:10;box-shadow:0 4px 6px #0000001a;width:32rem}.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.month-title{font-weight:600}.nav-button{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 8px}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-weight:500;font-size:12px;margin-bottom:8px}.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;row-gap:.2rem}.day{position:relative;height:3.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.4rem;-webkit-user-select:none;user-select:none;background:transparent}.day .day-number{position:relative;z-index:1;width:3rem;height:3rem;display:flex;align-items:center;justify-content:center;border-radius:50%}.day:not(.current-month){color:#9ca3af}.day.current-month{color:#111827}.day.disabled{color:#d1d5db;cursor:not-allowed;text-decoration:line-through}.day.in-range{background:#f3e8f1}.day.hovered:not(.range-start):not(.range-end):not(.in-range) .day-number{background:#e9d5e6;border-radius:50%}.day.range-start{background:linear-gradient(to right,transparent 50%,#f3e8f1 50%)}.day.range-end{background:linear-gradient(to left,transparent 50%,#f3e8f1 50%)}.day.range-start .day-number,.day.range-end .day-number,.day.single-selected .day-number{background-color:#602650;color:#fff;border-radius:50%}.day:not(.disabled):not(.range-start):not(.range-end):not(.single-selected):not(.in-range):hover .day-number{background-color:#f3f4f6;border-radius:50%}.calendar-actions{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid #e5e7eb}.action-btn{padding:.5em 1.4em;font-size:1.3rem;font-weight:500;border-radius:.375em;cursor:pointer;transition:background .15s,color .15s;border:none}.cancel-btn{background:transparent;color:#374151;border:1px solid #d1d5db}.cancel-btn:hover{background:#f3f4f6}.apply-btn{background:#602650;color:#fff}.apply-btn:hover:not(:disabled){background:#4e1f41}.apply-btn:disabled{background:#c4a8bc;cursor:not-allowed}\n"], dependencies: [{ kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomCalendarRangeFormComponent, isStandalone: true, selector: "custom-calendar-range-form", inputs: { label: "label", placeholder: "placeholder", filterDesign: "filterDesign", labelClass: "labelClass", calendarPopUpClass: "calendarPopUpClass", calendarInputClass: "calendarInputClass", calendarContainerClass: "calendarContainerClass", componentClass: "componentClass", minDate: "minDate", maxDate: "maxDate", controlName: "controlName", parentForm: "parentForm", validation: "validation", name: "name", disabled: "disabled", height: "height", value: "value", stringMode: "stringMode", applyLabel: "applyLabel", cancelLabel: "cancelLabel" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div style=\"width: 100%\" [class]=\"'' + componentClass\" [formGroup]=\"parentForm\">\r\n  @if(label){\r\n  <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n    {{ label }}\r\n    @if(containRequiredError()){\r\n    <span style=\"color: var(--smp-color-form-label); font-size: 0.95em; font-weight: 500;\">*</span>\r\n    } @else {\r\n    <span style=\"color: var(--smp-color-form-label); font-size: 0.95em; font-weight: 500;\">&nbsp;</span>\r\n    }\r\n  </label>\r\n  }\r\n\r\n  <div [class]=\"'custom-calendar-container ' + calendarContainerClass\" [ngStyle]=\"{ '--height': height }\">\r\n    <div class=\"calendar-error-container\">\r\n      <custom-app-error\r\n        [control]=\"parentForm.controls[controlName]\"\r\n        [validation]=\"validation\"\r\n        [name]=\"name\"\r\n      />\r\n    </div>\r\n\r\n    <div\r\n      [class]=\"'custom-calendar-input ' + calendarInputClass\"\r\n      [class.disabled]=\"disabled\"\r\n      [attr.aria-disabled]=\"disabled\"\r\n      (click)=\"!disabled && toggleCalendar()\"\r\n      [class.has-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n    >\r\n      @if (!rangeValue?.fromDate && !rangeValue?.toDate) {\r\n        <span class=\"placeholder\">{{ placeholder }}</span>\r\n      }\r\n      @if (rangeValue?.fromDate || rangeValue?.toDate) {\r\n        <span class=\"calendar-value\">{{ formatDisplayRange() }}</span>\r\n      }\r\n      <div class=\"calendar-icon\" style=\"width: 1.4em; height: 1.3em;\">\r\n        <svg width=\"auto\" height=\"auto\" viewBox=\"0 0 14 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n          <path d=\"M10.9995 0.832031C11.2755 0.832031 11.4993 1.05604 11.4995 1.33203V1.75684C12.0359 1.90889 12.4891 2.15441 12.8657 2.56152C13.3843 3.12218 13.6147 3.83103 13.7251 4.71875C13.8333 5.58861 13.8335 6.70363 13.8335 8.12598V8.53906C13.8335 9.96141 13.8333 11.0764 13.7251 11.9463C13.6147 12.8337 13.3841 13.542 12.8657 14.1025C12.342 14.6687 11.6714 14.9259 10.8325 15.0479C10.0205 15.1659 8.98247 15.166 7.67334 15.166H6.32568C5.01678 15.166 3.97942 15.1658 3.16748 15.0479C2.32847 14.9259 1.65801 14.6687 1.13428 14.1025C0.615764 13.542 0.385314 12.8338 0.274902 11.9463C0.166725 11.0764 0.166497 9.96141 0.166504 8.53906V8.12598C0.166497 6.7036 0.166725 5.58861 0.274902 4.71875C0.385302 3.83103 0.61567 3.12218 1.13428 2.56152C1.51073 2.15467 1.96338 1.90887 2.49951 1.75684V1.33203C2.49969 1.05612 2.72359 0.832163 2.99951 0.832031C3.27555 0.832031 3.49934 1.05604 3.49951 1.33203V1.57617C4.25687 1.49887 5.18886 1.49901 6.32568 1.49902H7.67334C8.81003 1.49901 9.74218 1.49892 10.4995 1.57617V1.33203C10.4997 1.05612 10.7236 0.832163 10.9995 0.832031ZM12.8022 5.81055C12.7588 5.82285 12.7139 5.83202 12.6665 5.83203H1.3335C1.28562 5.83203 1.23964 5.82311 1.1958 5.81055C1.16934 6.45289 1.1665 7.22221 1.1665 8.16113V8.50391C1.1665 9.96905 1.16753 11.0214 1.26709 11.8223C1.36538 12.6126 1.55251 13.0821 1.86865 13.4238C2.17962 13.7599 2.59814 13.954 3.31104 14.0576C4.04285 14.164 5.00795 14.166 6.3667 14.166H7.6333C8.99173 14.166 9.95625 14.1639 10.688 14.0576C11.4011 13.954 11.8203 13.76 12.1313 13.4238C12.4475 13.0821 12.6346 12.6126 12.7329 11.8223C12.8325 11.0214 12.8335 9.96902 12.8335 8.50391V8.16113C12.8335 7.22218 12.8287 6.45291 12.8022 5.81055ZM4.33936 10.666C4.70731 10.6662 5.0052 10.9641 5.00537 11.332C5.00537 11.7001 4.70741 11.9989 4.33936 11.999H4.3335C3.96531 11.999 3.6665 11.7002 3.6665 11.332C3.66668 10.964 3.96541 10.666 4.3335 10.666H4.33936ZM7.00244 10.666C7.37052 10.666 7.66926 10.964 7.66943 11.332C7.66943 11.7002 7.37063 11.999 7.00244 11.999H6.99658C6.62848 11.9989 6.33057 11.7002 6.33057 11.332C6.33074 10.9641 6.62859 10.6661 6.99658 10.666H7.00244ZM4.33936 7.99902C4.70741 7.99918 5.00537 8.29792 5.00537 8.66602C5.0052 9.03396 4.70731 9.33188 4.33936 9.33203H4.3335C3.96541 9.33203 3.66668 9.03406 3.6665 8.66602C3.6665 8.29783 3.96531 7.99902 4.3335 7.99902H4.33936ZM7.00244 7.99902C7.37063 7.99902 7.66943 8.29783 7.66943 8.66602C7.66926 9.03406 7.37052 9.33203 7.00244 9.33203H6.99658C6.62859 9.33193 6.33074 9.03399 6.33057 8.66602C6.33057 8.29789 6.62848 7.99912 6.99658 7.99902H7.00244ZM9.6665 7.99902C10.0347 7.99907 10.3335 8.29785 10.3335 8.66602C10.3333 9.03403 10.0345 9.33199 9.6665 9.33203H9.66064C9.29256 9.33203 8.99383 9.03406 8.99365 8.66602C8.99365 8.29783 9.29245 7.99902 9.66064 7.99902H9.6665ZM6.3667 2.49902C5.12141 2.49902 4.2069 2.50095 3.49951 2.58301V2.66602C3.49934 2.94201 3.27555 3.16602 2.99951 3.16602C2.77154 3.16591 2.58105 3.01239 2.521 2.80371C2.24871 2.91181 2.04187 3.05398 1.86865 3.24121C1.55294 3.58252 1.36548 4.05049 1.26709 4.83887C1.28878 4.83599 1.31102 4.83203 1.3335 4.83203H12.6665C12.6888 4.83203 12.7104 4.83604 12.7319 4.83887C12.6336 4.05065 12.447 3.5825 12.1313 3.24121C11.9578 3.05364 11.75 2.91189 11.4771 2.80371C11.4169 3.01226 11.2274 3.16602 10.9995 3.16602C10.7236 3.16588 10.4997 2.94193 10.4995 2.66602V2.58301C9.79223 2.50101 8.8782 2.49902 7.6333 2.49902H6.3667Z\" fill=\"#4B4F55\"/>\r\n        </svg>\r\n      </div>\r\n    </div>\r\n\r\n    @if (showCalendarForm && !disabled) {\r\n    <div\r\n      [class]=\"'calendar-popup range-calendar-popup ' + calendarPopUpClass\"\r\n      #calendarPopUpForm\r\n      [clickOutside]=\"calendarPopUpForm\"\r\n      (clickOutsideEmitter)=\"cancelSelection()\"\r\n    >\r\n      <div [dir]=\"'ltr'\" class=\"calendar-header\">\r\n        <button type=\"button\" class=\"nav-button\" (click)=\"prevMonth()\">\r\n          <svg width=\"8\" height=\"12\" viewBox=\"0 0 8 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n            <path d=\"M6.5 11L1.5 6L6.5 1\" stroke=\"black\" stroke-opacity=\"0.72\" stroke-width=\"1.66667\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n          </svg>\r\n        </button>\r\n        <div class=\"month-title\">{{ getMonthName() }} {{ getYear() }}</div>\r\n        <button type=\"button\" class=\"nav-button\" (click)=\"nextMonth()\">\r\n          <svg width=\"8\" height=\"12\" viewBox=\"0 0 8 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n            <path d=\"M1.5 11L6.5 6L1.5 1\" stroke=\"black\" stroke-opacity=\"0.72\" stroke-width=\"1.66667\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n          </svg>\r\n        </button>\r\n      </div>\r\n\r\n      <div class=\"weekdays\">\r\n        @for (weekday of weekdays; track weekday) {\r\n        <div class=\"weekday\">{{ weekday }}</div>\r\n        }\r\n      </div>\r\n\r\n      <div class=\"days-grid\">\r\n        @for (day of days; track day) {\r\n        <div\r\n          class=\"day\"\r\n          [class.current-month]=\"isCurrentMonth(day)\"\r\n          [class.range-start]=\"isRangeStart(day)\"\r\n          [class.range-end]=\"isRangeEnd(day)\"\r\n          [class.in-range]=\"isInRange(day)\"\r\n          [class.single-selected]=\"isSingleSelected(day)\"\r\n          [class.disabled]=\"isDisabledRange(day) || disabled\"\r\n          [class.hovered]=\"isHovered(day)\"\r\n          (mouseenter)=\"onDayHover(day)\"\r\n          (mouseleave)=\"onDayLeave()\"\r\n          (click)=\"\r\n            $event.stopPropagation();\r\n            !isDisabledRange(day) && !disabled && selectRangeDate(day)\r\n          \"\r\n        >\r\n          <span class=\"day-number\">{{ day.getDate() }}</span>\r\n        </div>\r\n        }\r\n      </div>\r\n\r\n      <div class=\"calendar-actions\">\r\n        <button type=\"button\" class=\"action-btn cancel-btn\" (click)=\"cancelSelection()\">\r\n          {{ cancelLabel }}\r\n        </button>\r\n        <button\r\n          type=\"button\"\r\n          class=\"action-btn apply-btn\"\r\n          [disabled]=\"!tempFromDate\"\r\n          (click)=\"applySelection()\"\r\n        >\r\n          {{ applyLabel }}\r\n        </button>\r\n      </div>\r\n    </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".custom-calendar-container{position:relative;width:100%;height:var(--height)}.custom-label{font-size:1em;font-weight:500;display:block;color:var(--smp-color-form-label);margin-bottom:.3em}.custom-calendar-input{position:relative;height:100%;width:100%;border-radius:var(--smp-radius-md);border:1px solid var(--smp-color-form-border);padding:.2em 1em;display:flex;align-items:center;cursor:pointer;background-color:#fff}.custom-calendar-input.has-error{border:1px solid #e55658;box-shadow:1px 0 6px #e5565826}.placeholder{color:var(--smp-color-form-placeholder);font-size:1em;font-weight:400}.calendar-value{font-size:1em}.calendar-icon{position:absolute;inset-inline-end:12px;height:calc(var(--height) / 2.4)}.custom-calendar-input.disabled{background:#f3f3f3;color:#b0b0b0;cursor:not-allowed;border-color:#e0e0e0}.calendar-error-container{position:absolute;top:100%;inset-inline-start:0;width:100%}.calendar-error-container custom-app-error{pointer-events:none}.calendar-popup{position:absolute;top:100%;left:0;right:0;background-color:#fff;border:1px solid #82828233;border-radius:.375em;margin-top:4px;padding:1rem;z-index:10;box-shadow:0 4px 6px #0000001a;width:32rem}.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.month-title{font-weight:600}.nav-button{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 8px}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-weight:500;font-size:12px;margin-bottom:8px}.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;row-gap:.2rem}.day{position:relative;height:3.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.4rem;-webkit-user-select:none;user-select:none;background:transparent}.day .day-number{position:relative;z-index:1;width:3rem;height:3rem;display:flex;align-items:center;justify-content:center;border-radius:50%}.day:not(.current-month){color:#9ca3af}.day.current-month{color:#111827}.day.disabled{color:#d1d5db;cursor:not-allowed;text-decoration:line-through}.day.in-range{background:#f3e8f1}.day.hovered:not(.range-start):not(.range-end):not(.in-range) .day-number{background:#e9d5e6;border-radius:50%}.day.range-start{background:linear-gradient(to right,transparent 50%,#f3e8f1 50%)}.day.range-end{background:linear-gradient(to left,transparent 50%,#f3e8f1 50%)}.day.range-start .day-number,.day.range-end .day-number,.day.single-selected .day-number{background-color:#602650;color:#fff;border-radius:50%}.day:not(.disabled):not(.range-start):not(.range-end):not(.single-selected):not(.in-range):hover .day-number{background-color:#f3f4f6;border-radius:50%}.calendar-actions{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;padding-top:.75rem;border-top:1px solid #e5e7eb}.action-btn{padding:.5em 1.4em;font-size:1.3rem;font-weight:500;border-radius:.375em;cursor:pointer;transition:background .15s,color .15s;border:none}.cancel-btn{background:transparent;color:#374151;border:1px solid #d1d5db}.cancel-btn:hover{background:#f3f4f6}.apply-btn{background:#602650;color:#fff}.apply-btn:hover:not(:disabled){background:#4e1f41}.apply-btn:disabled{background:#c4a8bc;cursor:not-allowed}\n"], dependencies: [{ kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomCalendarRangeFormComponent, decorators: [{
             type: Component,

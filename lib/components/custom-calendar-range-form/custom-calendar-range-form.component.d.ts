@@ -1,4 +1,4 @@
-import { EventEmitter, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { EventEmitter, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError } from '../../interfaces';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ export interface DateRangeString {
     fromDate: string | null;
     toDate: string | null;
 }
-export declare class CustomCalendarRangeFormComponent implements OnInit, OnChanges {
+export declare class CustomCalendarRangeFormComponent implements OnInit {
     private translationService;
     label: string;
     placeholder: string;
@@ -62,7 +62,6 @@ export declare class CustomCalendarRangeFormComponent implements OnInit, OnChang
     tempToDate: Date | null;
     hoveredDate: Date | null;
     constructor(translationService: TranslateService);
-    ngOnChanges(changes: SimpleChanges): void;
     ngOnInit(): void;
     private applyValueInput;
     /**

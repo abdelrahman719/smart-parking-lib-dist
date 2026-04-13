@@ -340,7 +340,7 @@ class AuthBeService {
             console.error('Request failed after 3 retries', error);
             this.authContextService.clearData();
             window.dispatchEvent(new CustomEvent('auth-logout'));
-            this.router.navigate(['/auth']);
+            this.router.navigate(['/tenant-auth']);
             throw error;
         }));
     }
@@ -487,7 +487,7 @@ class AuthService {
     logOutUser() {
         this.authContextService.clearData();
         // window.dispatchEvent(new CustomEvent('auth-logout'));
-        this.router.navigate(['/auth']);
+        this.router.navigate(['/tenant-auth']);
         window.location.reload();
     }
     logout() {
@@ -8352,7 +8352,7 @@ const ErrorInterceptor = (req, next) => {
                 // refresh expired
                 authContextService.clearData();
                 window.dispatchEvent(new CustomEvent('auth-logout'));
-                router.navigate(['/auth']);
+                router.navigate(['/tenant-auth']);
                 break;
             case 404:
                 console.error('End Point Not Found');
@@ -8672,7 +8672,7 @@ const authGuard = () => {
             return false;
         }
         else {
-            router.navigateByUrl('/auth');
+            router.navigateByUrl('/tenant-auth');
             return false;
         }
     }

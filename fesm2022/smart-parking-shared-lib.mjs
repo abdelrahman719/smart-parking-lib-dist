@@ -8451,13 +8451,12 @@ class TenantAuthService {
     _toast;
     router;
     http;
-    baseUrl;
-    constructor(tenantPlatformService, _toast, router, http, baseUrl) {
+    baseUrl = window.env?.tenantMnagmentBaseUrl;
+    constructor(tenantPlatformService, _toast, router, http) {
         this.tenantPlatformService = tenantPlatformService;
         this._toast = _toast;
         this.router = router;
         this.http = http;
-        this.baseUrl = baseUrl;
     }
     loginTenantUser() {
     }
@@ -8515,7 +8514,11 @@ class TenantAuthService {
         this.logoutTenant();
     }
     logoutTenant() {
-        this.http.post(`${this.baseUrl}/auth/logout`, {}).subscribe({
+        let body = {
+            offStreetToken: localStorage.getItem('offStreetToken') || null,
+            onStreetToken: localStorage.getItem('accessToken') || null
+        };
+        this.http.post(`${this.baseUrl}/api/v1/auth/logout`, body).subscribe({
             next: () => {
                 this.clearTenantUserStorage();
                 window.location.hash = '/tenant-auth';
@@ -8548,7 +8551,7 @@ class TenantAuthService {
             return false;
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TenantAuthService, deps: [{ token: TenantPlatformService }, { token: ToastService }, { token: i3.Router }, { token: i1.HttpClient }, { token: API_BASE_URL$1 }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TenantAuthService, deps: [{ token: TenantPlatformService }, { token: ToastService }, { token: i3.Router }, { token: i1.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TenantAuthService, providedIn: 'root' });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TenantAuthService, decorators: [{
@@ -8556,10 +8559,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             args: [{
                     providedIn: 'root'
                 }]
-        }], ctorParameters: () => [{ type: TenantPlatformService }, { type: ToastService }, { type: i3.Router }, { type: i1.HttpClient }, { type: undefined, decorators: [{
-                    type: Inject,
-                    args: [API_BASE_URL$1]
-                }] }] });
+        }], ctorParameters: () => [{ type: TenantPlatformService }, { type: ToastService }, { type: i3.Router }, { type: i1.HttpClient }] });
 
 class TenantsProductsService {
     router = inject(Router);

@@ -6004,6 +6004,12 @@ const STYLES = {
         border: '#f9eaed',
         label: 'False Positive',
     },
+    under_maintenance: {
+        color: '#F79009',
+        bg: '#fffaeb',
+        border: '#F79009',
+        label: 'Under Maintenance',
+    }
 };
 class CustomStatusLabelComponent {
     status;
@@ -6035,6 +6041,9 @@ class CustomStatusLabelComponent {
             'false-positive': 'falsepositive',
             'false_positive': 'falsepositive',
             'false positive': 'falsepositive',
+            under_maintenance: 'under_maintenance',
+            'under-maintenance': 'under_maintenance',
+            'under maintenance': 'under_maintenance',
         };
         return (map[status] ?? 'inactive');
     }

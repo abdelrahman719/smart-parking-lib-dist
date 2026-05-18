@@ -8687,7 +8687,7 @@ const authGuard = () => {
     }
 };
 
-const noAuthGuard = () => {
+const noAuthGuard = (route) => {
     const router = inject(Router);
     const authService = inject(AuthService);
     const platformId = inject(PLATFORM_ID);
@@ -8695,7 +8695,10 @@ const noAuthGuard = () => {
         return false; // Exit early for non-browser platforms
     }
     if (authService.isLoggedIn()) {
-        router.navigateByUrl(ModuleRoutes.MAIN_PAGE);
+        const redirectTo = route.data?.['redirectTo'];
+        if (redirectTo) {
+            router.navigateByUrl(redirectTo);
+        }
         return false;
     }
     return true;

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as i0 from "@angular/core";
 export declare class CommonHttpService {
-    private http;
+    protected http: HttpClient;
     private baseUrl?;
     constructor(http: HttpClient, baseUrl?: string | undefined);
     private buildUrl;

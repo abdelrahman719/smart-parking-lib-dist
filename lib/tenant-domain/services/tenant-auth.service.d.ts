@@ -9,7 +9,7 @@ export declare class TenantAuthService {
     private _toast;
     private router;
     private http;
-    baseUrl: any;
+    baseUrl: string;
     constructor(tenantPlatformService: TenantPlatformService, _toast: ToastService, router: Router, http: HttpClient);
     loginTenantUser(): void;
     handleAuthResults(results: ITenantUserSingleAuthResult[]): void;

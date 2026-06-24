@@ -299,44 +299,43 @@ const SHOW_SUCCESS_TOASTER = new HttpContextToken(() => true);
 
 const API_BASE_URL$1 = new InjectionToken('API_BASE_URL', {
     providedIn: 'root',
-    factory: () => window?.env?.backendGateWayBaseUrl ??
-        'https://10.254.192.137',
+    factory: () => window?.env?.authUrl ??
+        'http://k8s-spbacken-smartpar-85d2b5c11e-1570195193.us-east-1.elb.amazonaws.com',
 });
 
 class AuthBeService {
     http;
     authContextService;
     router;
-    backendGateWayBaseUrl;
-    constructor(http, authContextService, router, backendGateWayBaseUrl) {
+    baseUrl;
+    constructor(http, authContextService, router, baseUrl) {
         this.http = http;
         this.authContextService = authContextService;
         this.router = router;
-        this.backendGateWayBaseUrl = backendGateWayBaseUrl;
+        this.baseUrl = baseUrl;
     }
     login(data) {
-        return this.http.post(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/login`, { username: data.username, password: data.password }, {
+        return this.http.post(`${this.baseUrl}/auth/login`, { username: data.username, password: data.password }, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
     tenantLogin(data) {
-        return this.http.post(`${this.backendGateWayBaseUrl}/on-street-user-management/tenant-management/api/v1/auth/login`, { username: data.username, password: data.password }, {
+        return this.http.post(`${this.baseUrl}/tenant-management/api/v1/auth/login`, { username: data.username, password: data.password }, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
     logout() {
-        alert(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/logout`);
-        return this.http.post(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/logout`, {});
+        alert(`${this.baseUrl}/auth/logout`);
+        return this.http.post(`${this.baseUrl}/auth/logout`, {});
     }
     refreshToken(refreshToken) {
-        return this.http.post(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/refresh`, refreshToken, {
+        return this.http.post(`${this.baseUrl}/auth/refresh`, refreshToken, {
             context: new HttpContext().set(SKIP_TOKEN, true),
         });
     }
     validateToken() {
-        console.log('{this.backendGateWayBaseUrl: ', this.backendGateWayBaseUrl);
         return this.http
-            .post(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/validate`, {})
+            .post(`${this.baseUrl}/auth/validate`, {})
             .pipe(retry(3), catchError((error) => {
             console.error('Request failed after 3 retries', error);
             this.authContextService.clearData();
@@ -346,7 +345,7 @@ class AuthBeService {
         }));
     }
     getCurrUser() {
-        return this.http.get(`${this.backendGateWayBaseUrl}/on-street-user-management/auth/me`);
+        return this.http.get(`${this.baseUrl}/auth/me`);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: AuthBeService, deps: [{ token: i1.HttpClient }, { token: AuthContextService }, { token: i3.Router }, { token: API_BASE_URL$1 }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: AuthBeService, providedIn: 'root' });
@@ -8461,7 +8460,7 @@ class TenantAuthService {
     _toast;
     router;
     http;
-    baseUrl = `${window.env?.backendGateWayBaseUrl}/tenant-management`;
+    baseUrl = window.env?.tenantMnagmentBaseUrl;
     constructor(tenantPlatformService, _toast, router, http) {
         this.tenantPlatformService = tenantPlatformService;
         this._toast = _toast;
@@ -8574,11 +8573,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
 class TenantsProductsService {
     router = inject(Router);
     constructor() { }
-    navigateToOffStreet(route = '/OFF_STREET/app/dashboard') {
+    navigateToOffStreet() {
         // Emit event for root config to listen
         window.dispatchEvent(new CustomEvent('product-selected', {
-            detail: { product: 'OFF_STREET', route }
+            detail: { product: 'OFF_STREET' }
         }));
+        const route = '/OFF_STREET/app/dashboard';
+        window.location.hash = route;
     }
     navigateToOnStreet() {
         // emit bus event for root app

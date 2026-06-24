@@ -9,8 +9,8 @@ export declare class AuthBeService {
     private http;
     private authContextService;
     private router;
-    private backendGateWayBaseUrl;
-    constructor(http: HttpClient, authContextService: AuthContextService, router: Router, backendGateWayBaseUrl: string);
+    private baseUrl;
+    constructor(http: HttpClient, authContextService: AuthContextService, router: Router, baseUrl: string);
     login(data: {
         username: string;
         password: string;

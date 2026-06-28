@@ -259,9 +259,6 @@ class AuthContextService {
     constructor(storageService) {
         this.storageService = storageService;
     }
-    test() {
-        alert('AuthContextService initialized');
-    }
     saveTokens(data) {
         let localData = {
             accessToken: data.accessToken,

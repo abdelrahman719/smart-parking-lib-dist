@@ -6,7 +6,6 @@ export declare class AuthContextService {
     userLocalData$: import("@angular/core").WritableSignal<ILocalData | null>;
     userPermissionsAndRoles$: import("@angular/core").WritableSignal<ISessionData | null>;
     constructor(storageService: StorageService);
-    test(): void;
     saveTokens(data: ILoginData): void;
     savePermissionsAndRoles(data: ISessionData): void;
     clearData(): void;

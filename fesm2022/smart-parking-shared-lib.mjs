@@ -258,6 +258,7 @@ class AuthContextService {
     userPermissionsAndRoles$ = signal(null);
     constructor(storageService) {
         this.storageService = storageService;
+        alert('AuthContextService initialized');
     }
     saveTokens(data) {
         let localData = {

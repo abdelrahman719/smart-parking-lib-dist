@@ -258,6 +258,8 @@ class AuthContextService {
     userPermissionsAndRoles$ = signal(null);
     constructor(storageService) {
         this.storageService = storageService;
+    }
+    test() {
         alert('AuthContextService initialized');
     }
     saveTokens(data) {

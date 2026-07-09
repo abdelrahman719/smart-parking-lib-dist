@@ -300,7 +300,7 @@ const SHOW_SUCCESS_TOASTER = new HttpContextToken(() => true);
 const API_BASE_URL$1 = new InjectionToken('API_BASE_URL', {
     providedIn: 'root',
     factory: () => window?.env?.backendGateWayBaseUrl ??
-        'https://10.254.193.41',
+        'https://10.254.192.137',
 });
 
 class AuthBeService {

@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, Pipe, inject, ContentChild, ViewContainerRef, ViewChild, HostBinding, DestroyRef, ViewEncapsulation, ElementRef, model, ApplicationRef, EnvironmentInjector, Injector, createComponent, output, untracked, ChangeDetectionStrategy, ViewChildren } from '@angular/core';
-import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, firstValueFrom, take, Observable, map, throwError, finalize, tap } from 'rxjs';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, Pipe, inject, ContentChild, Injector, ViewContainerRef, ViewChild, HostBinding, DestroyRef, ViewEncapsulation, ElementRef, model, ChangeDetectionStrategy, output, ViewChildren, ApplicationRef, EnvironmentInjector, createComponent } from '@angular/core';
+import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, take, firstValueFrom, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
 import * as i3 from '@angular/router';
@@ -3318,14 +3318,15 @@ class CustomModalComponent {
         if (event.target === event.currentTarget && this.overlayClickClose)
             this.close();
     }
-    get contentInjector() {
+    /** Attach child and provide MODAL_REF so it can close itself */
+    attachContent(component, extraProviders = []) {
         if (!this.hostVcRef)
             throw new Error('Modal content host not ready');
-        return this.hostVcRef.injector;
-    }
-    attachContent(component, injector) {
-        if (!this.hostVcRef)
-            throw new Error('Modal content host not ready');
+        const modalRefApi = { close: (result) => this.close(result) };
+        const injector = Injector.create({
+            providers: [{ provide: MODAL_REF, useValue: modalRefApi }, ...extraProviders],
+            parent: this.hostVcRef.injector,
+        });
         this.hostVcRef.clear();
         const ref = this.hostVcRef.createComponent(component, { injector });
         this.dynamicChildRef = ref;
@@ -5659,704 +5660,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 type: Output
             }] } });
 
-const MODAL_REF = new InjectionToken('MODAL_REF');
-function injectModalRef() {
-    return inject(MODAL_REF);
-}
-class CustomModalService {
-    translate;
-    applicationRef = inject(ApplicationRef);
-    environmentInjector = inject(EnvironmentInjector);
-    /** Open any component inside the modal (child must be standalone or resolvable). */
-    constructor(translate) {
-        this.translate = translate;
-    }
-    async openComponentInModal(childComponent, options = {}) {
-        const hostElement = this.createHostElement();
-        const modalRef = this.createModal(hostElement);
-        this.applyModalInputs(modalRef.instance, options);
-        // Render the *ngIf branch so the anchor exists
-        modalRef.instance.open();
-        modalRef.changeDetectorRef.detectChanges();
-        // Wait until the ViewChild anchor is resolved
-        await firstValueFrom(modalRef.instance.contentReady$);
-        // Attach the child
-        const modalRefApi = { close: (result) => modalRef.instance.close(result) };
-        const childInjector = Injector.create({
-            providers: [{ provide: MODAL_REF, useValue: modalRefApi }],
-            parent: modalRef.instance.contentInjector,
-        });
-        const childRef = modalRef.instance.attachContent(childComponent, childInjector);
-        // Resolve when closed, then cleanup
-        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
-        return {
-            modalComponentRef: modalRef,
-            childComponentRef: childRef,
-            close: (result) => modalRef.instance.close(result),
-            afterClosed,
-        };
-    }
-    // ——— helpers ———
-    createHostElement() {
-        const host = document.createElement('div');
-        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
-        document.body.appendChild(host);
-        return host;
-    }
-    createModal(host) {
-        const ref = createComponent(CustomModalComponent, {
-            environmentInjector: this.environmentInjector,
-            hostElement: host,
-        });
-        this.applicationRef.attachView(ref.hostView);
-        return ref;
-    }
-    destroyModal(ref, host) {
-        this.applicationRef.detachView(ref.hostView);
-        ref.destroy();
-        host.remove();
-    }
-    applyModalInputs(modal, o) {
-        if (o.title) {
-            modal.modalTitle = this.translate.instant(o.title);
-        }
-        else {
-            modal.modalTitle;
-        }
-        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
-        modal.showHeader = o.showHeader ?? true;
-        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
-    }
-    async waitForClose(ref) {
-        return firstValueFrom(ref.instance.closed);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
-
-class CustomMainPagesModalFilterDialogComponent {
-    configs = [];
-    draftValues = {};
-    searchText = '';
-    searchInputPlaceholder = 'GENERAL.SEARCH';
-    validateNumber = false;
-    fb = inject(FormBuilder);
-    modalRef = injectModalRef();
-    internalForm = this.fb.group({});
-    draft = signal({});
-    draftSearchText = signal('');
-    hasConfigs = computed(() => this.configs.length > 0);
-    ngOnChanges(changes) {
-        if (changes['configs']) {
-            this.ensureInternalControls();
-        }
-        if (changes['draftValues'] || changes['configs']) {
-            this.loadDraft(this.draftValues);
-        }
-        if (changes['searchText']) {
-            this.draftSearchText.set(this.searchText || '');
-        }
-    }
-    getControlName(config) {
-        return config.formBinding?.controlName ?? config.key;
-    }
-    getRangeControlName(config, index) {
-        return `${config.key}${index === 0 ? 'From' : 'To'}`;
-    }
-    getForm(config) {
-        return config.formBinding?.parentForm ?? this.internalForm;
-    }
-    getMinDate(config) {
-        const value = config.formBinding?.minDate;
-        return typeof value === 'function' ? value() : value ?? null;
-    }
-    getMaxDate(config) {
-        const value = config.formBinding?.maxDate;
-        return typeof value === 'function' ? value() : value ?? null;
-    }
-    getValue(key) {
-        return this.draft()[key] ?? null;
-    }
-    getArrayValue(key) {
-        const value = this.getValue(key);
-        return Array.isArray(value) ? [...value] : [];
-    }
-    getRangeValue(key, index) {
-        const value = this.getArrayValue(key)[index];
-        return value instanceof Date ? value : null;
-    }
-    onSingleSelectChange(config, option) {
-        this.setValue(config, option?.id ?? null);
-    }
-    onMultiSelectChange(config, value) {
-        this.setValue(config, [...value]);
-    }
-    onInputChange(config, value) {
-        const next = config.type === 'number' ? this.toNumberValue(value) : value;
-        this.setValue(config, next);
-    }
-    onDateChange(config, value) {
-        this.setValue(config, value);
-    }
-    onDateRangeChange(config, index, value) {
-        const next = [...this.getArrayValue(config.key)];
-        next[index] = value;
-        this.setValue(config, next.filter((item) => item !== null));
-    }
-    onSearchChange(value) {
-        this.draftSearchText.set(value || '');
-    }
-    resetDraft() {
-        const next = {};
-        for (const config of this.configs) {
-            next[config.key] = this.emptyValueFor(config);
-        }
-        this.loadDraft(next);
-    }
-    apply() {
-        if (this.hasInvalidControls()) {
-            this.markControlsTouched();
-            return;
-        }
-        this.modalRef.close({
-            action: 'apply',
-            searchText: this.draftSearchText(),
-            values: this.cloneSelections(this.draft()),
-        });
-    }
-    cancel() {
-        this.modalRef.close(undefined);
-    }
-    templateContext(config) {
-        return {
-            key: config.key,
-            value: this.getValue(config.key),
-            config,
-            setValue: (value) => this.setValue(config, value),
-        };
-    }
-    ensureInternalControls() {
-        for (const config of this.configs) {
-            if (config.formBinding)
-                continue;
-            if (config.type === 'date-range') {
-                for (const index of [0, 1]) {
-                    const controlName = this.getRangeControlName(config, index);
-                    if (!this.internalForm.contains(controlName)) {
-                        this.internalForm.addControl(controlName, new FormControl(null, {
-                            validators: config.required ? [Validators.required] : [],
-                            nonNullable: false,
-                        }));
-                    }
-                }
-                continue;
-            }
-            if (!this.internalForm.contains(config.key)) {
-                this.internalForm.addControl(config.key, new FormControl(this.emptyValueFor(config), {
-                    validators: config.required ? [Validators.required] : [],
-                    nonNullable: false,
-                }));
-            }
-        }
-    }
-    loadDraft(values) {
-        const next = {};
-        for (const config of this.configs) {
-            const value = values[config.key] ?? this.emptyValueFor(config);
-            next[config.key] = this.cloneValue(value);
-            this.patchBoundControl(config, value, true);
-            this.patchRangeControls(config, value);
-        }
-        this.draft.set(next);
-    }
-    setValue(config, value) {
-        const normalizedValue = this.normalizeValue(config, value);
-        this.draft.update((current) => ({
-            ...current,
-            [config.key]: this.cloneValue(normalizedValue),
-        }));
-        this.patchBoundControl(config, normalizedValue, false);
-        this.patchRangeControls(config, normalizedValue);
-    }
-    patchRangeControls(config, value) {
-        if (config.type !== 'date-range')
-            return;
-        const values = Array.isArray(value) ? value : [];
-        this.internalForm.get(this.getRangeControlName(config, 0))?.setValue(values[0] ?? null, { emitEvent: false });
-        this.internalForm.get(this.getRangeControlName(config, 1))?.setValue(values[1] ?? null, { emitEvent: false });
-    }
-    patchBoundControl(config, value, emitCallback) {
-        const form = this.getForm(config);
-        const controlName = this.getControlName(config);
-        const control = form.get(controlName);
-        if (control) {
-            control.setValue(value, { emitEvent: false });
-            if (config.disabled)
-                control.disable({ emitEvent: false });
-            if (!config.disabled)
-                control.enable({ emitEvent: false });
-        }
-        if (emitCallback || config.formBinding) {
-            config.formBinding?.onValueChange?.(value);
-        }
-    }
-    hasInvalidControls() {
-        return this.configs.some((config) => {
-            const control = this.getForm(config).get(this.getControlName(config));
-            return !!control && control.invalid;
-        });
-    }
-    markControlsTouched() {
-        for (const config of this.configs) {
-            this.getForm(config).get(this.getControlName(config))?.markAsTouched();
-        }
-    }
-    emptyValueFor(config) {
-        return config.type === 'multi-select' || config.type === 'date-range' ? [] : null;
-    }
-    normalizeValue(config, value) {
-        if (config.type === 'multi-select' || config.type === 'date-range') {
-            return Array.isArray(value) ? [...value] : [];
-        }
-        if (config.type === 'number')
-            return typeof value === 'number' ? value : this.toNumberValue(String(value ?? ''));
-        return value ?? null;
-    }
-    toNumberValue(value) {
-        if (value.trim() === '')
-            return null;
-        const numericValue = Number(value);
-        return Number.isNaN(numericValue) ? null : numericValue;
-    }
-    cloneSelections(values) {
-        return Object.entries(values).reduce((acc, [key, value]) => {
-            acc[key] = this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    cloneValue(value) {
-        if (Array.isArray(value))
-            return [...value];
-        if (value instanceof Date)
-            return new Date(value.getTime());
-        return value;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterDialogComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-dialog", inputs: { configs: "configs", draftValues: "draftValues", searchText: "searchText", searchInputPlaceholder: "searchInputPlaceholder", validateNumber: "validateNumber" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"filter-modal\">\n  <custom-reactive-search-input\n    [model]=\"draftSearchText()\"\n    (search)=\"onSearchChange($event)\"\n    (clear)=\"onSearchChange('')\"\n    [containerClass]=\"'filter-modal__search'\"\n    [inputClass]=\"'filter-modal__search-input'\"\n    [inputPlaceholder]=\"searchInputPlaceholder\"\n    [validateNumber]=\"validateNumber\"\n  />\n\n  <div class=\"filter-modal__grid\">\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  }\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n      {{ 'GENERAL.RESET' | translate }}\r\n    </button>\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__cancel\" (click)=\"cancel()\">\r\n        {{ 'GENERAL.CANCEL' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(72rem,82vw);color:var(--smp-text-primary, #1f1f1f)}::ng-deep .filter-modal .filter-modal__search{align-items:center;background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);border-radius:var(--smp-radius-md, .8rem);color:var(--smp-text-primary, #1f1f1f);display:flex;gap:.8rem;height:4rem;margin-block:.8rem 1.6rem;padding:0 1.4rem;width:100%}::ng-deep .filter-modal .filter-modal__search-input{background-color:transparent;border:0;color:var(--smp-text-primary, #1f1f1f);font-size:1.4rem;outline:0}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;padding-block:.8rem 1.6rem}.filter-modal__field{min-width:0;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.6rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:var(--smp-radius-md, .8rem);color:var(--smp-text-primary, #1f1f1f);font-size:1.4rem}::ng-deep .filter-modal .dropdown-options{min-width:100%!important;z-index:1002}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;border-top:1px solid var(--smp-color-form-border, #d9dbe1);display:flex;gap:1rem;justify-content:space-between;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__cancel,.filter-modal__reset{align-items:center;border-radius:var(--smp-radius-md, .8rem);cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-color-on-primary, #fff)}.filter-modal__cancel{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__reset{background-color:transparent;color:var(--smp-color-danger, #b42318)}.filter-modal__apply:focus-visible,.filter-modal__cancel:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__cancel,.filter-modal__reset{flex:1}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "component", type: CustomReactiveSearchInputComponent, selector: "custom-reactive-search-input", inputs: ["model", "headerSearchIcon", "containerClass", "inputClass", "inputPlaceholder", "validateNumber"], outputs: ["modelChange", "search", "clear"] }, { kind: "component", type: CustomDropdownComponent, selector: "custom-dropdown", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "selectedClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "options", "name", "value", "height", "userOptions", "isUserMode", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomMultiSelectComponent, selector: "custom-multi-select", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "options", "value", "height", "showSelectedCountOnly", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomInputFormComponent, selector: "custom-input-form", inputs: ["numberType", "timeText", "inputExtraTextLabel", "time", "class", "labelClass", "label", "placeholder", "name", "type", "controlName", "parentForm", "validation", "pattern", "height", "disabled"], outputs: ["valueChange"] }, { kind: "component", type: CustomCalenderFormComponent, selector: "custom-calender-form", inputs: ["label", "placeholder", "filterDesign", "labelClass", "calendarPopUpClass", "calendarInputClass", "calendarContainerClass", "componentClass", "minDate", "maxDate", "controlName", "parentForm", "validation", "name", "disabled", "height"], outputs: ["valueChange"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-main-pages-modal-filter-dialog', standalone: true, imports: [
-                        CommonModule,
-                        ReactiveFormsModule,
-                        TranslateModule,
-                        CustomReactiveSearchInputComponent,
-                        CustomDropdownComponent,
-                        CustomMultiSelectComponent,
-                        CustomInputFormComponent,
-                        CustomCalenderFormComponent,
-                    ], template: "<div class=\"filter-modal\">\n  <custom-reactive-search-input\n    [model]=\"draftSearchText()\"\n    (search)=\"onSearchChange($event)\"\n    (clear)=\"onSearchChange('')\"\n    [containerClass]=\"'filter-modal__search'\"\n    [inputClass]=\"'filter-modal__search-input'\"\n    [inputPlaceholder]=\"searchInputPlaceholder\"\n    [validateNumber]=\"validateNumber\"\n  />\n\n  <div class=\"filter-modal__grid\">\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  }\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n      {{ 'GENERAL.RESET' | translate }}\r\n    </button>\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__cancel\" (click)=\"cancel()\">\r\n        {{ 'GENERAL.CANCEL' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(72rem,82vw);color:var(--smp-text-primary, #1f1f1f)}::ng-deep .filter-modal .filter-modal__search{align-items:center;background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);border-radius:var(--smp-radius-md, .8rem);color:var(--smp-text-primary, #1f1f1f);display:flex;gap:.8rem;height:4rem;margin-block:.8rem 1.6rem;padding:0 1.4rem;width:100%}::ng-deep .filter-modal .filter-modal__search-input{background-color:transparent;border:0;color:var(--smp-text-primary, #1f1f1f);font-size:1.4rem;outline:0}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;padding-block:.8rem 1.6rem}.filter-modal__field{min-width:0;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.6rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:var(--smp-radius-md, .8rem);color:var(--smp-text-primary, #1f1f1f);font-size:1.4rem}::ng-deep .filter-modal .dropdown-options{min-width:100%!important;z-index:1002}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;border-top:1px solid var(--smp-color-form-border, #d9dbe1);display:flex;gap:1rem;justify-content:space-between;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__cancel,.filter-modal__reset{align-items:center;border-radius:var(--smp-radius-md, .8rem);cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-color-on-primary, #fff)}.filter-modal__cancel{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__reset{background-color:transparent;color:var(--smp-color-danger, #b42318)}.filter-modal__apply:focus-visible,.filter-modal__cancel:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__cancel,.filter-modal__reset{flex:1}}\n"] }]
-        }], propDecorators: { configs: [{
-                type: Input
-            }], draftValues: [{
-                type: Input
-            }], searchText: [{
-                type: Input
-            }], searchInputPlaceholder: [{
-                type: Input
-            }], validateNumber: [{
-                type: Input
-            }] } });
-
-class CustomMainPagesModalFilterContainerComponent {
-    dropdownOptions = input([]);
-    dropdownSelectedValues = input([]);
-    dropdownPlaceholder = input('');
-    searchInputPlaceholder = input('GENERAL.SEARCH');
-    defaultBehaviorFlag = input(true);
-    configs = input([]);
-    moreConfigs = input([]);
-    showMore = input(false);
-    validateNumber = input(false);
-    externalFiltersHasValue = input(false);
-    hasFiltered = input(false);
-    modalTitle = input('FILTER.FILTER');
-    customTemplates = input({});
-    filterChange = output();
-    filterReset = output();
-    modalService = inject(CustomModalService);
-    appliedState = signal({
-        searchText: '',
-        selectedIdsLegacy: [],
-        selectionsMap: {},
-    });
-    initialState = signal({
-        searchText: '',
-        selectedIdsLegacy: [],
-        selectionsMap: {},
-    });
-    normalizedConfigs = computed(() => this.normalizeConfigs());
-    hasAnyFilterValue = computed(() => {
-        const state = this.appliedState();
-        return (state.searchText.trim().length > 0 ||
-            state.selectedIdsLegacy.length > 0 ||
-            Object.values(state.selectionsMap).some((value) => this.hasValue(value)) ||
-            this.externalFiltersHasValue());
-    });
-    hasChangedFromInitial = computed(() => {
-        const current = this.appliedState();
-        const initial = this.initialState();
-        return (current.searchText !== initial.searchText ||
-            !this.arraysEqual(current.selectedIdsLegacy, initial.selectedIdsLegacy) ||
-            !this.selectionsEqual(current.selectionsMap, initial.selectionsMap));
-    });
-    appliedChips = computed(() => {
-        const configs = this.normalizedConfigs();
-        const selections = this.appliedState().selectionsMap;
-        const searchChip = this.appliedState().searchText.trim()
-            ? [
-                {
-                    key: '__search',
-                    value: this.appliedState().searchText,
-                    label: this.appliedState().searchText,
-                    removable: true,
-                },
-            ]
-            : [];
-        return [
-            ...searchChip,
-            ...configs.flatMap((config) => this.buildChipsForConfig(config, selections[config.key])),
-        ];
-    });
-    shouldDisableReset = computed(() => !this.hasFiltered() && !this.hasAnyFilterValue());
-    constructor() {
-        effect(() => {
-            const nextState = this.stateFromExternalInputs();
-            this.appliedState.set(nextState);
-            this.initialState.set(this.cloneState(nextState));
-            this.syncFormBindings(nextState.selectionsMap, false);
-        });
-    }
-    async openFilters() {
-        const applied = this.appliedState();
-        this.syncFormBindings(applied.selectionsMap, true);
-        const modalRef = await this.modalService.openComponentInModal(CustomMainPagesModalFilterDialogComponent, {
-            title: this.modalTitle(),
-            overlayClickClose: true,
-            showHeader: true,
-        });
-        modalRef.childComponentRef.setInput('configs', this.normalizedConfigs());
-        modalRef.childComponentRef.setInput('draftValues', this.cloneSelections(applied.selectionsMap));
-        modalRef.childComponentRef.setInput('searchText', applied.searchText);
-        modalRef.childComponentRef.setInput('searchInputPlaceholder', this.searchInputPlaceholder());
-        modalRef.childComponentRef.setInput('validateNumber', this.validateNumber());
-        modalRef.childComponentRef.changeDetectorRef.detectChanges();
-        const result = (await modalRef.afterClosed);
-        if (result?.action === 'apply') {
-            this.applyDraft(result.values, result.searchText);
-            return;
-        }
-        this.syncFormBindings(this.appliedState().selectionsMap, true);
-    }
-    applyDraft(values, searchText = this.appliedState().searchText) {
-        const nextSelections = this.normalizeSelections(values);
-        this.appliedState.update((state) => ({
-            ...state,
-            searchText: searchText || '',
-            selectedIdsLegacy: this.defaultBehaviorFlag()
-                ? this.toArray(nextSelections['legacy'])
-                : state.selectedIdsLegacy,
-            selectionsMap: nextSelections,
-        }));
-        this.syncFormBindings(nextSelections, true);
-        this.emitAppliedChange();
-    }
-    removeChip(chip) {
-        if (chip.key === '__search') {
-            this.appliedState.update((state) => ({ ...state, searchText: '' }));
-            this.emitAppliedChange();
-            return;
-        }
-        const config = this.normalizedConfigs().find((item) => item.key === chip.key);
-        if (!config)
-            return;
-        const selections = this.cloneSelections(this.appliedState().selectionsMap);
-        const currentValue = selections[chip.key];
-        selections[chip.key] = Array.isArray(currentValue)
-            ? currentValue.filter((item) => item !== chip.value)
-            : this.emptyValueFor(config);
-        this.appliedState.update((state) => ({ ...state, selectionsMap: this.normalizeSelections(selections) }));
-        this.syncFormBindings(this.appliedState().selectionsMap, true);
-        this.emitAppliedChange();
-    }
-    resetFilters() {
-        const emptySelections = this.normalizedConfigs().reduce((acc, config) => {
-            acc[config.key] = this.emptyValueFor(config);
-            return acc;
-        }, {});
-        this.appliedState.set({
-            searchText: '',
-            selectedIdsLegacy: [],
-            selectionsMap: emptySelections,
-        });
-        this.initialState.set({
-            searchText: '',
-            selectedIdsLegacy: [],
-            selectionsMap: this.cloneSelections(emptySelections),
-        });
-        this.syncFormBindings(emptySelections, true);
-        this.filterReset.emit(true);
-    }
-    emitAppliedChange() {
-        const state = this.appliedState();
-        const payload = this.defaultBehaviorFlag()
-            ? {
-                searchText: state.searchText,
-                selectedIds: [...state.selectedIdsLegacy],
-            }
-            : {
-                searchText: state.searchText,
-                selectedIds: [],
-                selections: this.toPayloadSelections(state.selectionsMap),
-            };
-        this.filterChange.emit(payload);
-    }
-    stateFromExternalInputs() {
-        const current = untracked(() => this.appliedState());
-        const selectionsMap = this.normalizedConfigs().reduce((acc, config) => {
-            const hasExplicitInitialValue = this.hasExplicitInitialValue(config);
-            acc[config.key] = hasExplicitInitialValue
-                ? this.cloneValue(config.initialValue)
-                : this.cloneValue(current.selectionsMap[config.key] ?? this.emptyValueFor(config));
-            return acc;
-        }, {});
-        return {
-            searchText: current.searchText,
-            selectedIdsLegacy: [...this.dropdownSelectedValues()],
-            selectionsMap,
-        };
-    }
-    normalizeConfigs() {
-        if (this.defaultBehaviorFlag()) {
-            return [
-                this.normalizeConfig({
-                    key: 'legacy',
-                    type: 'multi-select',
-                    placeholder: this.dropdownPlaceholder(),
-                    options: this.dropdownOptions(),
-                    initialValue: this.dropdownSelectedValues(),
-                    multiSelect: true,
-                }),
-            ];
-        }
-        return [...(this.configs() ?? []), ...(this.moreConfigs() ?? [])]
-            .filter((config) => !!config?.key)
-            .map((config) => this.normalizeConfig(config));
-    }
-    normalizeConfig(config) {
-        const inferredType = config.type ?? (config.multiSelect ? 'multi-select' : 'select');
-        const initialValue = config.initialValue !== undefined
-            ? config.initialValue
-            : config.selected !== undefined
-                ? [...config.selected]
-                : this.emptyValueByType(inferredType);
-        return {
-            ...config,
-            type: inferredType,
-            options: config.options ?? [],
-            initialValue: this.cloneValue(initialValue),
-            searchable: config.searchable ?? config.enableFilter ?? false,
-            clearable: config.clearable ?? config.showClear ?? true,
-            disabled: config.disabled ?? false,
-            required: config.required ?? false,
-            loading: config.loading ?? false,
-            gridSpan: config.gridSpan ?? (inferredType === 'date-range' || inferredType === 'custom' ? 2 : 1),
-            height: config.height ?? '4rem',
-            customTemplate: config.customTemplate ??
-                this.customTemplates()[config.key],
-        };
-    }
-    hasExplicitInitialValue(config) {
-        return config.initialValue !== undefined || config.selected !== undefined;
-    }
-    normalizeSelections(values) {
-        return this.normalizedConfigs().reduce((acc, config) => {
-            const value = values[config.key] ?? this.emptyValueFor(config);
-            acc[config.key] = config.type === 'multi-select' ? this.toArray(value) : this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    toPayloadSelections(selections) {
-        return Object.entries(selections).reduce((acc, [key, value]) => {
-            acc[key] = Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
-            return acc;
-        }, {});
-    }
-    buildChipsForConfig(config, value) {
-        if (!this.hasValue(value))
-            return [];
-        if (Array.isArray(value)) {
-            return value.map((item) => ({
-                key: config.key,
-                value: item,
-                label: this.labelForValue(config, item),
-                removable: true,
-            }));
-        }
-        return [
-            {
-                key: config.key,
-                value,
-                label: this.labelForValue(config, value),
-                removable: true,
-            },
-        ];
-    }
-    labelForValue(config, value) {
-        const option = config.options.find((item) => item.id === value);
-        if (config.chipLabelFormatter)
-            return config.chipLabelFormatter(value, option);
-        if (option)
-            return option.nameEn || option.nameAr || String(option.id);
-        if (value instanceof Date)
-            return value.toLocaleDateString('en-GB');
-        if (config.valueLabelFormatter)
-            return config.valueLabelFormatter(value, option);
-        return String(value);
-    }
-    syncFormBindings(selections, emitCallbacks) {
-        for (const config of this.normalizedConfigs()) {
-            const binding = config.formBinding;
-            if (!binding)
-                continue;
-            const value = selections[config.key] ?? this.emptyValueFor(config);
-            binding.parentForm.get(binding.controlName)?.setValue(value, { emitEvent: false });
-            if (emitCallbacks) {
-                binding.onValueChange?.(value);
-            }
-        }
-    }
-    emptyValueFor(config) {
-        return this.emptyValueByType(config.type);
-    }
-    emptyValueByType(type) {
-        return type === 'multi-select' || type === 'date-range' ? [] : null;
-    }
-    hasValue(value) {
-        if (Array.isArray(value))
-            return value.length > 0;
-        if (typeof value === 'string')
-            return value.trim().length > 0;
-        return value !== null && value !== undefined;
-    }
-    toArray(value) {
-        return Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
-    }
-    selectionsEqual(a, b) {
-        const keys = Array.from(new Set([...Object.keys(a), ...Object.keys(b)]));
-        return keys.every((key) => this.valuesEqual(a[key], b[key]));
-    }
-    valuesEqual(a, b) {
-        if (Array.isArray(a) && Array.isArray(b))
-            return this.arraysEqual(a, b);
-        if (a instanceof Date && b instanceof Date)
-            return a.getTime() === b.getTime();
-        return a === b;
-    }
-    arraysEqual(a, b) {
-        if (a.length !== b.length)
-            return false;
-        return a.every((value, index) => value === b[index]);
-    }
-    cloneState(state) {
-        return {
-            searchText: state.searchText,
-            selectedIdsLegacy: [...state.selectedIdsLegacy],
-            selectionsMap: this.cloneSelections(state.selectionsMap),
-        };
-    }
-    cloneSelections(values) {
-        return Object.entries(values).reduce((acc, [key, value]) => {
-            acc[key] = this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    cloneValue(value) {
-        if (Array.isArray(value))
-            return [...value];
-        if (value instanceof Date)
-            return new Date(value.getTime());
-        return value ?? null;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterContainerComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-container", inputs: { dropdownOptions: { classPropertyName: "dropdownOptions", publicName: "dropdownOptions", isSignal: true, isRequired: false, transformFunction: null }, dropdownSelectedValues: { classPropertyName: "dropdownSelectedValues", publicName: "dropdownSelectedValues", isSignal: true, isRequired: false, transformFunction: null }, dropdownPlaceholder: { classPropertyName: "dropdownPlaceholder", publicName: "dropdownPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, searchInputPlaceholder: { classPropertyName: "searchInputPlaceholder", publicName: "searchInputPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, defaultBehaviorFlag: { classPropertyName: "defaultBehaviorFlag", publicName: "defaultBehaviorFlag", isSignal: true, isRequired: false, transformFunction: null }, configs: { classPropertyName: "configs", publicName: "configs", isSignal: true, isRequired: false, transformFunction: null }, moreConfigs: { classPropertyName: "moreConfigs", publicName: "moreConfigs", isSignal: true, isRequired: false, transformFunction: null }, showMore: { classPropertyName: "showMore", publicName: "showMore", isSignal: true, isRequired: false, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: true, isRequired: false, transformFunction: null }, externalFiltersHasValue: { classPropertyName: "externalFiltersHasValue", publicName: "externalFiltersHasValue", isSignal: true, isRequired: false, transformFunction: null }, hasFiltered: { classPropertyName: "hasFiltered", publicName: "hasFiltered", isSignal: true, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: true, isRequired: false, transformFunction: null }, customTemplates: { classPropertyName: "customTemplates", publicName: "customTemplates", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { filterChange: "filterChange", filterReset: "filterReset" }, ngImport: i0, template: "<section class=\"main-filter\" aria-label=\"Page filters\">\n  <div class=\"main-filter__toolbar\">\n    <button type=\"button\" class=\"main-filter__toggle\" (click)=\"openFilters()\">\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path d=\"M2 3.25h12M4.5 8h7M6.5 12.75h3\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\r\n        </svg>\r\n      </span>\r\n      <span>{{ 'FILTER.FILTER' | translate }}</span>\r\n      @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\n      }\n    </button>\n  </div>\n\n  @if (appliedChips().length || hasAnyFilterValue()) {\n    <div class=\"main-filter__applied-row\">\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\n        @for (chip of appliedChips(); track chip.key + ':' + chip.value) {\n          <button type=\"button\" class=\"main-filter__chip\" (click)=\"removeChip(chip)\">\n            <span>{{ chip.label }}</span>\n            <span class=\"main-filter__chip-remove\" aria-hidden=\"true\">x</span>\n          </button>\n        }\n      </div>\n      <button\n        type=\"button\"\n        class=\"main-filter__reset-all\"\n        [disabled]=\"shouldDisableReset()\"\n        (click)=\"resetFilters()\"\n      >\n        {{ 'FILTER.CLEAR_ALL' | translate }}\n      </button>\n    </div>\n  }\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle,.main-filter__reset-all,.main-filter__chip{align-items:center;border-radius:var(--smp-radius-md, .8rem);cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem}.main-filter__toggle{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f);min-height:3.6rem;padding:0 1.4rem}.main-filter__toggle-icon{color:var(--smp-text-primary, #1f1f1f);display:inline-flex}.main-filter__count{align-items:center;background-color:var(--smp-color-primary, #602650);border-radius:999px;color:var(--smp-color-on-primary, #fff);display:inline-flex;font-size:1.1rem;height:1.8rem;justify-content:center;min-width:1.8rem;padding-inline:.5rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:100%}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:.6rem;min-width:0}.main-filter__chip{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f);max-width:28rem;min-height:2.6rem;padding:0 .8rem}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{color:var(--smp-text-secondary, #4b4f55);font-size:1.4rem;line-height:1}.main-filter__reset-all{background-color:transparent;color:var(--smp-color-danger, #b42318);min-height:2.6rem;padding:0 .4rem}.main-filter__toggle:focus-visible,.main-filter__reset-all:focus-visible,.main-filter__chip:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}@media (max-width: 640px){.main-filter__toolbar{justify-content:stretch}.main-filter__toggle{justify-content:center;width:100%}.main-filter__applied-row{align-items:stretch;flex-direction:column}.main-filter__reset-all{align-self:flex-end}}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-main-pages-modal-filter-container', imports: [TranslateModule], template: "<section class=\"main-filter\" aria-label=\"Page filters\">\n  <div class=\"main-filter__toolbar\">\n    <button type=\"button\" class=\"main-filter__toggle\" (click)=\"openFilters()\">\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path d=\"M2 3.25h12M4.5 8h7M6.5 12.75h3\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>\r\n        </svg>\r\n      </span>\r\n      <span>{{ 'FILTER.FILTER' | translate }}</span>\r\n      @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\n      }\n    </button>\n  </div>\n\n  @if (appliedChips().length || hasAnyFilterValue()) {\n    <div class=\"main-filter__applied-row\">\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\n        @for (chip of appliedChips(); track chip.key + ':' + chip.value) {\n          <button type=\"button\" class=\"main-filter__chip\" (click)=\"removeChip(chip)\">\n            <span>{{ chip.label }}</span>\n            <span class=\"main-filter__chip-remove\" aria-hidden=\"true\">x</span>\n          </button>\n        }\n      </div>\n      <button\n        type=\"button\"\n        class=\"main-filter__reset-all\"\n        [disabled]=\"shouldDisableReset()\"\n        (click)=\"resetFilters()\"\n      >\n        {{ 'FILTER.CLEAR_ALL' | translate }}\n      </button>\n    </div>\n  }\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle,.main-filter__reset-all,.main-filter__chip{align-items:center;border-radius:var(--smp-radius-md, .8rem);cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem}.main-filter__toggle{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f);min-height:3.6rem;padding:0 1.4rem}.main-filter__toggle-icon{color:var(--smp-text-primary, #1f1f1f);display:inline-flex}.main-filter__count{align-items:center;background-color:var(--smp-color-primary, #602650);border-radius:999px;color:var(--smp-color-on-primary, #fff);display:inline-flex;font-size:1.1rem;height:1.8rem;justify-content:center;min-width:1.8rem;padding-inline:.5rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:100%}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:.6rem;min-width:0}.main-filter__chip{background-color:var(--smp-color-surface, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f);max-width:28rem;min-height:2.6rem;padding:0 .8rem}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{color:var(--smp-text-secondary, #4b4f55);font-size:1.4rem;line-height:1}.main-filter__reset-all{background-color:transparent;color:var(--smp-color-danger, #b42318);min-height:2.6rem;padding:0 .4rem}.main-filter__toggle:focus-visible,.main-filter__reset-all:focus-visible,.main-filter__chip:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}@media (max-width: 640px){.main-filter__toolbar{justify-content:stretch}.main-filter__toggle{justify-content:center;width:100%}.main-filter__applied-row{align-items:stretch;flex-direction:column}.main-filter__reset-all{align-self:flex-end}}\n"] }]
-        }], ctorParameters: () => [] });
-
-class CustomPagesHeaderWithDialogFilterComponent {
-    authService;
-    headerTitle = input('');
-    headerDescription = input('');
-    btnTitle = input('');
-    addPermission = input(PERMISSIONS.all);
-    hideBtn = input(false);
-    hideFilter = input(false);
-    hasTabs = input(false);
-    listCounter = input(0);
-    pageTabs = input([]);
-    selectedTab = signal({});
-    selectedTabInput = input({});
-    defaultBehaviorFlag = input(false);
-    configs = input([]);
-    hasFiltered = input(false);
-    externalFiltersHasValue = input(false);
-    searchInputPlaceholder = input('GENERAL.SEARCH');
-    validateNumber = input(false);
-    modalTitle = input('FILTER.FILTER');
-    tabSelected = new EventEmitter();
-    addAction = new EventEmitter();
-    filterChange = new EventEmitter();
-    filterReset = new EventEmitter();
-    constructor(authService) {
-        this.authService = authService;
-        effect(() => {
-            if (this.pageTabs().length && !this.selectedTabInput().id) {
-                this.selectedTab.set(this.pageTabs()[0]);
-            }
-        });
-    }
-    selectTab(tab) {
-        if (tab.disabled)
-            return;
-        this.selectedTab.set(tab);
-        this.tabSelected.emit(tab);
-    }
-    onAddClick() {
-        this.addAction.emit();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomPagesHeaderWithDialogFilterComponent, deps: [{ token: AuthService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomPagesHeaderWithDialogFilterComponent, isStandalone: true, selector: "custom-pages-header-with-dialog-filter", inputs: { headerTitle: { classPropertyName: "headerTitle", publicName: "headerTitle", isSignal: true, isRequired: false, transformFunction: null }, headerDescription: { classPropertyName: "headerDescription", publicName: "headerDescription", isSignal: true, isRequired: false, transformFunction: null }, btnTitle: { classPropertyName: "btnTitle", publicName: "btnTitle", isSignal: true, isRequired: false, transformFunction: null }, addPermission: { classPropertyName: "addPermission", publicName: "addPermission", isSignal: true, isRequired: false, transformFunction: null }, hideBtn: { classPropertyName: "hideBtn", publicName: "hideBtn", isSignal: true, isRequired: false, transformFunction: null }, hideFilter: { classPropertyName: "hideFilter", publicName: "hideFilter", isSignal: true, isRequired: false, transformFunction: null }, hasTabs: { classPropertyName: "hasTabs", publicName: "hasTabs", isSignal: true, isRequired: false, transformFunction: null }, listCounter: { classPropertyName: "listCounter", publicName: "listCounter", isSignal: true, isRequired: false, transformFunction: null }, pageTabs: { classPropertyName: "pageTabs", publicName: "pageTabs", isSignal: true, isRequired: false, transformFunction: null }, selectedTabInput: { classPropertyName: "selectedTabInput", publicName: "selectedTabInput", isSignal: true, isRequired: false, transformFunction: null }, defaultBehaviorFlag: { classPropertyName: "defaultBehaviorFlag", publicName: "defaultBehaviorFlag", isSignal: true, isRequired: false, transformFunction: null }, configs: { classPropertyName: "configs", publicName: "configs", isSignal: true, isRequired: false, transformFunction: null }, hasFiltered: { classPropertyName: "hasFiltered", publicName: "hasFiltered", isSignal: true, isRequired: false, transformFunction: null }, externalFiltersHasValue: { classPropertyName: "externalFiltersHasValue", publicName: "externalFiltersHasValue", isSignal: true, isRequired: false, transformFunction: null }, searchInputPlaceholder: { classPropertyName: "searchInputPlaceholder", publicName: "searchInputPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: true, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", addAction: "addAction", filterChange: "filterChange", filterReset: "filterReset" }, ngImport: i0, template: "<header class=\"pages-filter-header\">\n  <div class=\"pages-filter-header__top\">\n    <div class=\"pages-filter-header__main\">\n      <h1 class=\"pages-filter-header__title\">\n        {{ headerTitle() | translate }}\n        @if (listCounter()) {\n          <span class=\"pages-filter-header__counter\">({{ listCounter() }})</span>\n        }\n      </h1>\n      @if (headerDescription()) {\n        <p class=\"pages-filter-header__description\">\n          {{ headerDescription() | translate }}\n        </p>\n      }\n    </div>\n\n    <div class=\"pages-filter-header__actions\">\n      @if (!hideFilter()) {\n        <custom-main-pages-modal-filter-container\n          [defaultBehaviorFlag]=\"defaultBehaviorFlag()\"\n          [configs]=\"configs()\"\n          [hasFiltered]=\"hasFiltered()\"\n          [externalFiltersHasValue]=\"externalFiltersHasValue()\"\n          [searchInputPlaceholder]=\"searchInputPlaceholder()\"\n          [validateNumber]=\"validateNumber()\"\n          [modalTitle]=\"modalTitle()\"\n          (filterChange)=\"filterChange.emit($event)\"\n          (filterReset)=\"filterReset.emit($event)\"\n        />\n      }\n\n      @if (!hideBtn() && authService.canDoAction([addPermission()])) {\n        <button class=\"pages-filter-header__add\" type=\"button\" (click)=\"onAddClick()\">\n          <span class=\"pages-filter-header__add-icon\" aria-hidden=\"true\">\n            <svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M4.5 9H13.5\" stroke=\"currentColor\" stroke-width=\"1.125\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n              <path d=\"M9 13.5V4.5\" stroke=\"currentColor\" stroke-width=\"1.125\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n            </svg>\n          </span>\n          <span>{{ btnTitle() | translate }}</span>\n        </button>\n      }\n    </div>\n  </div>\n\n  @if (hasTabs() && pageTabs().length) {\n    <custom-tabs\n      [tabsList]=\"pageTabs()\"\n      [selectedTab]=\"selectedTabInput().id ? selectedTabInput() : selectedTab()\"\n      (tabSelected)=\"selectTab($event)\"\n    />\n  }\n</header>\n", styles: [".pages-filter-header{background-color:var(--smp-color-background, #f3f4f6);border-bottom:1px solid var(--smp-color-form-border, #d9dbe1);display:flex;flex-direction:column;gap:.8rem;padding:1.2rem 2rem .8rem;position:relative}.pages-filter-header:has(.main-filter__applied-row){padding-bottom:4.2rem}.pages-filter-header__top{align-items:flex-start;display:flex;gap:1.6rem;justify-content:space-between}.pages-filter-header__main{min-width:0}.pages-filter-header__title{color:var(--smp-text-primary, #1f1f1f);font-size:2.2rem;font-weight:700;line-height:1.2;margin:0}.pages-filter-header__counter{color:var(--smp-text-secondary, #4b4f55);font-size:1.6rem;font-weight:500}.pages-filter-header__description{color:var(--smp-text-secondary, #4b4f55);font-size:1.2rem;line-height:1.4;margin:.6rem 0 0}.pages-filter-header__actions{align-items:flex-start;display:flex;gap:1rem;justify-content:flex-end}.pages-filter-header__add{align-items:center;background-color:var(--smp-color-primary, #602650);border-radius:var(--smp-radius-md, .8rem);color:var(--smp-color-on-primary, #fff);cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:600;gap:.8rem;min-height:3.6rem;padding:0 1.6rem;white-space:nowrap}.pages-filter-header__add-icon{display:inline-flex}.pages-filter-header__add:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter{align-items:flex-end}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__applied-row{left:2rem;position:absolute;right:2rem;top:6.6rem}@media (max-width: 768px){.pages-filter-header{padding:1.2rem}.pages-filter-header__top{flex-direction:column}.pages-filter-header__actions,.pages-filter-header__add{width:100%}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container,::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter,::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__toggle{width:100%}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__applied-row{position:static}.pages-filter-header:has(.main-filter__applied-row){padding-bottom:1.2rem}}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "component", type: CustomTabsComponent, selector: "custom-tabs", inputs: ["tabsList", "color", "colorSelected", "tabTemplates", "selectedTab"], outputs: ["tabSelected"] }, { kind: "component", type: CustomMainPagesModalFilterContainerComponent, selector: "custom-main-pages-modal-filter-container", inputs: ["dropdownOptions", "dropdownSelectedValues", "dropdownPlaceholder", "searchInputPlaceholder", "defaultBehaviorFlag", "configs", "moreConfigs", "showMore", "validateNumber", "externalFiltersHasValue", "hasFiltered", "modalTitle", "customTemplates"], outputs: ["filterChange", "filterReset"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomPagesHeaderWithDialogFilterComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-pages-header-with-dialog-filter', standalone: true, imports: [TranslateModule, CustomTabsComponent, CustomMainPagesModalFilterContainerComponent], template: "<header class=\"pages-filter-header\">\n  <div class=\"pages-filter-header__top\">\n    <div class=\"pages-filter-header__main\">\n      <h1 class=\"pages-filter-header__title\">\n        {{ headerTitle() | translate }}\n        @if (listCounter()) {\n          <span class=\"pages-filter-header__counter\">({{ listCounter() }})</span>\n        }\n      </h1>\n      @if (headerDescription()) {\n        <p class=\"pages-filter-header__description\">\n          {{ headerDescription() | translate }}\n        </p>\n      }\n    </div>\n\n    <div class=\"pages-filter-header__actions\">\n      @if (!hideFilter()) {\n        <custom-main-pages-modal-filter-container\n          [defaultBehaviorFlag]=\"defaultBehaviorFlag()\"\n          [configs]=\"configs()\"\n          [hasFiltered]=\"hasFiltered()\"\n          [externalFiltersHasValue]=\"externalFiltersHasValue()\"\n          [searchInputPlaceholder]=\"searchInputPlaceholder()\"\n          [validateNumber]=\"validateNumber()\"\n          [modalTitle]=\"modalTitle()\"\n          (filterChange)=\"filterChange.emit($event)\"\n          (filterReset)=\"filterReset.emit($event)\"\n        />\n      }\n\n      @if (!hideBtn() && authService.canDoAction([addPermission()])) {\n        <button class=\"pages-filter-header__add\" type=\"button\" (click)=\"onAddClick()\">\n          <span class=\"pages-filter-header__add-icon\" aria-hidden=\"true\">\n            <svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M4.5 9H13.5\" stroke=\"currentColor\" stroke-width=\"1.125\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n              <path d=\"M9 13.5V4.5\" stroke=\"currentColor\" stroke-width=\"1.125\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n            </svg>\n          </span>\n          <span>{{ btnTitle() | translate }}</span>\n        </button>\n      }\n    </div>\n  </div>\n\n  @if (hasTabs() && pageTabs().length) {\n    <custom-tabs\n      [tabsList]=\"pageTabs()\"\n      [selectedTab]=\"selectedTabInput().id ? selectedTabInput() : selectedTab()\"\n      (tabSelected)=\"selectTab($event)\"\n    />\n  }\n</header>\n", styles: [".pages-filter-header{background-color:var(--smp-color-background, #f3f4f6);border-bottom:1px solid var(--smp-color-form-border, #d9dbe1);display:flex;flex-direction:column;gap:.8rem;padding:1.2rem 2rem .8rem;position:relative}.pages-filter-header:has(.main-filter__applied-row){padding-bottom:4.2rem}.pages-filter-header__top{align-items:flex-start;display:flex;gap:1.6rem;justify-content:space-between}.pages-filter-header__main{min-width:0}.pages-filter-header__title{color:var(--smp-text-primary, #1f1f1f);font-size:2.2rem;font-weight:700;line-height:1.2;margin:0}.pages-filter-header__counter{color:var(--smp-text-secondary, #4b4f55);font-size:1.6rem;font-weight:500}.pages-filter-header__description{color:var(--smp-text-secondary, #4b4f55);font-size:1.2rem;line-height:1.4;margin:.6rem 0 0}.pages-filter-header__actions{align-items:flex-start;display:flex;gap:1rem;justify-content:flex-end}.pages-filter-header__add{align-items:center;background-color:var(--smp-color-primary, #602650);border-radius:var(--smp-radius-md, .8rem);color:var(--smp-color-on-primary, #fff);cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:600;gap:.8rem;min-height:3.6rem;padding:0 1.6rem;white-space:nowrap}.pages-filter-header__add-icon{display:inline-flex}.pages-filter-header__add:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter{align-items:flex-end}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__applied-row{left:2rem;position:absolute;right:2rem;top:6.6rem}@media (max-width: 768px){.pages-filter-header{padding:1.2rem}.pages-filter-header__top{flex-direction:column}.pages-filter-header__actions,.pages-filter-header__add{width:100%}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container,::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter,::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__toggle{width:100%}::ng-deep .pages-filter-header custom-main-pages-modal-filter-container .main-filter__applied-row{position:static}.pages-filter-header:has(.main-filter__applied-row){padding-bottom:1.2rem}}\n"] }]
-        }], ctorParameters: () => [{ type: AuthService }], propDecorators: { tabSelected: [{
-                type: Output
-            }], addAction: [{
-                type: Output
-            }], filterChange: [{
-                type: Output
-            }], filterReset: [{
-                type: Output
-            }] } });
-
 class CustomMainPagesFilterModalComponent {
     configs = [];
     draftValues = {};
@@ -8655,6 +7958,80 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             args: [{ providedIn: 'root' }]
         }] });
 
+const MODAL_REF = new InjectionToken('MODAL_REF');
+function injectModalRef() {
+    return inject(MODAL_REF);
+}
+class CustomModalService {
+    translate;
+    applicationRef = inject(ApplicationRef);
+    environmentInjector = inject(EnvironmentInjector);
+    /** Open any component inside the modal (child must be standalone or resolvable). */
+    constructor(translate) {
+        this.translate = translate;
+    }
+    async openComponentInModal(childComponent, options = {}) {
+        const hostElement = this.createHostElement();
+        const modalRef = this.createModal(hostElement);
+        this.applyModalInputs(modalRef.instance, options);
+        // Render the *ngIf branch so the anchor exists
+        modalRef.instance.open();
+        modalRef.changeDetectorRef.detectChanges();
+        // Wait until the ViewChild anchor is resolved
+        await firstValueFrom(modalRef.instance.contentReady$);
+        // Attach the child
+        const childRef = modalRef.instance.attachContent(childComponent);
+        // Resolve when closed, then cleanup
+        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
+        return {
+            modalComponentRef: modalRef,
+            childComponentRef: childRef,
+            close: (result) => modalRef.instance.close(result),
+            afterClosed,
+        };
+    }
+    // ——— helpers ———
+    createHostElement() {
+        const host = document.createElement('div');
+        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
+        document.body.appendChild(host);
+        return host;
+    }
+    createModal(host) {
+        const ref = createComponent(CustomModalComponent, {
+            environmentInjector: this.environmentInjector,
+            hostElement: host,
+        });
+        this.applicationRef.attachView(ref.hostView);
+        return ref;
+    }
+    destroyModal(ref, host) {
+        this.applicationRef.detachView(ref.hostView);
+        ref.destroy();
+        host.remove();
+    }
+    applyModalInputs(modal, o) {
+        if (o.title) {
+            modal.modalTitle = this.translate.instant(o.title);
+        }
+        else {
+            modal.modalTitle;
+        }
+        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
+        modal.showHeader = o.showHeader ?? true;
+        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
+    }
+    async waitForClose(ref) {
+        return firstValueFrom(ref.instance.closed);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
+
 // shared-lib/translation.service.ts
 var Lang;
 (function (Lang) {
@@ -9658,5 +9035,5 @@ const getSaudiTime = () => {
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, someFieldsContainData, tenantAuthGuard, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomMainPagesFilterModalComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, someFieldsContainData, tenantAuthGuard, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

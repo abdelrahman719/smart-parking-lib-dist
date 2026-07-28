@@ -1,0 +1,37 @@
+import { EventEmitter } from '@angular/core';
+import type { ITabDropdownOption } from '../../interfaces/components/dropdown.interface';
+import { PERMISSIONS } from '../../enums/auth/auth.constant';
+import { AuthService } from '../../services/auth/auth.services';
+import type { MainPagesModalFilterChange, MainPagesModalFilterConfigItem } from './custom-pages-header-with-dialog-filter.models';
+import * as i0 from "@angular/core";
+export declare class CustomPagesHeaderWithDialogFilterComponent {
+    authService: AuthService;
+    headerTitle: import("@angular/core").InputSignal<string>;
+    headerDescription: import("@angular/core").InputSignal<string>;
+    btnTitle: import("@angular/core").InputSignal<string>;
+    addPermission: import("@angular/core").InputSignal<PERMISSIONS>;
+    hideBtn: import("@angular/core").InputSignal<boolean>;
+    hideFilter: import("@angular/core").InputSignal<boolean>;
+    hasTabs: import("@angular/core").InputSignal<boolean>;
+    listCounter: import("@angular/core").InputSignal<number>;
+    pageTabs: import("@angular/core").InputSignal<ITabDropdownOption[]>;
+    selectedTab: import("@angular/core").WritableSignal<ITabDropdownOption>;
+    selectedTabInput: import("@angular/core").InputSignal<ITabDropdownOption>;
+    defaultBehaviorFlag: import("@angular/core").InputSignal<boolean>;
+    configs: import("@angular/core").InputSignal<MainPagesModalFilterConfigItem[]>;
+    hasFiltered: import("@angular/core").InputSignal<boolean>;
+    externalFiltersHasValue: import("@angular/core").InputSignal<boolean>;
+    searchInputPlaceholder: import("@angular/core").InputSignal<string>;
+    validateNumber: import("@angular/core").InputSignal<boolean>;
+    modalTitle: import("@angular/core").InputSignal<string>;
+    tabSelected: EventEmitter<ITabDropdownOption>;
+    addAction: EventEmitter<void>;
+    filterChange: EventEmitter<MainPagesModalFilterChange>;
+    filterReset: EventEmitter<boolean>;
+    constructor(authService: AuthService);
+    selectTab(tab: ITabDropdownOption): void;
+    onAddClick(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CustomPagesHeaderWithDialogFilterComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomPagesHeaderWithDialogFilterComponent, "custom-pages-header-with-dialog-filter", never, { "headerTitle": { "alias": "headerTitle"; "required": false; "isSignal": true; }; "headerDescription": { "alias": "headerDescription"; "required": false; "isSignal": true; }; "btnTitle": { "alias": "btnTitle"; "required": false; "isSignal": true; }; "addPermission": { "alias": "addPermission"; "required": false; "isSignal": true; }; "hideBtn": { "alias": "hideBtn"; "required": false; "isSignal": true; }; "hideFilter": { "alias": "hideFilter"; "required": false; "isSignal": true; }; "hasTabs": { "alias": "hasTabs"; "required": false; "isSignal": true; }; "listCounter": { "alias": "listCounter"; "required": false; "isSignal": true; }; "pageTabs": { "alias": "pageTabs"; "required": false; "isSignal": true; }; "selectedTabInput": { "alias": "selectedTabInput"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "searchInputPlaceholder": { "alias": "searchInputPlaceholder"; "required": false; "isSignal": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; "isSignal": true; }; "modalTitle": { "alias": "modalTitle"; "required": false; "isSignal": true; }; }, { "tabSelected": "tabSelected"; "addAction": "addAction"; "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, never, true, never>;
+}
+export type { MainPagesModalFilterChange, MainPagesModalFilterConfigItem, MainPagesModalFilterValue, MainPagesModalFilterChip, MainPagesModalFilterCustomTemplateContext, MainPagesModalFilterInputType, MainPagesModalFilterSelections, } from './custom-pages-header-with-dialog-filter.models';

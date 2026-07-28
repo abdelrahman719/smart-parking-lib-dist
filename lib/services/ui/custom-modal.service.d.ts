@@ -1,5 +1,5 @@
-import { ComponentRef, Type, InjectionToken } from '@angular/core';
-import { CustomModalComponent } from '../../components';
+import { ComponentRef, InjectionToken, Type } from '@angular/core';
+import { CustomModalComponent } from '../../components/custom-modal/custom-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export interface ModalRefApi<T = unknown> {

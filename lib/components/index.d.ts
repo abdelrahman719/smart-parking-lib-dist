@@ -51,7 +51,6 @@ export * from './custom-filter-dropdown/custom-filter-dropdown.component';
 export * from './custom-filter-dynamic-form/custom-filter-dynamic-form.component';
 export * from './custom-pages-header/custom-pages-header.component';
 export * from './custom-main-pages-filter/custom-main-pages-filter.component';
-export * from './custom-main-pages-filter/custom-main-pages-filter-modal.component';
 export * from './custom-sm-dynamic-table/custom-sm-dynamic-table.component';
 export * from './custom-phone-form/custom-phone-form.component';
 export * from './custom-otp-input-form/custom-otp-input-form.component';

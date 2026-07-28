@@ -13,11 +13,11 @@ export interface ModalOpenOptions<TInputs = unknown> {
     overlayClickClose?: boolean;
     showHeader?: boolean;
 }
-export interface ModalRef<TChild, TResult = unknown> {
+export interface ModalRef<TChild> {
     modalComponentRef: ComponentRef<CustomModalComponent>;
     childComponentRef: ComponentRef<TChild>;
-    close: (result?: TResult) => void;
-    afterClosed: Promise<TResult | undefined>;
+    close: () => void;
+    afterClosed: Promise<void>;
 }
 export declare class CustomModalService {
     private translate;
@@ -25,7 +25,7 @@ export declare class CustomModalService {
     private readonly environmentInjector;
     /** Open any component inside the modal (child must be standalone or resolvable). */
     constructor(translate: TranslateService);
-    openComponentInModal<TChild, TInputs = unknown>(childComponent: Type<TChild>, options?: ModalOpenOptions<TInputs>): Promise<ModalRef<TChild, unknown>>;
+    openComponentInModal<TChild, TInputs = unknown>(childComponent: Type<TChild>, options?: ModalOpenOptions<TInputs>): Promise<ModalRef<TChild>>;
     private createHostElement;
     private createModal;
     private destroyModal;

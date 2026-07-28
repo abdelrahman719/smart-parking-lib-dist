@@ -6,7 +6,7 @@ export declare class CustomModalComponent {
     overlayClickClose: boolean;
     showHeader: boolean;
     hideEvent: EventEmitter<void>;
-    closed: EventEmitter<unknown>;
+    closed: EventEmitter<void>;
     isVisible: boolean;
     private contentReadySubject;
     readonly contentReady$: import("rxjs").Observable<void>;
@@ -14,8 +14,8 @@ export declare class CustomModalComponent {
     private dynamicChildRef?;
     set contentHost(vcr: ViewContainerRef | null);
     open(): void;
-    close(result?: unknown): void;
-    closeInternal(result?: unknown): void;
+    close(): void;
+    closeInternal(): void;
     onOverlayClick(event: MouseEvent): void;
     /** Attach child and provide MODAL_REF so it can close itself */
     attachContent<T>(component: Type<T>, extraProviders?: Provider[]): ComponentRef<T>;

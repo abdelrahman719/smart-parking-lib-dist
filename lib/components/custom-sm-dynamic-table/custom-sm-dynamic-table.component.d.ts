@@ -22,6 +22,7 @@ export declare class CustomSmDynamicTableComponent {
     colTemplates: {
         [key: string]: TemplateRef<any>;
     };
+    emptyStateMsg: string;
     actionTemplate?: TemplateRef<{
         $implicit: any;
     }>;
@@ -47,5 +48,5 @@ export declare class CustomSmDynamicTableComponent {
     private updateFactor;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "emptyStateMsg": { "alias": "emptyStateMsg"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
 }

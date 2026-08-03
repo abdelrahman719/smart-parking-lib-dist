@@ -14,6 +14,7 @@ export interface FilterFormBinding {
     controlName: string;
     name?: string;
     onValueChange?: (value: FilterValue) => void;
+    draftValueChange?: (value: FilterValue) => void;
     minDate?: Date | null | (() => Date | null);
     maxDate?: Date | null | (() => Date | null);
 }

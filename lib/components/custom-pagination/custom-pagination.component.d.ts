@@ -20,10 +20,26 @@ export declare class CustomPaginationComponent {
     constructor();
     ngOnInit(): void;
     calculateTotalPages(): void;
+    /** Total number of pages (0 when there is nothing to page through). */
+    get pageCount(): number;
+    /**
+     * The page number shown to the user. `page` is 0-based in and out of the
+     * component, the displayed numbers are 1-based.
+     */
+    get currentPage(): number;
+    /** Show the standalone "1" when the visible window does not start at page 1. */
+    get showFirstPageNumber(): boolean;
+    /** Show "..." before the window when at least one page is hidden after page 1. */
+    get showStartEllipsis(): boolean;
+    /** Show the standalone last page number when the window stops before it. */
+    get showLastPageNumber(): boolean;
+    /** Show "..." after the window when at least one page is hidden before the last. */
+    get showEndEllipsis(): boolean;
     generatePageSizeOptions(): void;
     prevPage(): void;
     nextPage(): void;
-    changePage(index: number): void;
+    /** `page` is the 0-based index, i.e. the displayed number minus one. */
+    changePage(page: number): void;
     firstPage(): void;
     lastPage(): void;
     onPageSizeChange(event: Event): void;

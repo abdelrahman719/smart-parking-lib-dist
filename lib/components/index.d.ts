@@ -50,6 +50,8 @@ export * from './custom-reactive-search-input/custom-reactive-search-input.compo
 export * from './custom-filter-dropdown/custom-filter-dropdown.component';
 export * from './custom-filter-dynamic-form/custom-filter-dynamic-form.component';
 export * from './custom-pages-header/custom-pages-header.component';
+export * from './custom-form-actions/custom-form-actions.component';
+export * from './custom-pages-header-with-dialog-filter/custom-pages-header-with-dialog-filter.component';
 export * from './custom-main-pages-filter/custom-main-pages-filter.component';
 export * from './custom-sm-dynamic-table/custom-sm-dynamic-table.component';
 export * from './custom-phone-form/custom-phone-form.component';

@@ -1,5 +1,5 @@
-import { ComponentRef, Type, InjectionToken } from '@angular/core';
-import { CustomModalComponent } from '../../components';
+import { ComponentRef, InjectionToken, Type } from '@angular/core';
+import { CustomModalComponent } from '../../components/custom-modal/custom-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
 export interface ModalRefApi<T = unknown> {
@@ -13,11 +13,11 @@ export interface ModalOpenOptions<TInputs = unknown> {
     overlayClickClose?: boolean;
     showHeader?: boolean;
 }
-export interface ModalRef<TChild> {
+export interface ModalRef<TChild, TResult = unknown> {
     modalComponentRef: ComponentRef<CustomModalComponent>;
     childComponentRef: ComponentRef<TChild>;
-    close: () => void;
-    afterClosed: Promise<void>;
+    close: (result?: TResult) => void;
+    afterClosed: Promise<TResult | undefined>;
 }
 export declare class CustomModalService {
     private translate;
@@ -25,7 +25,7 @@ export declare class CustomModalService {
     private readonly environmentInjector;
     /** Open any component inside the modal (child must be standalone or resolvable). */
     constructor(translate: TranslateService);
-    openComponentInModal<TChild, TInputs = unknown>(childComponent: Type<TChild>, options?: ModalOpenOptions<TInputs>): Promise<ModalRef<TChild>>;
+    openComponentInModal<TChild, TInputs = unknown>(childComponent: Type<TChild>, options?: ModalOpenOptions<TInputs>): Promise<ModalRef<TChild, unknown>>;
     private createHostElement;
     private createModal;
     private destroyModal;

@@ -39,7 +39,6 @@ export declare class CustomMainPagesModalFilterDialogComponent implements OnChan
     onSearchChange(value: string): void;
     resetDraft(): void;
     apply(): void;
-    cancel(): void;
     templateContext(config: NormalizedFilterConfigItem): FilterCustomTemplateContext;
     private ensureInternalControls;
     private loadDraft;

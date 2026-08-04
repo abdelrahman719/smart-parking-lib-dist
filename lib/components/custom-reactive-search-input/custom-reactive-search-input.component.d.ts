@@ -6,6 +6,8 @@ export declare class CustomReactiveSearchInputComponent {
     search: EventEmitter<string>;
     clear: EventEmitter<void>;
     headerSearchIcon: import("@angular/core").InputSignal<boolean>;
+    /** When false, hides the leading search glyph (Figma map modal). Default true. */
+    showSearchIcon: import("@angular/core").InputSignal<boolean>;
     containerClass: string;
     inputClass: string;
     inputPlaceholder: string;
@@ -17,5 +19,5 @@ export declare class CustomReactiveSearchInputComponent {
     preventInvalidNumberInput(event: KeyboardEvent): void;
     preventPaste(event: ClipboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomReactiveSearchInputComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomReactiveSearchInputComponent, "custom-reactive-search-input", never, { "model": { "alias": "model"; "required": false; }; "headerSearchIcon": { "alias": "headerSearchIcon"; "required": false; "isSignal": true; }; "containerClass": { "alias": "containerClass"; "required": true; }; "inputClass": { "alias": "inputClass"; "required": true; }; "inputPlaceholder": { "alias": "inputPlaceholder"; "required": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; }; }, { "modelChange": "modelChange"; "search": "search"; "clear": "clear"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomReactiveSearchInputComponent, "custom-reactive-search-input", never, { "model": { "alias": "model"; "required": false; }; "headerSearchIcon": { "alias": "headerSearchIcon"; "required": false; "isSignal": true; }; "showSearchIcon": { "alias": "showSearchIcon"; "required": false; "isSignal": true; }; "containerClass": { "alias": "containerClass"; "required": true; }; "inputClass": { "alias": "inputClass"; "required": true; }; "inputPlaceholder": { "alias": "inputPlaceholder"; "required": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; }; }, { "modelChange": "modelChange"; "search": "search"; "clear": "clear"; }, never, never, true, never>;
 }

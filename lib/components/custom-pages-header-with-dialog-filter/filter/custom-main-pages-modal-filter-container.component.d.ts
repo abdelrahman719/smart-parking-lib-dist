@@ -1,5 +1,6 @@
 import { TemplateRef } from '@angular/core';
 import type { IDropdownOption } from '../../../interfaces/components/dropdown.interface';
+import type { CustomPagesHeaderResultSummary } from '../custom-pages-header-with-dialog-filter.models';
 import type { AppliedFilterChip, FilterChange, FilterConfigItem, FilterSelections, NormalizedFilterConfigItem } from './custom-main-pages-modal-filter.models';
 import * as i0 from "@angular/core";
 interface FilterState {
@@ -20,11 +21,15 @@ export declare class CustomMainPagesModalFilterContainerComponent {
     externalFiltersHasValue: import("@angular/core").InputSignal<boolean>;
     hasFiltered: import("@angular/core").InputSignal<boolean>;
     modalTitle: import("@angular/core").InputSignal<string>;
+    showModalTitleMarker: import("@angular/core").InputSignal<boolean>;
+    modalTitleMarkerColor: import("@angular/core").InputSignal<string>;
     customTemplates: import("@angular/core").InputSignal<Record<string, TemplateRef<unknown>>>;
     chipsPlacement: import("@angular/core").InputSignal<"default" | "below-header">;
+    resultSummary: import("@angular/core").InputSignal<CustomPagesHeaderResultSummary | null>;
     filterChange: import("@angular/core").OutputEmitterRef<FilterChange>;
     filterReset: import("@angular/core").OutputEmitterRef<boolean>;
     private readonly modalService;
+    private readonly translateService;
     readonly appliedState: import("@angular/core").WritableSignal<FilterState>;
     readonly initialState: import("@angular/core").WritableSignal<FilterState>;
     readonly normalizedConfigs: import("@angular/core").Signal<NormalizedFilterConfigItem[]>;
@@ -38,6 +43,8 @@ export declare class CustomMainPagesModalFilterContainerComponent {
     removeChip(chip: AppliedFilterChip): void;
     resetFilters(): void;
     private emitAppliedChange;
+    private modalTitleValue;
+    private resultSummaryTitle;
     private stateFromExternalInputs;
     private normalizeConfigs;
     private normalizeConfig;
@@ -58,6 +65,6 @@ export declare class CustomMainPagesModalFilterContainerComponent {
     private cloneSelections;
     private cloneValue;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMainPagesModalFilterContainerComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesModalFilterContainerComponent, "custom-main-pages-modal-filter-container", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "searchInputPlaceholder": { "alias": "searchInputPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "moreConfigs": { "alias": "moreConfigs"; "required": false; "isSignal": true; }; "showMore": { "alias": "showMore"; "required": false; "isSignal": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; "modalTitle": { "alias": "modalTitle"; "required": false; "isSignal": true; }; "customTemplates": { "alias": "customTemplates"; "required": false; "isSignal": true; }; "chipsPlacement": { "alias": "chipsPlacement"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, ["[extraFilters]", "[extraFiltersMore]"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesModalFilterContainerComponent, "custom-main-pages-modal-filter-container", never, { "dropdownOptions": { "alias": "dropdownOptions"; "required": false; "isSignal": true; }; "dropdownSelectedValues": { "alias": "dropdownSelectedValues"; "required": false; "isSignal": true; }; "dropdownPlaceholder": { "alias": "dropdownPlaceholder"; "required": false; "isSignal": true; }; "searchInputPlaceholder": { "alias": "searchInputPlaceholder"; "required": false; "isSignal": true; }; "defaultBehaviorFlag": { "alias": "defaultBehaviorFlag"; "required": false; "isSignal": true; }; "configs": { "alias": "configs"; "required": false; "isSignal": true; }; "moreConfigs": { "alias": "moreConfigs"; "required": false; "isSignal": true; }; "showMore": { "alias": "showMore"; "required": false; "isSignal": true; }; "validateNumber": { "alias": "validateNumber"; "required": false; "isSignal": true; }; "externalFiltersHasValue": { "alias": "externalFiltersHasValue"; "required": false; "isSignal": true; }; "hasFiltered": { "alias": "hasFiltered"; "required": false; "isSignal": true; }; "modalTitle": { "alias": "modalTitle"; "required": false; "isSignal": true; }; "showModalTitleMarker": { "alias": "showModalTitleMarker"; "required": false; "isSignal": true; }; "modalTitleMarkerColor": { "alias": "modalTitleMarkerColor"; "required": false; "isSignal": true; }; "customTemplates": { "alias": "customTemplates"; "required": false; "isSignal": true; }; "chipsPlacement": { "alias": "chipsPlacement"; "required": false; "isSignal": true; }; "resultSummary": { "alias": "resultSummary"; "required": false; "isSignal": true; }; }, { "filterChange": "filterChange"; "filterReset": "filterReset"; }, never, ["[extraFilters]", "[extraFiltersMore]"], true, never>;
 }
 export type { AppliedFilterChip as MainPagesModalFilterChip, FilterChange as MainPagesModalFilterChange, FilterConfigItem as MainPagesModalFilterConfigItem, FilterCustomTemplateContext as MainPagesModalFilterCustomTemplateContext, FilterInputType as MainPagesModalFilterInputType, FilterSelections as MainPagesModalFilterSelections, FilterValue as MainPagesModalFilterValue, } from './custom-main-pages-modal-filter.models';

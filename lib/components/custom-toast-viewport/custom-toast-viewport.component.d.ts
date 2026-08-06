@@ -9,7 +9,7 @@ export declare class CustomToastViewportComponent {
     posClass(pos: ToastPosition): "toast-top-right" | "toast-top-left" | "toast-bottom-right" | "toast-bottom-left" | "toast-top-center" | "toast-bottom-center";
     /**
      * Per-toast content direction.
-     * Explicit toast.rtl (e.g. Arabic samples) wins; otherwise follows live app language.
+     * Explicit toast.rtl wins; otherwise follows live html[dir] / app language (no reload).
      */
     toastDir(toast: ToastItem): 'rtl' | 'ltr';
     close(id: string): void;

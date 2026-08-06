@@ -10,6 +10,8 @@ export declare function injectModalRef<T = unknown>(): ModalRefApi<T>;
 export interface ModalOpenOptions<TInputs = unknown> {
     title?: string;
     iconSrc?: string;
+    iconBackground?: string;
+    iconColor?: string;
     showTitleMarker?: boolean;
     titleMarkerColor?: string;
     overlayClickClose?: boolean;

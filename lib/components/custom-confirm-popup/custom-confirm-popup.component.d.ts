@@ -9,6 +9,8 @@ export interface ConfirmOptions {
     modalIcon: string;
     modalTitle: string;
     type: ConfirmType;
+    modalIconBackground?: string;
+    modalIconColor?: string;
     confirmText?: string;
     cancelText?: string;
     extraText?: string;
@@ -22,6 +24,8 @@ export declare class CustomConfirmPopupComponent {
     message: string;
     type: 'info' | 'delete' | 'save';
     modalIcon: string;
+    modalIconBackground: string;
+    modalIconColor: string;
     modalTitle: string;
     modalWarningMessage: string;
     confirmButtonText: string;
@@ -48,5 +52,5 @@ export declare class CustomConfirmPopupComponent {
     startAnimation(event: any): void;
     doneAnimation(event: any): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomConfirmPopupComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomConfirmPopupComponent, "custom-confirm-popup", never, { "message": { "alias": "message"; "required": true; }; "type": { "alias": "type"; "required": true; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalWarningMessage": { "alias": "modalWarningMessage"; "required": false; }; "confirmButtonText": { "alias": "confirmButtonText"; "required": false; }; "cancelButtonText": { "alias": "cancelButtonText"; "required": false; }; "successMsg": { "alias": "successMsg"; "required": false; "isSignal": true; }; }, { "confirmEvent": "confirmEvent"; "cancelEvent": "cancelEvent"; "extraEvent": "extraEvent"; "overlayClicked": "overlayClicked"; "closed": "closed"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomConfirmPopupComponent, "custom-confirm-popup", never, { "message": { "alias": "message"; "required": true; }; "type": { "alias": "type"; "required": true; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "modalIconBackground": { "alias": "modalIconBackground"; "required": false; }; "modalIconColor": { "alias": "modalIconColor"; "required": false; }; "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalWarningMessage": { "alias": "modalWarningMessage"; "required": false; }; "confirmButtonText": { "alias": "confirmButtonText"; "required": false; }; "cancelButtonText": { "alias": "cancelButtonText"; "required": false; }; "successMsg": { "alias": "successMsg"; "required": false; "isSignal": true; }; }, { "confirmEvent": "confirmEvent"; "cancelEvent": "cancelEvent"; "extraEvent": "extraEvent"; "overlayClicked": "overlayClicked"; "closed": "closed"; }, never, never, true, never>;
 }

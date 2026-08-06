@@ -45,9 +45,13 @@ export declare class ToastService {
     close(id: string): void;
     clear(): void;
     private normalizeDuration;
+    /** Content dir only — screen corner is handled by CSS + html[dir]. */
     private inferRtl;
-    private getDefaultPosition;
-    private resolveLegacyPosition;
+    /**
+     * Keep a single corner token (`top-right` / `top-left`).
+     * Physical side flips via `inset-inline-*` when html[dir] changes — no reload, no lang sniffing.
+     */
+    private resolvePosition;
     private fromLegacyInput;
     private normalizePayload;
     private pushIntoStack;

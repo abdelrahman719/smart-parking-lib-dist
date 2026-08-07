@@ -9,6 +9,7 @@ export declare class CustomModalComponent {
     modalTitleMarkerColor: string;
     overlayClickClose: boolean;
     showHeader: boolean;
+    dir: 'rtl' | 'ltr';
     hideEvent: EventEmitter<void>;
     closed: EventEmitter<unknown>;
     isVisible: boolean;

@@ -1611,13 +1611,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 args: [{ required: true }]
             }] } });
 
-// activity-time.util.ts
 const SECOND = 1_000;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const MONTH = 30 * DAY;
-// hardcoded tiny dict – fast and reliable
 const ACTIVITY_DICT = {
     en: {
         ACTIVE_NOW: 'now',
@@ -1627,12 +1625,12 @@ const ACTIVITY_DICT = {
         DAY_AGO: (n) => `${n} day ago`,
     },
     ar: {
-        ACTIVE_NOW: ' الآن',
+        ACTIVE_NOW: 'الآن',
         SEC_AGO: (n) => `منذ ${n} ثانية`,
         MIN_AGO: (n) => `منذ ${n} دقيقة`,
         HR_AGO: (n) => `منذ ${n} ساعة`,
         DAY_AGO: (n) => `منذ ${n} يوم`,
-    }
+    },
 };
 function pickLang(lang) {
     return lang && lang.startsWith('ar') ? 'ar' : 'en';
@@ -1640,17 +1638,17 @@ function pickLang(lang) {
 function toDate(input) {
     if (!input)
         return null;
-    if (input instanceof Date)
+    if (input instanceof Date) {
         return isNaN(input.getTime()) ? null : input;
-    const d = new Date(input);
-    return isNaN(d.getTime())
-        ? null
-        : new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    }
+    const date = new Date(input);
+    return isNaN(date.getTime()) ? null : date;
 }
-// keep your old formatting: "Oct. 18, 2024"
 function formatAbsolute(date, locale = 'en') {
     const day = String(date.getDate()).padStart(2, '0');
-    const month = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date);
+    const month = new Intl.DateTimeFormat(locale, {
+        month: 'short',
+    }).format(date);
     const formattedMonth = month.endsWith('.') ? month : month + '.';
     const year = date.getFullYear();
     return `${formattedMonth} ${day}, ${year}`;
@@ -1667,33 +1665,28 @@ function formatActivityTime(input, lang, opts) {
     const activeNowMs = (opts?.activeNowSeconds ?? 0) * SECOND;
     const picked = pickLang(lang);
     const dict = ACTIVITY_DICT[picked];
-    // future → absolute
-    if (diffMs < 0)
+    if (diffMs < 0) {
         return formatAbsolute(date, opts?.locale ?? picked);
-    //  Just now / Active now
-    if (diffMs <= activeNowMs)
+    }
+    if (diffMs <= activeNowMs) {
         return dict.ACTIVE_NOW;
-    // < 1 minute (Seconds ago)
+    }
     if (diffMs < MINUTE) {
         const secs = Math.floor(diffMs / SECOND);
         return dict.SEC_AGO(secs);
     }
-    // < 1 hour
     if (diffMs < HOUR) {
         const mins = Math.floor(diffMs / MINUTE);
         return dict.MIN_AGO(mins);
     }
-    // < 1 day
     if (diffMs < DAY) {
         const hrs = Math.floor(diffMs / HOUR);
         return dict.HR_AGO(hrs);
     }
-    // < 1 month
     if (diffMs < MONTH) {
         const days = Math.floor(diffMs / DAY);
         return dict.DAY_AGO(days);
     }
-    // ≥ 1 month → absolute
     return formatAbsolute(date, opts?.locale ?? picked);
 }
 

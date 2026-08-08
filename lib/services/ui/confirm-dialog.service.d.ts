@@ -3,6 +3,7 @@ import * as i0 from "@angular/core";
 export declare class ConfirmDialogService {
     private readonly applicationRef;
     private readonly environmentInjector;
+    private readonly translate;
     confirm(options: ConfirmOptions): Promise<ConfirmResult>;
     private createHostElement;
     private mountComponent;

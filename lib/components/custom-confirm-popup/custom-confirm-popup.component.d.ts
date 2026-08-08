@@ -30,6 +30,7 @@ export declare class CustomConfirmPopupComponent {
     modalWarningMessage: string;
     confirmButtonText: string;
     cancelButtonText: string;
+    dir: 'rtl' | 'ltr';
     confirmEvent: EventEmitter<any>;
     cancelEvent: EventEmitter<void>;
     extraEvent: EventEmitter<void>;

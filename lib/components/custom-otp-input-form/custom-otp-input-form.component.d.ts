@@ -29,6 +29,7 @@ export declare class CustomOtpInputFormComponent implements OnInit, AfterViewIni
     onKeyDown(e: KeyboardEvent, i: number): void;
     onPaste(e: ClipboardEvent, i: number): void;
     get indexes(): number[];
+    private isRtl;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomOtpInputFormComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomOtpInputFormComponent, "custom-otp-input-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "showError": { "alias": "showError"; "required": false; }; "length": { "alias": "length"; "required": false; }; }, {}, never, never, true, never>;
 }

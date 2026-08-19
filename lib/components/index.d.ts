@@ -63,3 +63,4 @@ export * from './custom-status-label/custom-status-label.component';
 export * from './custom-profile-img-input/custom-profile-img-input.component';
 export * from './image-viewer/image-viewer.component';
 export * from './custom-calendar-range-form/custom-calendar-range-form.component';
+export * from './custom-date-ranges-filter/custom-date-ranges-filter.component';

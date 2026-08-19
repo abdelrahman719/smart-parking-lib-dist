@@ -24,6 +24,8 @@ export declare class CustomActionsDropdownComponent {
     actionDropdownContainer?: ElementRef<HTMLDivElement>;
     triggerTemplate: TemplateRef<any> | null;
     private isAppendedToBody;
+    private removeGlobalPositionListeners;
+    private positionFrameId;
     isOpen: import("@angular/core").WritableSignal<boolean>;
     showAnimation: import("@angular/core").WritableSignal<boolean>;
     constructor(sanitizer: DomSanitizer, renderer: Renderer2, elRef: ElementRef, translate: TranslateService);
@@ -33,6 +35,8 @@ export declare class CustomActionsDropdownComponent {
     private portalToBody;
     private updatePosition;
     private detachFromBody;
+    private bindGlobalPositionListeners;
+    private unbindGlobalPositionListeners;
     onClickAction(action: {
         callback: (ctx: any) => void;
     }, event: MouseEvent): void;

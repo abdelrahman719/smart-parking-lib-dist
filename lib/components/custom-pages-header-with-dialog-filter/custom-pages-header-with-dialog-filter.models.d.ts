@@ -2,7 +2,7 @@ export type { AppliedFilterChip as MainPagesModalFilterChip, FilterChange as Mai
 export interface CustomPagesHeaderResultSummary {
     shownCount: number;
     totalCount: number;
-    itemLabel: string;
+    itemLabel?: string;
     showWhenZero?: boolean;
     showingLabel?: string;
     ofLabel?: string;

@@ -48,6 +48,7 @@ export interface FilterConfigItem {
     enableFilter?: boolean;
     showClear?: boolean;
     height?: string;
+    openUp?: boolean;
     dropdownContainerClass?: string;
     dropdownOptionsClass?: string;
     isUserMode?: boolean;

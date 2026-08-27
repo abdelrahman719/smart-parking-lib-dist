@@ -1,8 +1,8 @@
-import { EventEmitter } from '@angular/core';
+import { AfterViewChecked, ElementRef, EventEmitter, OnDestroy } from '@angular/core';
 import { IDropdownOption } from '../../interfaces';
 import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
-export declare class CustomMultiSelectComponent {
+export declare class CustomMultiSelectComponent implements AfterViewChecked, OnDestroy {
     label?: string;
     labelClass: string;
     dropdownOptionsClass: string;
@@ -12,25 +12,41 @@ export declare class CustomMultiSelectComponent {
     enableFilter: boolean;
     showClear: boolean;
     openUp: boolean;
+    overlayMode: 'inline' | 'fixed';
     options: IDropdownOption[];
     value: any[];
     height: string;
     showSelectedCountOnly: boolean;
+    dropdownHeader?: ElementRef<HTMLElement>;
+    dropdownOptions?: ElementRef<HTMLElement>;
     valueChange: EventEmitter<any[]>;
     clear: EventEmitter<void>;
     isOpen: boolean;
     filteredOptions: IDropdownOption[];
     filterText: string;
     translationService: TranslationService;
+    private readonly overlayGap;
+    private readonly viewportEdgeGap;
+    private overlayListenersActive;
+    private positionFrame;
+    private readonly positionOverlayHandler;
     ngOnInit(): void;
     get selectedOptions(): IDropdownOption[];
     getSelectedLabels(): string;
     toggleDropdown(): void;
+    closeDropdown(): void;
     toggleOptionSelection(option: IDropdownOption): void;
     isSelected(id: any): boolean;
     clearSelection(event: Event): void;
     filterOptions(): void;
     set reset(value: boolean);
+    ngAfterViewChecked(): void;
+    ngOnDestroy(): void;
+    private activateFixedOverlay;
+    private deactivateFixedOverlay;
+    private scheduleOverlayPosition;
+    private positionFixedOverlay;
+    private resetOverlayStyles;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMultiSelectComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMultiSelectComponent, "custom-multi-select", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "openUp": { "alias": "openUp"; "required": false; }; "options": { "alias": "options"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "showSelectedCountOnly": { "alias": "showSelectedCountOnly"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; "clear": "clear"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomMultiSelectComponent, "custom-multi-select", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "openUp": { "alias": "openUp"; "required": false; }; "overlayMode": { "alias": "overlayMode"; "required": false; }; "options": { "alias": "options"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "showSelectedCountOnly": { "alias": "showSelectedCountOnly"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; "clear": "clear"; }, never, never, true, never>;
 }

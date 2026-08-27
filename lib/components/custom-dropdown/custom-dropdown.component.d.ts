@@ -1,8 +1,8 @@
-import { EventEmitter } from '@angular/core';
+import { AfterViewChecked, ElementRef, EventEmitter, OnDestroy } from '@angular/core';
 import { IDropdownOption, IUserLookup } from '../../interfaces';
 import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
-export declare class CustomDropdownComponent {
+export declare class CustomDropdownComponent implements AfterViewChecked, OnDestroy {
     label?: string;
     labelClass: string;
     dropdownOptionsClass: string;
@@ -13,6 +13,7 @@ export declare class CustomDropdownComponent {
     enableFilter: boolean;
     showClear: boolean;
     openUp: boolean;
+    overlayMode: 'inline' | 'fixed';
     options: IDropdownOption[];
     name?: string;
     value: any;
@@ -21,19 +22,34 @@ export declare class CustomDropdownComponent {
     height: string;
     userOptions: IUserLookup[];
     isUserMode: boolean;
+    dropdownHeader?: ElementRef<HTMLElement>;
+    dropdownOptions?: ElementRef<HTMLElement>;
     isOpen: boolean;
     filteredOptions: IDropdownOption[];
     filterText: string;
     filteredUserOptions: IUserLookup[];
     translationService: TranslationService;
+    private readonly overlayGap;
+    private readonly viewportEdgeGap;
+    private overlayListenersActive;
+    private positionFrame;
+    private readonly positionOverlayHandler;
     ngOnInit(): void;
     get selectedOption(): IDropdownOption | null;
     get selectedUser(): IUserLookup | null;
     toggleDropdown(): void;
+    closeDropdown(): void;
     selectOption(option: IDropdownOption | IUserLookup): void;
     clearSelection(event: Event): void;
     filterOptions(): void;
     set reset(value: boolean);
+    ngAfterViewChecked(): void;
+    ngOnDestroy(): void;
+    private activateFixedOverlay;
+    private deactivateFixedOverlay;
+    private scheduleOverlayPosition;
+    private positionFixedOverlay;
+    private resetOverlayStyles;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDropdownComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDropdownComponent, "custom-dropdown", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "selectedClass": { "alias": "selectedClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "openUp": { "alias": "openUp"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "userOptions": { "alias": "userOptions"; "required": false; }; "isUserMode": { "alias": "isUserMode"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; "clear": "clear"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDropdownComponent, "custom-dropdown", never, { "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "dropdownOptionsClass": { "alias": "dropdownOptionsClass"; "required": false; }; "dropdownHeaderClass": { "alias": "dropdownHeaderClass"; "required": false; }; "selectedClass": { "alias": "selectedClass"; "required": false; }; "dropdownContainerClass": { "alias": "dropdownContainerClass"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "showClear": { "alias": "showClear"; "required": false; }; "openUp": { "alias": "openUp"; "required": false; }; "overlayMode": { "alias": "overlayMode"; "required": false; }; "options": { "alias": "options"; "required": true; }; "name": { "alias": "name"; "required": true; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; "userOptions": { "alias": "userOptions"; "required": false; }; "isUserMode": { "alias": "isUserMode"; "required": false; }; "reset": { "alias": "reset"; "required": false; }; }, { "valueChange": "valueChange"; "clear": "clear"; }, never, never, true, never>;
 }

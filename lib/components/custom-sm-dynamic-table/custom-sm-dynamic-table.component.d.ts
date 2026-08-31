@@ -35,6 +35,7 @@ export declare class CustomSmDynamicTableComponent {
     checkedActionDeleteSvg: SafeHtml;
     expandSvg: SafeHtml;
     private statusKey;
+    private overflowTip?;
     heightFactor: import("@angular/core").WritableSignal<number>;
     dynamicHeight: import("@angular/core").Signal<string>;
     constructor(sanitizer: DomSanitizer);
@@ -45,6 +46,8 @@ export declare class CustomSmDynamicTableComponent {
     private findStatusKey;
     isRowInactive(row: any): boolean;
     disableActions(row: any): boolean;
+    showOverflowTip(ev: Event): void;
+    hideOverflowTip(): void;
     private updateFactor;
     ngOnDestroy(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;

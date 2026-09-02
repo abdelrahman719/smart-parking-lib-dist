@@ -7421,7 +7421,9 @@ class CustomSmDynamicTableComponent {
         return (String(val).toLowerCase() === 'deleted' ||
             String(val).toLowerCase() === 'default');
     }
-    showOverflowTip(ev) {
+    showOverflowTip(ev, col) {
+        if (col?.tooltip === false)
+            return;
         const el = ev.currentTarget;
         const overflow = [el, ...Array.from(el.querySelectorAll('*'))]
             .some((n) => n.scrollWidth - n.clientWidth > 1);

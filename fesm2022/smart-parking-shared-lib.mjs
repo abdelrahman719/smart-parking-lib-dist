@@ -1,6 +1,6 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ViewChild, Pipe, inject, ContentChild, HostBinding, ViewContainerRef, DestroyRef, ViewEncapsulation, ElementRef, model, ApplicationRef, EnvironmentInjector, Injector, createComponent, output, untracked, ViewChildren } from '@angular/core';
-import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, debounceTime, distinctUntilChanged, firstValueFrom, take, Observable, map, throwError, finalize, tap } from 'rxjs';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ViewChild, Pipe, inject, ContentChild, HostBinding, ViewContainerRef, DestroyRef, ViewEncapsulation, ApplicationRef, EnvironmentInjector, Injector, createComponent, output, untracked, ElementRef, model, ViewChildren } from '@angular/core';
+import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, firstValueFrom, debounceTime, distinctUntilChanged, take, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
 import * as i3 from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import * as i1$1 from '@ngx-translate/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import * as i1$3 from '@angular/forms';
-import { FormsModule, ReactiveFormsModule, FormArray, FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormArray, FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import * as i1$2 from '@angular/common';
 import { isPlatformBrowser, CommonModule, registerLocaleData, NgStyle, NgClass, NgTemplateOutlet, NgComponentOutlet } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
@@ -2417,11 +2417,11 @@ class CustomInputFormComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomInputFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomInputFormComponent, isStandalone: true, selector: "custom-input-form", inputs: { numberType: "numberType", timeText: "timeText", inputExtraTextLabel: "inputExtraTextLabel", time: "time", class: "class", labelClass: "labelClass", label: "label", placeholder: "placeholder", name: "name", type: "type", controlName: "controlName", parentForm: "parentForm", validation: "validation", pattern: "pattern", height: "height", disabled: "disabled" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div\r\n  style=\"width: 100%\"\r\n  [formGroup]=\"parentForm\"\r\n  class=\"input-form-tokens input-wrapper\"\r\n>\r\n  <div\r\n    style=\"display: flex; align-items: center; justify-content: space-between\"\r\n  >\r\n    @if (label) {\r\n      <label\r\n        [for]=\"label\"\r\n        [class]=\"'custom-label ' + labelClass\"\r\n        [class.disabled-label]=\"disabled\"\r\n      >\r\n        {{ label }}\r\n\r\n        @if (containRequiredError()) {\r\n          <span class=\"required-asterisk\">*</span>\r\n        } @else {\r\n          <span class=\"required-asterisk required-asterisk--spacer\"\r\n            >&nbsp;</span\r\n          >\r\n        }\r\n      </label>\r\n    }\r\n    <ng-content select=\"[infoContent]\"></ng-content>\r\n  </div>\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (input)=\"emitValue($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n      [min]=\"type === 'number' ? 0 : null\"\r\n      (keydown)=\"preventInvalidNumberInput($event)\"\r\n    />\r\n    @if (type === \"password\" || (type === \"text\" && showPassword)) {\r\n      <button\r\n        type=\"button\"\r\n        class=\"input-icon-passwrord-eye\"\r\n        (click)=\"togglePasswordVisibility()\"\r\n        [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n      >\r\n        @if (showPassword) {\r\n          <!-- eye (show) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n            aria-hidden=\"true\"\r\n          >\r\n            <path\r\n              d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <circle\r\n              cx=\"12\"\r\n              cy=\"12\"\r\n              r=\"3\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n            />\r\n          </svg>\r\n        } @else {\r\n          <!-- eye-off (hide) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g >\r\n              <path\r\n                d=\"M7.89609 13.8853C6.5328 13.3039 5.35055 12.4974 4.38106 11.6819L2.53274 13.5302C2.38674 13.6762 2.19476 13.7502 2.00276 13.7502H2.00168C1.80968 13.7502 1.6177 13.6772 1.4717 13.5302C1.1787 13.2372 1.1787 12.7623 1.4717 12.4693L3.27498 10.666C2.11066 9.50192 1.44331 8.51728 1.37627 8.41632C1.14627 8.07132 1.23918 7.60628 1.58418 7.37628C1.92918 7.14628 2.39422 7.23929 2.62422 7.58429C2.66222 7.64029 6.4822 13.2503 12.0002 13.2503C17.5182 13.2503 21.3383 7.64031 21.3763 7.58331C21.6063 7.23931 22.0722 7.14628 22.4162 7.37628C22.7602 7.60628 22.8532 8.07135 22.6242 8.41535C22.5572 8.51626 21.8904 9.50009 20.727 10.6635L22.5327 12.4693C22.8257 12.7623 22.8257 13.2372 22.5327 13.5302C22.3867 13.6762 22.1948 13.7502 22.0028 13.7502H22.0017C21.8097 13.7502 21.6177 13.6772 21.4717 13.5302L19.621 11.6795C18.6518 12.4951 17.4697 13.3017 16.1066 13.8833L17.1449 15.6139C17.3579 15.9689 17.2429 16.4299 16.8879 16.6429C16.7669 16.7149 16.634 16.75 16.503 16.75C16.248 16.75 15.9999 16.62 15.8589 16.386L14.6604 14.3885C13.8258 14.6162 12.9372 14.7493 12.0002 14.7493C11.0641 14.7493 10.1764 14.6174 9.34247 14.3901L8.14495 16.386C8.00395 16.62 7.75591 16.75 7.50091 16.75C7.36991 16.75 7.23694 16.7159 7.11594 16.6429C6.76094 16.4299 6.64591 15.9689 6.85891 15.6139L7.89609 13.8853Z\"\r\n                fill=\"currentColor\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        }\r\n      </button>\r\n    }\r\n    @if (inputExtraTextLabel) {\r\n      <div class=\"extra-text\">\r\n        <p>{{ inputExtraTextLabel }}</p>\r\n      </div>\r\n    }\r\n    @if (type === \"number\") {\r\n      @if (numberType === \"currency\") {\r\n        <div class=\"currency-icon\">\r\n          <svg\r\n            width=\"100%\"\r\n            height=\"100%\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M11.4043 3.50758C12.0889 2.76204 12.508 2.41268 13.3107 1.93701V12.5812L18.0567 11.6046C18.0045 12.077 17.9538 12.2777 17.862 12.6208C17.7701 12.964 17.6832 13.2479 17.5129 13.6305L11.4043 14.9041V3.50758Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M9.52539 1C8.53861 1.56741 8.37079 1.77868 7.62089 2.53089V14.2574L2.47698 15.3463C2.19504 15.8346 1.91311 17.3392 1.93325 17.3655C1.95339 17.3919 7.36195 16.2041 7.52499 16.2041C7.84115 16.059 8.04187 15.9732 8.25668 15.7158C8.47149 15.4584 8.75342 15.0295 8.75342 15.0295L9.29716 14.2112C9.46104 13.9804 9.51437 13.8411 9.52539 13.5711V1Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M3.38062 11.0031L18.0673 7.89648C17.9229 8.80532 17.7961 9.25483 17.4968 9.95637L2.83691 13.063C2.9408 12.2871 3.02403 11.8459 3.38062 11.0031Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M11.9457 16.913L18.06 15.6514C17.9432 16.5008 17.8267 16.9536 17.5097 17.7116L11.3887 19C11.5265 18.1926 11.6504 17.7392 11.9457 16.913Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        </div>\r\n      } @else if (numberType === \"time\") {\r\n        <div class=\"time-icon\">\r\n          <span style=\"font-size: 1em; color: #d0d0d0\">{{ timeText }}</span>\r\n        </div>\r\n      } @else if (numberType === \"discount\") {\r\n        <div class=\"discount-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g opacity=\"0.5\">\r\n              <path\r\n                fill-rule=\"evenodd\"\r\n                clip-rule=\"evenodd\"\r\n                d=\"M2.06999 11.7541C2.41503 11.7462 2.70077 12.0194 2.70866 12.3644C2.75982 14.6016 2.98612 15.6429 3.67155 16.3283C4.357 17.0137 5.39828 17.24 7.63542 17.2912C7.98046 17.2991 8.25366 17.5848 8.24577 17.9299C8.23787 18.2748 7.95203 18.5479 7.6071 18.5402C5.41599 18.4901 3.8696 18.2939 2.78776 17.2121C1.70593 16.1302 1.50974 14.5839 1.45964 12.3927C1.45185 12.0477 1.72496 11.762 2.06999 11.7541ZM17.9313 11.7541C18.2763 11.762 18.5504 12.0477 18.5426 12.3927C18.4925 14.5839 18.2954 16.1302 17.2135 17.2121C16.1318 18.2937 14.586 18.4901 12.3952 18.5402C12.0501 18.5481 11.7634 18.2749 11.7555 17.9299C11.7477 17.5849 12.021 17.2993 12.3659 17.2912C14.6028 17.24 15.6443 17.0135 16.3298 16.3283C17.0152 15.6429 17.2415 14.6016 17.2926 12.3644C17.3005 12.0195 17.5864 11.7464 17.9313 11.7541ZM13.3415 12.4992C13.8017 12.4992 14.1755 12.872 14.1755 13.3322C14.1755 13.7924 13.8017 14.1652 13.3415 14.1652H13.3346C12.8744 14.1652 12.5007 13.7924 12.5007 13.3322C12.5007 12.872 12.8744 12.4992 13.3346 12.4992H13.3415ZM12.8923 6.2238C13.1363 5.97972 13.532 5.97972 13.776 6.2238C14.02 6.46788 14.0201 6.86354 13.776 7.10759L7.10905 13.7746C6.86497 14.0182 6.46921 14.0184 6.22526 13.7746C5.98119 13.5305 5.98119 13.1339 6.22526 12.8898L12.8923 6.2238ZM7.6071 1.4572C7.95191 1.4495 8.23769 1.72275 8.24577 2.06755C8.25366 2.41261 7.98047 2.69926 7.63542 2.7072C5.3982 2.75835 4.35699 2.98465 3.67155 3.67009C2.98634 4.35549 2.75983 5.39629 2.70866 7.63298C2.70077 7.97802 2.41502 8.25213 2.06999 8.24431C1.7249 8.23642 1.45175 7.94975 1.45964 7.60466C1.50974 5.41375 1.70617 3.8681 2.78776 2.7863C3.8696 1.70446 5.41594 1.5073 7.6071 1.4572ZM12.3952 1.4572C14.5862 1.50731 16.1318 1.70451 17.2135 2.7863C18.2953 3.86811 18.4925 5.41363 18.5426 7.60466C18.5505 7.94975 18.2764 8.23642 17.9313 8.24431C17.5864 8.25194 17.3005 7.97791 17.2926 7.63298C17.2415 5.39611 17.0151 4.35549 16.3298 3.67009C15.6443 2.98465 14.6031 2.75835 12.3659 2.7072C12.021 2.69908 11.7477 2.4125 11.7555 2.06755C11.7636 1.72263 12.0502 1.44931 12.3952 1.4572ZM6.67546 5.8322C7.13536 5.83246 7.50829 6.20528 7.50847 6.66521C7.50847 7.12528 7.13547 7.49893 6.67546 7.49919H6.66765C6.20741 7.49919 5.83464 7.12544 5.83464 6.66521C5.83482 6.20512 6.20752 5.8322 6.66765 5.8322H6.67546Z\"\r\n                fill=\"#4B4F55\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        </div>\r\n      }\r\n    }\r\n  </div>\r\n\r\n  @if (\r\n    parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched &&\r\n    !disabled\r\n  ) {\r\n    <custom-app-error\r\n      [control]=\"parentForm.controls[controlName]\"\r\n      [validation]=\"validation\"\r\n      [name]=\"name\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".input-form-tokens{--input-height: 4.8rem;--input-radius: 1.2rem;--input-border-width: .1rem;--input-border: var(--smp-color-form-border);--input-border-hover: var(--smp-form-border-hover);--input-border-focus: var(--smp-form-border-focus);--input-border-error: var(--smp-form-border-error);--input-bg: var(--smp-form-bg);--input-bg-disabled: var(--smp-form-bg-disabled);--input-text: var(--smp-form-text);--input-placeholder: var(--smp-color-form-placeholder);--input-label: var(--smp-color-form-label);--input-required: var(--smp-form-required, var(--tahakom-colors-red-normal));--input-padding-x: 1.2rem;--input-padding-y: .8rem;--input-font-size: 1.6rem;--input-font-weight: var(--smp-font-weight-normal);--input-label-size: 1.4rem;--input-label-weight: var(--smp-font-weight-medium);--input-label-margin-bottom: .8rem;--input-disabled-opacity: var(--smp-opacity-disabled);--input-transition: border-color var(--smp-transition-normal) var(--smp-transition-easing);--input-icon-error: var(--smp-form-border-error);--input-icon-eye: var(--smp-text-primary);--input-icon-muted: var(--smp-text-muted);--input-accent: var(--smp-color-primary)}.input-wrapper{position:relative}.input-container{position:relative;height:var(--height, var(--input-height))}.custom-input{height:100%;width:100%;border-radius:var(--input-radius);border:var(--input-border-width) solid var(--input-border);background-color:var(--input-bg);color:var(--input-text);outline:none!important;box-shadow:none;font-size:var(--input-font-size);font-weight:var(--input-font-weight);line-height:1.6;transition:var(--input-transition);padding:.8rem 1.2rem;box-sizing:border-box}.disabled-label{opacity:var(--input-disabled-opacity)}.custom-input:disabled{opacity:var(--input-disabled-opacity);cursor:not-allowed;background-color:var(--input-bg-disabled)}.custom-input:hover:not(:disabled):not(.input-error){border-color:var(--input-border-hover)}.custom-input:focus:not(:disabled):not(.input-error){border-color:var(--input-border-focus)}.custom-input.input-error{border:var(--input-border-width) solid var(--input-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--input-border-error) 20%,transparent)}.input-icon-passwrord-eye{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--tahakom-colors-neutral-normal);font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer;background:transparent;border:0;padding:0}.custom-input::placeholder{color:var(--input-placeholder);font-size:var(--input-font-size);font-weight:var(--input-font-weight)}.custom-label{font-size:var(--input-label-size);font-weight:var(--input-label-weight);display:block;color:var(--input-label);margin-bottom:.8rem;line-height:1.55}.required-asterisk{color:var(--input-required);font-size:inherit;font-weight:var(--input-label-weight);line-height:1.55}.required-asterisk--spacer{color:transparent}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}.extra-text{position:absolute;inset-inline-end:2.5rem;top:50%;transform:translateY(-50%);color:var(--input-accent);pointer-events:none}.currency-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-label);pointer-events:none;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center}.time-icon,.discount-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-icon-muted);pointer-events:none;width:1.25rem;height:1.25rem}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}.custom-input:-webkit-autofill,.custom-input:-webkit-autofill:hover,.custom-input:-webkit-autofill:focus,.custom-input:-webkit-autofill:active{-webkit-text-fill-color:var(--input-text)!important;caret-color:var(--input-text);box-shadow:0 0 0 100rem var(--input-bg) inset!important;transition:background-color 99999s ease-in-out 0s}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.PatternValidator, selector: "[pattern][formControlName],[pattern][formControl],[pattern][ngModel]", inputs: ["pattern"] }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i1$3.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomInputFormComponent, isStandalone: true, selector: "custom-input-form", inputs: { numberType: "numberType", timeText: "timeText", inputExtraTextLabel: "inputExtraTextLabel", time: "time", class: "class", labelClass: "labelClass", label: "label", placeholder: "placeholder", name: "name", type: "type", controlName: "controlName", parentForm: "parentForm", validation: "validation", pattern: "pattern", height: "height", disabled: "disabled" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "<div\r\n  style=\"width: 100%\"\r\n  [formGroup]=\"parentForm\"\r\n  class=\"input-form-tokens input-wrapper\"\r\n>\r\n  <div\r\n    style=\"display: flex; align-items: center; justify-content: space-between\"\r\n  >\r\n    @if (label) {\r\n      <label\r\n        [for]=\"label\"\r\n        [class]=\"'custom-label ' + labelClass\"\r\n        [class.disabled-label]=\"disabled\"\r\n      >\r\n        {{ label }}\r\n\r\n        @if (containRequiredError()) {\r\n          <span class=\"required-asterisk\">*</span>\r\n        } @else {\r\n          <span class=\"required-asterisk required-asterisk--spacer\"\r\n            >&nbsp;</span\r\n          >\r\n        }\r\n      </label>\r\n    }\r\n    <ng-content select=\"[infoContent]\"></ng-content>\r\n  </div>\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (input)=\"emitValue($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n      [min]=\"type === 'number' ? 0 : null\"\r\n      (keydown)=\"preventInvalidNumberInput($event)\"\r\n    />\r\n    @if (type === \"password\" || (type === \"text\" && showPassword)) {\r\n      <button\r\n        type=\"button\"\r\n        class=\"input-icon-passwrord-eye\"\r\n        (click)=\"togglePasswordVisibility()\"\r\n        [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n      >\r\n        @if (showPassword) {\r\n          <!-- eye (show) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n            aria-hidden=\"true\"\r\n          >\r\n            <path\r\n              d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <circle\r\n              cx=\"12\"\r\n              cy=\"12\"\r\n              r=\"3\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n            />\r\n          </svg>\r\n        } @else {\r\n          <!-- eye-off (hide) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g >\r\n              <path\r\n                d=\"M7.89609 13.8853C6.5328 13.3039 5.35055 12.4974 4.38106 11.6819L2.53274 13.5302C2.38674 13.6762 2.19476 13.7502 2.00276 13.7502H2.00168C1.80968 13.7502 1.6177 13.6772 1.4717 13.5302C1.1787 13.2372 1.1787 12.7623 1.4717 12.4693L3.27498 10.666C2.11066 9.50192 1.44331 8.51728 1.37627 8.41632C1.14627 8.07132 1.23918 7.60628 1.58418 7.37628C1.92918 7.14628 2.39422 7.23929 2.62422 7.58429C2.66222 7.64029 6.4822 13.2503 12.0002 13.2503C17.5182 13.2503 21.3383 7.64031 21.3763 7.58331C21.6063 7.23931 22.0722 7.14628 22.4162 7.37628C22.7602 7.60628 22.8532 8.07135 22.6242 8.41535C22.5572 8.51626 21.8904 9.50009 20.727 10.6635L22.5327 12.4693C22.8257 12.7623 22.8257 13.2372 22.5327 13.5302C22.3867 13.6762 22.1948 13.7502 22.0028 13.7502H22.0017C21.8097 13.7502 21.6177 13.6772 21.4717 13.5302L19.621 11.6795C18.6518 12.4951 17.4697 13.3017 16.1066 13.8833L17.1449 15.6139C17.3579 15.9689 17.2429 16.4299 16.8879 16.6429C16.7669 16.7149 16.634 16.75 16.503 16.75C16.248 16.75 15.9999 16.62 15.8589 16.386L14.6604 14.3885C13.8258 14.6162 12.9372 14.7493 12.0002 14.7493C11.0641 14.7493 10.1764 14.6174 9.34247 14.3901L8.14495 16.386C8.00395 16.62 7.75591 16.75 7.50091 16.75C7.36991 16.75 7.23694 16.7159 7.11594 16.6429C6.76094 16.4299 6.64591 15.9689 6.85891 15.6139L7.89609 13.8853Z\"\r\n                fill=\"currentColor\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        }\r\n      </button>\r\n    }\r\n    @if (inputExtraTextLabel) {\r\n      <div class=\"extra-text\">\r\n        <p>{{ inputExtraTextLabel }}</p>\r\n      </div>\r\n    }\r\n    @if (type === \"number\") {\r\n      @if (numberType === \"currency\") {\r\n        <div class=\"currency-icon\">\r\n          <svg\r\n            width=\"100%\"\r\n            height=\"100%\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M11.4043 3.50758C12.0889 2.76204 12.508 2.41268 13.3107 1.93701V12.5812L18.0567 11.6046C18.0045 12.077 17.9538 12.2777 17.862 12.6208C17.7701 12.964 17.6832 13.2479 17.5129 13.6305L11.4043 14.9041V3.50758Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M9.52539 1C8.53861 1.56741 8.37079 1.77868 7.62089 2.53089V14.2574L2.47698 15.3463C2.19504 15.8346 1.91311 17.3392 1.93325 17.3655C1.95339 17.3919 7.36195 16.2041 7.52499 16.2041C7.84115 16.059 8.04187 15.9732 8.25668 15.7158C8.47149 15.4584 8.75342 15.0295 8.75342 15.0295L9.29716 14.2112C9.46104 13.9804 9.51437 13.8411 9.52539 13.5711V1Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M3.38062 11.0031L18.0673 7.89648C17.9229 8.80532 17.7961 9.25483 17.4968 9.95637L2.83691 13.063C2.9408 12.2871 3.02403 11.8459 3.38062 11.0031Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M11.9457 16.913L18.06 15.6514C17.9432 16.5008 17.8267 16.9536 17.5097 17.7116L11.3887 19C11.5265 18.1926 11.6504 17.7392 11.9457 16.913Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        </div>\r\n      } @else if (numberType === \"time\") {\r\n        <div class=\"time-icon\">\r\n          <span style=\"font-size: 1em; color: #d0d0d0\">{{ timeText }}</span>\r\n        </div>\r\n      } @else if (numberType === \"discount\") {\r\n        <div class=\"discount-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g opacity=\"0.5\">\r\n              <path\r\n                fill-rule=\"evenodd\"\r\n                clip-rule=\"evenodd\"\r\n                d=\"M2.06999 11.7541C2.41503 11.7462 2.70077 12.0194 2.70866 12.3644C2.75982 14.6016 2.98612 15.6429 3.67155 16.3283C4.357 17.0137 5.39828 17.24 7.63542 17.2912C7.98046 17.2991 8.25366 17.5848 8.24577 17.9299C8.23787 18.2748 7.95203 18.5479 7.6071 18.5402C5.41599 18.4901 3.8696 18.2939 2.78776 17.2121C1.70593 16.1302 1.50974 14.5839 1.45964 12.3927C1.45185 12.0477 1.72496 11.762 2.06999 11.7541ZM17.9313 11.7541C18.2763 11.762 18.5504 12.0477 18.5426 12.3927C18.4925 14.5839 18.2954 16.1302 17.2135 17.2121C16.1318 18.2937 14.586 18.4901 12.3952 18.5402C12.0501 18.5481 11.7634 18.2749 11.7555 17.9299C11.7477 17.5849 12.021 17.2993 12.3659 17.2912C14.6028 17.24 15.6443 17.0135 16.3298 16.3283C17.0152 15.6429 17.2415 14.6016 17.2926 12.3644C17.3005 12.0195 17.5864 11.7464 17.9313 11.7541ZM13.3415 12.4992C13.8017 12.4992 14.1755 12.872 14.1755 13.3322C14.1755 13.7924 13.8017 14.1652 13.3415 14.1652H13.3346C12.8744 14.1652 12.5007 13.7924 12.5007 13.3322C12.5007 12.872 12.8744 12.4992 13.3346 12.4992H13.3415ZM12.8923 6.2238C13.1363 5.97972 13.532 5.97972 13.776 6.2238C14.02 6.46788 14.0201 6.86354 13.776 7.10759L7.10905 13.7746C6.86497 14.0182 6.46921 14.0184 6.22526 13.7746C5.98119 13.5305 5.98119 13.1339 6.22526 12.8898L12.8923 6.2238ZM7.6071 1.4572C7.95191 1.4495 8.23769 1.72275 8.24577 2.06755C8.25366 2.41261 7.98047 2.69926 7.63542 2.7072C5.3982 2.75835 4.35699 2.98465 3.67155 3.67009C2.98634 4.35549 2.75983 5.39629 2.70866 7.63298C2.70077 7.97802 2.41502 8.25213 2.06999 8.24431C1.7249 8.23642 1.45175 7.94975 1.45964 7.60466C1.50974 5.41375 1.70617 3.8681 2.78776 2.7863C3.8696 1.70446 5.41594 1.5073 7.6071 1.4572ZM12.3952 1.4572C14.5862 1.50731 16.1318 1.70451 17.2135 2.7863C18.2953 3.86811 18.4925 5.41363 18.5426 7.60466C18.5505 7.94975 18.2764 8.23642 17.9313 8.24431C17.5864 8.25194 17.3005 7.97791 17.2926 7.63298C17.2415 5.39611 17.0151 4.35549 16.3298 3.67009C15.6443 2.98465 14.6031 2.75835 12.3659 2.7072C12.021 2.69908 11.7477 2.4125 11.7555 2.06755C11.7636 1.72263 12.0502 1.44931 12.3952 1.4572ZM6.67546 5.8322C7.13536 5.83246 7.50829 6.20528 7.50847 6.66521C7.50847 7.12528 7.13547 7.49893 6.67546 7.49919H6.66765C6.20741 7.49919 5.83464 7.12544 5.83464 6.66521C5.83482 6.20512 6.20752 5.8322 6.66765 5.8322H6.67546Z\"\r\n                fill=\"#4B4F55\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        </div>\r\n      }\r\n    }\r\n  </div>\r\n\r\n  @if (\r\n    parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched &&\r\n    !disabled\r\n  ) {\r\n    <custom-app-error\r\n      [control]=\"parentForm.controls[controlName]\"\r\n      [validation]=\"validation\"\r\n      [name]=\"name\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".input-form-tokens{--input-height: 4.8rem;--input-radius: 1.2rem;--input-border-width: .1rem;--input-border: var(--smp-color-form-border);--input-border-hover: var(--smp-form-border-hover);--input-border-focus: var(--smp-form-border-focus);--input-border-error: var(--smp-form-border-error);--input-bg: var(--smp-form-bg);--input-bg-disabled: var(--smp-form-bg-disabled);--input-text: var(--smp-form-text);--input-placeholder: var(--smp-color-form-placeholder);--input-label: var(--smp-color-form-label);--input-required: var(--smp-form-required, var(--tahakom-colors-red-normal));--input-padding-x: 1.2rem;--input-padding-y: .8rem;--input-font-size: 1.6rem;--input-font-weight: var(--smp-font-weight-normal);--input-label-size: 1.4rem;--input-label-weight: var(--smp-font-weight-medium);--input-label-margin-bottom: .8rem;--input-disabled-opacity: var(--smp-opacity-disabled);--input-transition: border-color var(--smp-transition-normal) var(--smp-transition-easing);--input-icon-error: var(--smp-form-border-error);--input-icon-eye: var(--smp-text-primary);--input-icon-muted: var(--smp-text-muted);--input-accent: var(--smp-color-primary)}.input-wrapper{position:relative}.input-container{position:relative;height:var(--height, var(--input-height))}.custom-input{height:100%;width:100%;border-radius:var(--input-radius);border:var(--input-border-width) solid var(--input-border);background-color:var(--input-bg);color:var(--input-text);outline:none!important;box-shadow:none;font-size:var(--input-font-size);font-weight:var(--input-font-weight);line-height:1.6;transition:var(--input-transition);padding:.8rem 1.2rem;box-sizing:border-box}.disabled-label{opacity:var(--input-disabled-opacity)}.custom-input:disabled{opacity:var(--input-disabled-opacity);cursor:not-allowed;background-color:var(--input-bg-disabled)}.custom-input:hover:not(:disabled):not(.input-error){border-color:var(--input-border-hover)}.custom-input:focus:not(:disabled):not(.input-error){border-color:var(--input-border-focus)}.custom-input.input-error{border:var(--input-border-width) solid var(--input-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--input-border-error) 20%,transparent)}.input-icon-passwrord-eye{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--tahakom-colors-neutral-normal);font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer;background:transparent;border:0;padding:0}.custom-input::placeholder{color:var(--input-placeholder);font-size:var(--input-font-size);font-weight:var(--input-font-weight)}.custom-label{font-size:var(--input-label-size);font-weight:var(--input-label-weight);display:block;color:var(--input-label);margin-bottom:.8rem;line-height:1.55}.required-asterisk{color:var(--input-required);font-size:inherit;font-weight:var(--input-label-weight);line-height:1.55}.required-asterisk--spacer{color:transparent}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}.extra-text{position:absolute;inset-inline-end:2.5rem;top:50%;transform:translateY(-50%);color:var(--input-accent);pointer-events:none}.currency-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-label);pointer-events:none;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center}.time-icon,.discount-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-icon-muted);pointer-events:none;width:min-content;height:auto}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}.custom-input:-webkit-autofill,.custom-input:-webkit-autofill:hover,.custom-input:-webkit-autofill:focus,.custom-input:-webkit-autofill:active{-webkit-text-fill-color:var(--input-text)!important;caret-color:var(--input-text);box-shadow:0 0 0 100rem var(--input-bg) inset!important;transition:background-color 99999s ease-in-out 0s}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { kind: "directive", type: i1$3.PatternValidator, selector: "[pattern][formControlName],[pattern][formControl],[pattern][ngModel]", inputs: ["pattern"] }, { kind: "directive", type: i1$3.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { kind: "directive", type: i1$3.FormControlName, selector: "[formControlName]", inputs: ["formControlName", "disabled", "ngModel"], outputs: ["ngModelChange"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomInputFormComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-input-form', standalone: true, imports: [NgStyle, ReactiveFormsModule, CustomAppErrorComponent, NgClass], template: "<div\r\n  style=\"width: 100%\"\r\n  [formGroup]=\"parentForm\"\r\n  class=\"input-form-tokens input-wrapper\"\r\n>\r\n  <div\r\n    style=\"display: flex; align-items: center; justify-content: space-between\"\r\n  >\r\n    @if (label) {\r\n      <label\r\n        [for]=\"label\"\r\n        [class]=\"'custom-label ' + labelClass\"\r\n        [class.disabled-label]=\"disabled\"\r\n      >\r\n        {{ label }}\r\n\r\n        @if (containRequiredError()) {\r\n          <span class=\"required-asterisk\">*</span>\r\n        } @else {\r\n          <span class=\"required-asterisk required-asterisk--spacer\"\r\n            >&nbsp;</span\r\n          >\r\n        }\r\n      </label>\r\n    }\r\n    <ng-content select=\"[infoContent]\"></ng-content>\r\n  </div>\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (input)=\"emitValue($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n      [min]=\"type === 'number' ? 0 : null\"\r\n      (keydown)=\"preventInvalidNumberInput($event)\"\r\n    />\r\n    @if (type === \"password\" || (type === \"text\" && showPassword)) {\r\n      <button\r\n        type=\"button\"\r\n        class=\"input-icon-passwrord-eye\"\r\n        (click)=\"togglePasswordVisibility()\"\r\n        [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n      >\r\n        @if (showPassword) {\r\n          <!-- eye (show) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n            aria-hidden=\"true\"\r\n          >\r\n            <path\r\n              d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <circle\r\n              cx=\"12\"\r\n              cy=\"12\"\r\n              r=\"3\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n            />\r\n          </svg>\r\n        } @else {\r\n          <!-- eye-off (hide) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g >\r\n              <path\r\n                d=\"M7.89609 13.8853C6.5328 13.3039 5.35055 12.4974 4.38106 11.6819L2.53274 13.5302C2.38674 13.6762 2.19476 13.7502 2.00276 13.7502H2.00168C1.80968 13.7502 1.6177 13.6772 1.4717 13.5302C1.1787 13.2372 1.1787 12.7623 1.4717 12.4693L3.27498 10.666C2.11066 9.50192 1.44331 8.51728 1.37627 8.41632C1.14627 8.07132 1.23918 7.60628 1.58418 7.37628C1.92918 7.14628 2.39422 7.23929 2.62422 7.58429C2.66222 7.64029 6.4822 13.2503 12.0002 13.2503C17.5182 13.2503 21.3383 7.64031 21.3763 7.58331C21.6063 7.23931 22.0722 7.14628 22.4162 7.37628C22.7602 7.60628 22.8532 8.07135 22.6242 8.41535C22.5572 8.51626 21.8904 9.50009 20.727 10.6635L22.5327 12.4693C22.8257 12.7623 22.8257 13.2372 22.5327 13.5302C22.3867 13.6762 22.1948 13.7502 22.0028 13.7502H22.0017C21.8097 13.7502 21.6177 13.6772 21.4717 13.5302L19.621 11.6795C18.6518 12.4951 17.4697 13.3017 16.1066 13.8833L17.1449 15.6139C17.3579 15.9689 17.2429 16.4299 16.8879 16.6429C16.7669 16.7149 16.634 16.75 16.503 16.75C16.248 16.75 15.9999 16.62 15.8589 16.386L14.6604 14.3885C13.8258 14.6162 12.9372 14.7493 12.0002 14.7493C11.0641 14.7493 10.1764 14.6174 9.34247 14.3901L8.14495 16.386C8.00395 16.62 7.75591 16.75 7.50091 16.75C7.36991 16.75 7.23694 16.7159 7.11594 16.6429C6.76094 16.4299 6.64591 15.9689 6.85891 15.6139L7.89609 13.8853Z\"\r\n                fill=\"currentColor\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        }\r\n      </button>\r\n    }\r\n    @if (inputExtraTextLabel) {\r\n      <div class=\"extra-text\">\r\n        <p>{{ inputExtraTextLabel }}</p>\r\n      </div>\r\n    }\r\n    @if (type === \"number\") {\r\n      @if (numberType === \"currency\") {\r\n        <div class=\"currency-icon\">\r\n          <svg\r\n            width=\"100%\"\r\n            height=\"100%\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M11.4043 3.50758C12.0889 2.76204 12.508 2.41268 13.3107 1.93701V12.5812L18.0567 11.6046C18.0045 12.077 17.9538 12.2777 17.862 12.6208C17.7701 12.964 17.6832 13.2479 17.5129 13.6305L11.4043 14.9041V3.50758Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M9.52539 1C8.53861 1.56741 8.37079 1.77868 7.62089 2.53089V14.2574L2.47698 15.3463C2.19504 15.8346 1.91311 17.3392 1.93325 17.3655C1.95339 17.3919 7.36195 16.2041 7.52499 16.2041C7.84115 16.059 8.04187 15.9732 8.25668 15.7158C8.47149 15.4584 8.75342 15.0295 8.75342 15.0295L9.29716 14.2112C9.46104 13.9804 9.51437 13.8411 9.52539 13.5711V1Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M3.38062 11.0031L18.0673 7.89648C17.9229 8.80532 17.7961 9.25483 17.4968 9.95637L2.83691 13.063C2.9408 12.2871 3.02403 11.8459 3.38062 11.0031Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M11.9457 16.913L18.06 15.6514C17.9432 16.5008 17.8267 16.9536 17.5097 17.7116L11.3887 19C11.5265 18.1926 11.6504 17.7392 11.9457 16.913Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        </div>\r\n      } @else if (numberType === \"time\") {\r\n        <div class=\"time-icon\">\r\n          <span style=\"font-size: 1em; color: #d0d0d0\">{{ timeText }}</span>\r\n        </div>\r\n      } @else if (numberType === \"discount\") {\r\n        <div class=\"discount-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g opacity=\"0.5\">\r\n              <path\r\n                fill-rule=\"evenodd\"\r\n                clip-rule=\"evenodd\"\r\n                d=\"M2.06999 11.7541C2.41503 11.7462 2.70077 12.0194 2.70866 12.3644C2.75982 14.6016 2.98612 15.6429 3.67155 16.3283C4.357 17.0137 5.39828 17.24 7.63542 17.2912C7.98046 17.2991 8.25366 17.5848 8.24577 17.9299C8.23787 18.2748 7.95203 18.5479 7.6071 18.5402C5.41599 18.4901 3.8696 18.2939 2.78776 17.2121C1.70593 16.1302 1.50974 14.5839 1.45964 12.3927C1.45185 12.0477 1.72496 11.762 2.06999 11.7541ZM17.9313 11.7541C18.2763 11.762 18.5504 12.0477 18.5426 12.3927C18.4925 14.5839 18.2954 16.1302 17.2135 17.2121C16.1318 18.2937 14.586 18.4901 12.3952 18.5402C12.0501 18.5481 11.7634 18.2749 11.7555 17.9299C11.7477 17.5849 12.021 17.2993 12.3659 17.2912C14.6028 17.24 15.6443 17.0135 16.3298 16.3283C17.0152 15.6429 17.2415 14.6016 17.2926 12.3644C17.3005 12.0195 17.5864 11.7464 17.9313 11.7541ZM13.3415 12.4992C13.8017 12.4992 14.1755 12.872 14.1755 13.3322C14.1755 13.7924 13.8017 14.1652 13.3415 14.1652H13.3346C12.8744 14.1652 12.5007 13.7924 12.5007 13.3322C12.5007 12.872 12.8744 12.4992 13.3346 12.4992H13.3415ZM12.8923 6.2238C13.1363 5.97972 13.532 5.97972 13.776 6.2238C14.02 6.46788 14.0201 6.86354 13.776 7.10759L7.10905 13.7746C6.86497 14.0182 6.46921 14.0184 6.22526 13.7746C5.98119 13.5305 5.98119 13.1339 6.22526 12.8898L12.8923 6.2238ZM7.6071 1.4572C7.95191 1.4495 8.23769 1.72275 8.24577 2.06755C8.25366 2.41261 7.98047 2.69926 7.63542 2.7072C5.3982 2.75835 4.35699 2.98465 3.67155 3.67009C2.98634 4.35549 2.75983 5.39629 2.70866 7.63298C2.70077 7.97802 2.41502 8.25213 2.06999 8.24431C1.7249 8.23642 1.45175 7.94975 1.45964 7.60466C1.50974 5.41375 1.70617 3.8681 2.78776 2.7863C3.8696 1.70446 5.41594 1.5073 7.6071 1.4572ZM12.3952 1.4572C14.5862 1.50731 16.1318 1.70451 17.2135 2.7863C18.2953 3.86811 18.4925 5.41363 18.5426 7.60466C18.5505 7.94975 18.2764 8.23642 17.9313 8.24431C17.5864 8.25194 17.3005 7.97791 17.2926 7.63298C17.2415 5.39611 17.0151 4.35549 16.3298 3.67009C15.6443 2.98465 14.6031 2.75835 12.3659 2.7072C12.021 2.69908 11.7477 2.4125 11.7555 2.06755C11.7636 1.72263 12.0502 1.44931 12.3952 1.4572ZM6.67546 5.8322C7.13536 5.83246 7.50829 6.20528 7.50847 6.66521C7.50847 7.12528 7.13547 7.49893 6.67546 7.49919H6.66765C6.20741 7.49919 5.83464 7.12544 5.83464 6.66521C5.83482 6.20512 6.20752 5.8322 6.66765 5.8322H6.67546Z\"\r\n                fill=\"#4B4F55\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        </div>\r\n      }\r\n    }\r\n  </div>\r\n\r\n  @if (\r\n    parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched &&\r\n    !disabled\r\n  ) {\r\n    <custom-app-error\r\n      [control]=\"parentForm.controls[controlName]\"\r\n      [validation]=\"validation\"\r\n      [name]=\"name\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".input-form-tokens{--input-height: 4.8rem;--input-radius: 1.2rem;--input-border-width: .1rem;--input-border: var(--smp-color-form-border);--input-border-hover: var(--smp-form-border-hover);--input-border-focus: var(--smp-form-border-focus);--input-border-error: var(--smp-form-border-error);--input-bg: var(--smp-form-bg);--input-bg-disabled: var(--smp-form-bg-disabled);--input-text: var(--smp-form-text);--input-placeholder: var(--smp-color-form-placeholder);--input-label: var(--smp-color-form-label);--input-required: var(--smp-form-required, var(--tahakom-colors-red-normal));--input-padding-x: 1.2rem;--input-padding-y: .8rem;--input-font-size: 1.6rem;--input-font-weight: var(--smp-font-weight-normal);--input-label-size: 1.4rem;--input-label-weight: var(--smp-font-weight-medium);--input-label-margin-bottom: .8rem;--input-disabled-opacity: var(--smp-opacity-disabled);--input-transition: border-color var(--smp-transition-normal) var(--smp-transition-easing);--input-icon-error: var(--smp-form-border-error);--input-icon-eye: var(--smp-text-primary);--input-icon-muted: var(--smp-text-muted);--input-accent: var(--smp-color-primary)}.input-wrapper{position:relative}.input-container{position:relative;height:var(--height, var(--input-height))}.custom-input{height:100%;width:100%;border-radius:var(--input-radius);border:var(--input-border-width) solid var(--input-border);background-color:var(--input-bg);color:var(--input-text);outline:none!important;box-shadow:none;font-size:var(--input-font-size);font-weight:var(--input-font-weight);line-height:1.6;transition:var(--input-transition);padding:.8rem 1.2rem;box-sizing:border-box}.disabled-label{opacity:var(--input-disabled-opacity)}.custom-input:disabled{opacity:var(--input-disabled-opacity);cursor:not-allowed;background-color:var(--input-bg-disabled)}.custom-input:hover:not(:disabled):not(.input-error){border-color:var(--input-border-hover)}.custom-input:focus:not(:disabled):not(.input-error){border-color:var(--input-border-focus)}.custom-input.input-error{border:var(--input-border-width) solid var(--input-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--input-border-error) 20%,transparent)}.input-icon-passwrord-eye{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--tahakom-colors-neutral-normal);font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer;background:transparent;border:0;padding:0}.custom-input::placeholder{color:var(--input-placeholder);font-size:var(--input-font-size);font-weight:var(--input-font-weight)}.custom-label{font-size:var(--input-label-size);font-weight:var(--input-label-weight);display:block;color:var(--input-label);margin-bottom:.8rem;line-height:1.55}.required-asterisk{color:var(--input-required);font-size:inherit;font-weight:var(--input-label-weight);line-height:1.55}.required-asterisk--spacer{color:transparent}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}.extra-text{position:absolute;inset-inline-end:2.5rem;top:50%;transform:translateY(-50%);color:var(--input-accent);pointer-events:none}.currency-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-label);pointer-events:none;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center}.time-icon,.discount-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-icon-muted);pointer-events:none;width:1.25rem;height:1.25rem}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}.custom-input:-webkit-autofill,.custom-input:-webkit-autofill:hover,.custom-input:-webkit-autofill:focus,.custom-input:-webkit-autofill:active{-webkit-text-fill-color:var(--input-text)!important;caret-color:var(--input-text);box-shadow:0 0 0 100rem var(--input-bg) inset!important;transition:background-color 99999s ease-in-out 0s}\n"] }]
+            args: [{ selector: 'custom-input-form', standalone: true, imports: [NgStyle, ReactiveFormsModule, CustomAppErrorComponent, NgClass], template: "<div\r\n  style=\"width: 100%\"\r\n  [formGroup]=\"parentForm\"\r\n  class=\"input-form-tokens input-wrapper\"\r\n>\r\n  <div\r\n    style=\"display: flex; align-items: center; justify-content: space-between\"\r\n  >\r\n    @if (label) {\r\n      <label\r\n        [for]=\"label\"\r\n        [class]=\"'custom-label ' + labelClass\"\r\n        [class.disabled-label]=\"disabled\"\r\n      >\r\n        {{ label }}\r\n\r\n        @if (containRequiredError()) {\r\n          <span class=\"required-asterisk\">*</span>\r\n        } @else {\r\n          <span class=\"required-asterisk required-asterisk--spacer\"\r\n            >&nbsp;</span\r\n          >\r\n        }\r\n      </label>\r\n    }\r\n    <ng-content select=\"[infoContent]\"></ng-content>\r\n  </div>\r\n\r\n  <div\r\n    class=\"input-container\"\r\n    [class.has-error]=\"\r\n      parentForm.controls[controlName].invalid &&\r\n      parentForm.controls[controlName].touched &&\r\n      !disabled\r\n    \"\r\n    [ngStyle]=\"{ '--height': height }\"\r\n  >\r\n    <input\r\n      [id]=\"label || name\"\r\n      [type]=\"type\"\r\n      [name]=\"name\"\r\n      [placeholder]=\"placeholder\"\r\n      [class]=\"'custom-input ' + class\"\r\n      [formControlName]=\"controlName\"\r\n      (input)=\"emitValue($event)\"\r\n      [pattern]=\"pattern\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched &&\r\n        !disabled\r\n      \"\r\n      [disabled]=\"disabled\"\r\n      [min]=\"type === 'number' ? 0 : null\"\r\n      (keydown)=\"preventInvalidNumberInput($event)\"\r\n    />\r\n    @if (type === \"password\" || (type === \"text\" && showPassword)) {\r\n      <button\r\n        type=\"button\"\r\n        class=\"input-icon-passwrord-eye\"\r\n        (click)=\"togglePasswordVisibility()\"\r\n        [attr.aria-label]=\"showPassword ? 'Hide password' : 'Show password'\"\r\n      >\r\n        @if (showPassword) {\r\n          <!-- eye (show) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n            aria-hidden=\"true\"\r\n          >\r\n            <path\r\n              d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <circle\r\n              cx=\"12\"\r\n              cy=\"12\"\r\n              r=\"3\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"1.6\"\r\n            />\r\n          </svg>\r\n        } @else {\r\n          <!-- eye-off (hide) -->\r\n          <svg\r\n            width=\"1.2em\"\r\n            height=\"1.2em\"\r\n            viewBox=\"0 0 24 24\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g >\r\n              <path\r\n                d=\"M7.89609 13.8853C6.5328 13.3039 5.35055 12.4974 4.38106 11.6819L2.53274 13.5302C2.38674 13.6762 2.19476 13.7502 2.00276 13.7502H2.00168C1.80968 13.7502 1.6177 13.6772 1.4717 13.5302C1.1787 13.2372 1.1787 12.7623 1.4717 12.4693L3.27498 10.666C2.11066 9.50192 1.44331 8.51728 1.37627 8.41632C1.14627 8.07132 1.23918 7.60628 1.58418 7.37628C1.92918 7.14628 2.39422 7.23929 2.62422 7.58429C2.66222 7.64029 6.4822 13.2503 12.0002 13.2503C17.5182 13.2503 21.3383 7.64031 21.3763 7.58331C21.6063 7.23931 22.0722 7.14628 22.4162 7.37628C22.7602 7.60628 22.8532 8.07135 22.6242 8.41535C22.5572 8.51626 21.8904 9.50009 20.727 10.6635L22.5327 12.4693C22.8257 12.7623 22.8257 13.2372 22.5327 13.5302C22.3867 13.6762 22.1948 13.7502 22.0028 13.7502H22.0017C21.8097 13.7502 21.6177 13.6772 21.4717 13.5302L19.621 11.6795C18.6518 12.4951 17.4697 13.3017 16.1066 13.8833L17.1449 15.6139C17.3579 15.9689 17.2429 16.4299 16.8879 16.6429C16.7669 16.7149 16.634 16.75 16.503 16.75C16.248 16.75 15.9999 16.62 15.8589 16.386L14.6604 14.3885C13.8258 14.6162 12.9372 14.7493 12.0002 14.7493C11.0641 14.7493 10.1764 14.6174 9.34247 14.3901L8.14495 16.386C8.00395 16.62 7.75591 16.75 7.50091 16.75C7.36991 16.75 7.23694 16.7159 7.11594 16.6429C6.76094 16.4299 6.64591 15.9689 6.85891 15.6139L7.89609 13.8853Z\"\r\n                fill=\"currentColor\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        }\r\n      </button>\r\n    }\r\n    @if (inputExtraTextLabel) {\r\n      <div class=\"extra-text\">\r\n        <p>{{ inputExtraTextLabel }}</p>\r\n      </div>\r\n    }\r\n    @if (type === \"number\") {\r\n      @if (numberType === \"currency\") {\r\n        <div class=\"currency-icon\">\r\n          <svg\r\n            width=\"100%\"\r\n            height=\"100%\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M11.4043 3.50758C12.0889 2.76204 12.508 2.41268 13.3107 1.93701V12.5812L18.0567 11.6046C18.0045 12.077 17.9538 12.2777 17.862 12.6208C17.7701 12.964 17.6832 13.2479 17.5129 13.6305L11.4043 14.9041V3.50758Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M9.52539 1C8.53861 1.56741 8.37079 1.77868 7.62089 2.53089V14.2574L2.47698 15.3463C2.19504 15.8346 1.91311 17.3392 1.93325 17.3655C1.95339 17.3919 7.36195 16.2041 7.52499 16.2041C7.84115 16.059 8.04187 15.9732 8.25668 15.7158C8.47149 15.4584 8.75342 15.0295 8.75342 15.0295L9.29716 14.2112C9.46104 13.9804 9.51437 13.8411 9.52539 13.5711V1Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M3.38062 11.0031L18.0673 7.89648C17.9229 8.80532 17.7961 9.25483 17.4968 9.95637L2.83691 13.063C2.9408 12.2871 3.02403 11.8459 3.38062 11.0031Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n            <path\r\n              d=\"M11.9457 16.913L18.06 15.6514C17.9432 16.5008 17.8267 16.9536 17.5097 17.7116L11.3887 19C11.5265 18.1926 11.6504 17.7392 11.9457 16.913Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        </div>\r\n      } @else if (numberType === \"time\") {\r\n        <div class=\"time-icon\">\r\n          <span style=\"font-size: 1em; color: #d0d0d0\">{{ timeText }}</span>\r\n        </div>\r\n      } @else if (numberType === \"discount\") {\r\n        <div class=\"discount-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 20 20\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <g opacity=\"0.5\">\r\n              <path\r\n                fill-rule=\"evenodd\"\r\n                clip-rule=\"evenodd\"\r\n                d=\"M2.06999 11.7541C2.41503 11.7462 2.70077 12.0194 2.70866 12.3644C2.75982 14.6016 2.98612 15.6429 3.67155 16.3283C4.357 17.0137 5.39828 17.24 7.63542 17.2912C7.98046 17.2991 8.25366 17.5848 8.24577 17.9299C8.23787 18.2748 7.95203 18.5479 7.6071 18.5402C5.41599 18.4901 3.8696 18.2939 2.78776 17.2121C1.70593 16.1302 1.50974 14.5839 1.45964 12.3927C1.45185 12.0477 1.72496 11.762 2.06999 11.7541ZM17.9313 11.7541C18.2763 11.762 18.5504 12.0477 18.5426 12.3927C18.4925 14.5839 18.2954 16.1302 17.2135 17.2121C16.1318 18.2937 14.586 18.4901 12.3952 18.5402C12.0501 18.5481 11.7634 18.2749 11.7555 17.9299C11.7477 17.5849 12.021 17.2993 12.3659 17.2912C14.6028 17.24 15.6443 17.0135 16.3298 16.3283C17.0152 15.6429 17.2415 14.6016 17.2926 12.3644C17.3005 12.0195 17.5864 11.7464 17.9313 11.7541ZM13.3415 12.4992C13.8017 12.4992 14.1755 12.872 14.1755 13.3322C14.1755 13.7924 13.8017 14.1652 13.3415 14.1652H13.3346C12.8744 14.1652 12.5007 13.7924 12.5007 13.3322C12.5007 12.872 12.8744 12.4992 13.3346 12.4992H13.3415ZM12.8923 6.2238C13.1363 5.97972 13.532 5.97972 13.776 6.2238C14.02 6.46788 14.0201 6.86354 13.776 7.10759L7.10905 13.7746C6.86497 14.0182 6.46921 14.0184 6.22526 13.7746C5.98119 13.5305 5.98119 13.1339 6.22526 12.8898L12.8923 6.2238ZM7.6071 1.4572C7.95191 1.4495 8.23769 1.72275 8.24577 2.06755C8.25366 2.41261 7.98047 2.69926 7.63542 2.7072C5.3982 2.75835 4.35699 2.98465 3.67155 3.67009C2.98634 4.35549 2.75983 5.39629 2.70866 7.63298C2.70077 7.97802 2.41502 8.25213 2.06999 8.24431C1.7249 8.23642 1.45175 7.94975 1.45964 7.60466C1.50974 5.41375 1.70617 3.8681 2.78776 2.7863C3.8696 1.70446 5.41594 1.5073 7.6071 1.4572ZM12.3952 1.4572C14.5862 1.50731 16.1318 1.70451 17.2135 2.7863C18.2953 3.86811 18.4925 5.41363 18.5426 7.60466C18.5505 7.94975 18.2764 8.23642 17.9313 8.24431C17.5864 8.25194 17.3005 7.97791 17.2926 7.63298C17.2415 5.39611 17.0151 4.35549 16.3298 3.67009C15.6443 2.98465 14.6031 2.75835 12.3659 2.7072C12.021 2.69908 11.7477 2.4125 11.7555 2.06755C11.7636 1.72263 12.0502 1.44931 12.3952 1.4572ZM6.67546 5.8322C7.13536 5.83246 7.50829 6.20528 7.50847 6.66521C7.50847 7.12528 7.13547 7.49893 6.67546 7.49919H6.66765C6.20741 7.49919 5.83464 7.12544 5.83464 6.66521C5.83482 6.20512 6.20752 5.8322 6.66765 5.8322H6.67546Z\"\r\n                fill=\"#4B4F55\"\r\n              />\r\n            </g>\r\n          </svg>\r\n        </div>\r\n      }\r\n    }\r\n  </div>\r\n\r\n  @if (\r\n    parentForm.controls[controlName].invalid &&\r\n    parentForm.controls[controlName].touched &&\r\n    !disabled\r\n  ) {\r\n    <custom-app-error\r\n      [control]=\"parentForm.controls[controlName]\"\r\n      [validation]=\"validation\"\r\n      [name]=\"name\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".input-form-tokens{--input-height: 4.8rem;--input-radius: 1.2rem;--input-border-width: .1rem;--input-border: var(--smp-color-form-border);--input-border-hover: var(--smp-form-border-hover);--input-border-focus: var(--smp-form-border-focus);--input-border-error: var(--smp-form-border-error);--input-bg: var(--smp-form-bg);--input-bg-disabled: var(--smp-form-bg-disabled);--input-text: var(--smp-form-text);--input-placeholder: var(--smp-color-form-placeholder);--input-label: var(--smp-color-form-label);--input-required: var(--smp-form-required, var(--tahakom-colors-red-normal));--input-padding-x: 1.2rem;--input-padding-y: .8rem;--input-font-size: 1.6rem;--input-font-weight: var(--smp-font-weight-normal);--input-label-size: 1.4rem;--input-label-weight: var(--smp-font-weight-medium);--input-label-margin-bottom: .8rem;--input-disabled-opacity: var(--smp-opacity-disabled);--input-transition: border-color var(--smp-transition-normal) var(--smp-transition-easing);--input-icon-error: var(--smp-form-border-error);--input-icon-eye: var(--smp-text-primary);--input-icon-muted: var(--smp-text-muted);--input-accent: var(--smp-color-primary)}.input-wrapper{position:relative}.input-container{position:relative;height:var(--height, var(--input-height))}.custom-input{height:100%;width:100%;border-radius:var(--input-radius);border:var(--input-border-width) solid var(--input-border);background-color:var(--input-bg);color:var(--input-text);outline:none!important;box-shadow:none;font-size:var(--input-font-size);font-weight:var(--input-font-weight);line-height:1.6;transition:var(--input-transition);padding:.8rem 1.2rem;box-sizing:border-box}.disabled-label{opacity:var(--input-disabled-opacity)}.custom-input:disabled{opacity:var(--input-disabled-opacity);cursor:not-allowed;background-color:var(--input-bg-disabled)}.custom-input:hover:not(:disabled):not(.input-error){border-color:var(--input-border-hover)}.custom-input:focus:not(:disabled):not(.input-error){border-color:var(--input-border-focus)}.custom-input.input-error{border:var(--input-border-width) solid var(--input-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--input-border-error) 20%,transparent)}.input-icon-passwrord-eye{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--tahakom-colors-neutral-normal);font-size:1.5em;transition:all .4s ease-in-out;cursor:pointer;background:transparent;border:0;padding:0}.custom-input::placeholder{color:var(--input-placeholder);font-size:var(--input-font-size);font-weight:var(--input-font-weight)}.custom-label{font-size:var(--input-label-size);font-weight:var(--input-label-weight);display:block;color:var(--input-label);margin-bottom:.8rem;line-height:1.55}.required-asterisk{color:var(--input-required);font-size:inherit;font-weight:var(--input-label-weight);line-height:1.55}.required-asterisk--spacer{color:transparent}input[type=password]::-ms-reveal{display:none!important}input[type=password]::-ms-clear{display:none!important}.extra-text{position:absolute;inset-inline-end:2.5rem;top:50%;transform:translateY(-50%);color:var(--input-accent);pointer-events:none}.currency-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-label);pointer-events:none;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center}.time-icon,.discount-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);color:var(--input-icon-muted);pointer-events:none;width:min-content;height:auto}input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}.custom-input:-webkit-autofill,.custom-input:-webkit-autofill:hover,.custom-input:-webkit-autofill:focus,.custom-input:-webkit-autofill:active{-webkit-text-fill-color:var(--input-text)!important;caret-color:var(--input-text);box-shadow:0 0 0 100rem var(--input-bg) inset!important;transition:background-color 99999s ease-in-out 0s}\n"] }]
         }], propDecorators: { numberType: [{
                 type: Input
             }], timeText: [{
@@ -5329,6 +5329,806 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 type: Input
             }] } });
 
+const MODAL_REF = new InjectionToken('MODAL_REF');
+function injectModalRef() {
+    return inject(MODAL_REF);
+}
+class CustomModalService {
+    translate;
+    applicationRef = inject(ApplicationRef);
+    environmentInjector = inject(EnvironmentInjector);
+    /** Open any component inside the modal (child must be standalone or resolvable). */
+    constructor(translate) {
+        this.translate = translate;
+    }
+    async openComponentInModal(childComponent, options = {}) {
+        const hostElement = this.createHostElement();
+        const modalRef = this.createModal(hostElement);
+        this.applyModalInputs(modalRef.instance, options);
+        // Render the *ngIf branch so the anchor exists
+        modalRef.instance.open();
+        modalRef.changeDetectorRef.detectChanges();
+        // Wait until the ViewChild anchor is resolved
+        await firstValueFrom(modalRef.instance.contentReady$);
+        // Attach the child
+        const modalRefApi = { close: (result) => modalRef.instance.close(result) };
+        const childInjector = Injector.create({
+            providers: [{ provide: MODAL_REF, useValue: modalRefApi }],
+            parent: modalRef.instance.contentInjector,
+        });
+        const childRef = modalRef.instance.attachContent(childComponent, childInjector);
+        // Resolve when closed, then cleanup
+        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
+        return {
+            modalComponentRef: modalRef,
+            childComponentRef: childRef,
+            close: (result) => modalRef.instance.close(result),
+            afterClosed,
+        };
+    }
+    // ——— helpers ———
+    createHostElement() {
+        const host = document.createElement('div');
+        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
+        document.body.appendChild(host);
+        return host;
+    }
+    createModal(host) {
+        const ref = createComponent(CustomModalComponent, {
+            environmentInjector: this.environmentInjector,
+            hostElement: host,
+        });
+        this.applicationRef.attachView(ref.hostView);
+        return ref;
+    }
+    destroyModal(ref, host) {
+        this.applicationRef.detachView(ref.hostView);
+        ref.destroy();
+        host.remove();
+    }
+    applyModalInputs(modal, o) {
+        if (o.title) {
+            modal.modalTitle = this.translate.instant(o.title);
+        }
+        else {
+            modal.modalTitle;
+        }
+        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
+        modal.modalIconBackground = o.iconBackground ?? modal.modalIconBackground;
+        modal.modalIconColor = o.iconColor ?? modal.modalIconColor;
+        modal.showTitleMarker = o.showTitleMarker ?? modal.showTitleMarker;
+        modal.modalTitleMarkerColor = o.titleMarkerColor ?? modal.modalTitleMarkerColor;
+        modal.showHeader = o.showHeader ?? true;
+        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
+    }
+    async waitForClose(ref) {
+        return firstValueFrom(ref.instance.closed);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
+
+class CustomReactiveSearchInputComponent {
+    model = '';
+    modelChange = new EventEmitter();
+    search = new EventEmitter();
+    clear = new EventEmitter();
+    headerSearchIcon = input(false);
+    /** When false, hides the leading search glyph (Figma map modal). Default true. */
+    showSearchIcon = input(true);
+    containerClass = '';
+    inputClass = '';
+    inputPlaceholder = '';
+    validateNumber = false;
+    inputSubject = new Subject();
+    constructor() {
+        this.inputSubject
+            .pipe(debounceTime(0), distinctUntilChanged(), takeUntilDestroyed())
+            .subscribe((val) => this.search.emit(val.trim()));
+    }
+    onInputChange(value) {
+        this.modelChange.emit(value); // for ngModel sync
+        this.inputSubject.next(value); // for debounce emit
+    }
+    clearInput() {
+        if (this.model === '') {
+            this.search.emit('');
+            this.clear.emit();
+            return;
+        }
+        this.model = '';
+        this.modelChange.emit('');
+        this.search.emit('');
+        this.clear.emit();
+    }
+    preventInvalidNumberInput(event) {
+        if (this.validateNumber) {
+            const allowedKeys = [
+                'Backspace',
+                'Delete',
+                'Tab',
+                'Escape',
+                'Enter',
+                'ArrowLeft',
+                'ArrowRight',
+                'ArrowUp',
+                'ArrowDown',
+            ];
+            if (allowedKeys.includes(event.key)) {
+                return;
+            }
+            // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+            if ((event.ctrlKey || event.metaKey) &&
+                ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
+                return;
+            }
+            // Only allow numbers (0-9) and plus sign (+)
+            const validPattern = /^[0-9+]$/;
+            if (!validPattern.test(event.key)) {
+                event.preventDefault();
+            }
+        }
+    }
+    preventPaste(event) {
+        // if (this.validateNumber) {
+        //   event.preventDefault();
+        // }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomReactiveSearchInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomReactiveSearchInputComponent, isStandalone: true, selector: "custom-reactive-search-input", inputs: { model: { classPropertyName: "model", publicName: "model", isSignal: false, isRequired: false, transformFunction: null }, headerSearchIcon: { classPropertyName: "headerSearchIcon", publicName: "headerSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, showSearchIcon: { classPropertyName: "showSearchIcon", publicName: "showSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, containerClass: { classPropertyName: "containerClass", publicName: "containerClass", isSignal: false, isRequired: true, transformFunction: null }, inputClass: { classPropertyName: "inputClass", publicName: "inputClass", isSignal: false, isRequired: true, transformFunction: null }, inputPlaceholder: { classPropertyName: "inputPlaceholder", publicName: "inputPlaceholder", isSignal: false, isRequired: true, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { modelChange: "modelChange", search: "search", clear: "clear" }, ngImport: i0, template: "<div\r\n  [ngClass]=\"containerClass\"\r\n  class=\"search-input-tokens-wrapper cri-form-tokens cri-wrap\"\r\n  [class.cri-wrap--no-icon]=\"!showSearchIcon()\"\r\n>\r\n  @if (showSearchIcon()) {\r\n    <div class=\"search-icon\">\r\n      @if (headerSearchIcon()) {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"24\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n          <path\r\n            opacity=\"0.3\"\r\n            d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      } @else {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"18\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      }\r\n    </div>\r\n  }\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder | translate\"\r\n    class=\"cri-input\"\r\n    (keydown)=\"preventInvalidNumberInput($event)\"\r\n    (paste)=\"preventPaste($event)\"\r\n  />\r\n\r\n  @if (model?.length) {\r\n    <button\r\n      type=\"button\"\r\n      class=\"cri-clear\"\r\n      (click)=\"clearInput()\"\r\n      aria-label=\"Clear\"\r\n    >\r\n      <svg\r\n        width=\"16\"\r\n        height=\"16\"\r\n        viewBox=\"0 0 16 16\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n        aria-hidden=\"true\"\r\n      >\r\n        <path\r\n          d=\"M1.00098 1L15 14.9991\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M0.999964 14.9991L14.999 1\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </button>\r\n  }\r\n</div>\r\n", styles: [".search-input-tokens-wrapper{--search-input-bg: var(--tahakom-colors-neutral-lightest-active);--search-input-border-color: transparent;--search-input-border-hover: var(--tahakom-colors-neutral-light-active);--search-input-border-focus: var(--tahakom-colors-neutral-light-active);--search-input-text-color: var(--smp-text-primary);--search-input-placeholder-color: var(--tahakom-colors-neutral-light-active);--search-input-icon-color: var(--tahakom-colors-neutral-normal);--search-input-clear-color: var(--tahakom-colors-neutral-normal);--search-input-clear-hover-color: var(--smp-text-primary);--search-input-caret-color: var(--smp-color-primary, #602650);--search-input-focus-ring: 0 0 0 .2rem rgba(96, 38, 80, .12)}.cri-wrap{position:relative;width:100%;display:flex;align-items:center}.cri-wrap--no-icon{--search-input-no-icon: 1}.search-icon{position:absolute;inset-inline-start:1.4rem;top:50%;transform:translateY(-50%);height:auto;width:2rem;min-width:2rem;color:var(--search-input-icon-color);pointer-events:none;z-index:1;display:inline-flex;align-items:center}.search-icon svg{width:100%!important;height:auto;display:block;color:inherit}.cri-input{width:100%;height:4.8rem;border-radius:var(--smp-radius-lg, 1.2rem);border:0 solid var(--search-input-border-color);background-color:var(--search-input-bg);color:var(--search-input-text-color);caret-color:var(--search-input-caret-color);font-size:1.6rem;font-weight:400;padding-inline-start:5rem;padding-inline-end:3.6rem;outline:none!important;box-shadow:none;box-sizing:border-box;transition:background-color .2s ease,box-shadow .2s ease}.cri-wrap--no-icon .cri-input{padding-inline-start:1.6rem;padding-inline-end:4rem}.cri-input:hover{border-color:var(--search-input-border-hover)}.cri-input:focus{border-color:var(--search-input-border-focus);box-shadow:var(--search-input-focus-ring)}.cri-input::placeholder{color:var(--search-input-placeholder-color)}.cri-clear{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);width:1.6rem;height:1.6rem;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;appearance:none;color:var(--search-input-clear-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.cri-clear svg{width:1.4rem;height:1.4rem;display:block}.cri-clear:hover,.cri-clear:focus,.cri-clear:focus-visible{border:0;outline:none;box-shadow:none;background:transparent;color:var(--search-input-clear-hover-color)}\n"], dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomReactiveSearchInputComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-reactive-search-input', imports: [NgClass, FormsModule, TranslateModule], template: "<div\r\n  [ngClass]=\"containerClass\"\r\n  class=\"search-input-tokens-wrapper cri-form-tokens cri-wrap\"\r\n  [class.cri-wrap--no-icon]=\"!showSearchIcon()\"\r\n>\r\n  @if (showSearchIcon()) {\r\n    <div class=\"search-icon\">\r\n      @if (headerSearchIcon()) {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"24\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n          <path\r\n            opacity=\"0.3\"\r\n            d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      } @else {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"18\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      }\r\n    </div>\r\n  }\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder | translate\"\r\n    class=\"cri-input\"\r\n    (keydown)=\"preventInvalidNumberInput($event)\"\r\n    (paste)=\"preventPaste($event)\"\r\n  />\r\n\r\n  @if (model?.length) {\r\n    <button\r\n      type=\"button\"\r\n      class=\"cri-clear\"\r\n      (click)=\"clearInput()\"\r\n      aria-label=\"Clear\"\r\n    >\r\n      <svg\r\n        width=\"16\"\r\n        height=\"16\"\r\n        viewBox=\"0 0 16 16\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n        aria-hidden=\"true\"\r\n      >\r\n        <path\r\n          d=\"M1.00098 1L15 14.9991\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M0.999964 14.9991L14.999 1\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </button>\r\n  }\r\n</div>\r\n", styles: [".search-input-tokens-wrapper{--search-input-bg: var(--tahakom-colors-neutral-lightest-active);--search-input-border-color: transparent;--search-input-border-hover: var(--tahakom-colors-neutral-light-active);--search-input-border-focus: var(--tahakom-colors-neutral-light-active);--search-input-text-color: var(--smp-text-primary);--search-input-placeholder-color: var(--tahakom-colors-neutral-light-active);--search-input-icon-color: var(--tahakom-colors-neutral-normal);--search-input-clear-color: var(--tahakom-colors-neutral-normal);--search-input-clear-hover-color: var(--smp-text-primary);--search-input-caret-color: var(--smp-color-primary, #602650);--search-input-focus-ring: 0 0 0 .2rem rgba(96, 38, 80, .12)}.cri-wrap{position:relative;width:100%;display:flex;align-items:center}.cri-wrap--no-icon{--search-input-no-icon: 1}.search-icon{position:absolute;inset-inline-start:1.4rem;top:50%;transform:translateY(-50%);height:auto;width:2rem;min-width:2rem;color:var(--search-input-icon-color);pointer-events:none;z-index:1;display:inline-flex;align-items:center}.search-icon svg{width:100%!important;height:auto;display:block;color:inherit}.cri-input{width:100%;height:4.8rem;border-radius:var(--smp-radius-lg, 1.2rem);border:0 solid var(--search-input-border-color);background-color:var(--search-input-bg);color:var(--search-input-text-color);caret-color:var(--search-input-caret-color);font-size:1.6rem;font-weight:400;padding-inline-start:5rem;padding-inline-end:3.6rem;outline:none!important;box-shadow:none;box-sizing:border-box;transition:background-color .2s ease,box-shadow .2s ease}.cri-wrap--no-icon .cri-input{padding-inline-start:1.6rem;padding-inline-end:4rem}.cri-input:hover{border-color:var(--search-input-border-hover)}.cri-input:focus{border-color:var(--search-input-border-focus);box-shadow:var(--search-input-focus-ring)}.cri-input::placeholder{color:var(--search-input-placeholder-color)}.cri-clear{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);width:1.6rem;height:1.6rem;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;appearance:none;color:var(--search-input-clear-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.cri-clear svg{width:1.4rem;height:1.4rem;display:block}.cri-clear:hover,.cri-clear:focus,.cri-clear:focus-visible{border:0;outline:none;box-shadow:none;background:transparent;color:var(--search-input-clear-hover-color)}\n"] }]
+        }], ctorParameters: () => [], propDecorators: { model: [{
+                type: Input
+            }], modelChange: [{
+                type: Output
+            }], search: [{
+                type: Output
+            }], clear: [{
+                type: Output
+            }], containerClass: [{
+                type: Input,
+                args: [{ required: true }]
+            }], inputClass: [{
+                type: Input,
+                args: [{ required: true }]
+            }], inputPlaceholder: [{
+                type: Input,
+                args: [{ required: true }]
+            }], validateNumber: [{
+                type: Input
+            }] } });
+
+class CustomMainPagesModalFilterDialogComponent {
+    configs = [];
+    draftValues = {};
+    searchText = '';
+    searchInputPlaceholder = 'GENERAL.SEARCH';
+    validateNumber = false;
+    fb = inject(FormBuilder);
+    modalRef = injectModalRef();
+    internalForm = this.fb.group({});
+    draft = signal({});
+    draftSearchText = signal('');
+    hasConfigs = computed(() => this.configs.length > 0);
+    ngOnChanges(changes) {
+        if (changes['configs']) {
+            this.ensureInternalControls();
+        }
+        if (changes['draftValues'] || changes['configs']) {
+            this.loadDraft(this.draftValues);
+        }
+        if (changes['searchText']) {
+            this.draftSearchText.set(this.searchText || '');
+        }
+    }
+    getControlName(config) {
+        return config.formBinding?.controlName ?? config.key;
+    }
+    getRangeControlName(config, index) {
+        return `${config.key}${index === 0 ? 'From' : 'To'}`;
+    }
+    getForm(config) {
+        return config.formBinding?.parentForm ?? this.internalForm;
+    }
+    getMinDate(config) {
+        const value = config.formBinding?.minDate;
+        return typeof value === 'function' ? value() : value ?? null;
+    }
+    getMaxDate(config) {
+        const value = config.formBinding?.maxDate;
+        return typeof value === 'function' ? value() : value ?? null;
+    }
+    getValue(key) {
+        return this.draft()[key] ?? null;
+    }
+    getArrayValue(key) {
+        const value = this.getValue(key);
+        return Array.isArray(value) ? [...value] : [];
+    }
+    getRangeValue(key, index) {
+        const value = this.getArrayValue(key)[index];
+        return value instanceof Date ? value : null;
+    }
+    onSingleSelectChange(config, option) {
+        this.setValue(config, option?.id ?? null);
+    }
+    onMultiSelectChange(config, value) {
+        this.setValue(config, [...value]);
+    }
+    onInputChange(config, value) {
+        const next = config.type === 'number' ? this.toNumberValue(value) : value;
+        this.setValue(config, next);
+    }
+    onDateChange(config, value) {
+        this.setValue(config, value);
+    }
+    onDateRangeChange(config, index, value) {
+        const next = [...this.getArrayValue(config.key)];
+        next[index] = value;
+        this.setValue(config, next.filter((item) => item !== null));
+    }
+    onSearchChange(value) {
+        this.draftSearchText.set(value || '');
+    }
+    resetDraft() {
+        this.modalRef.close({ action: 'reset', searchText: '', values: {} });
+    }
+    apply() {
+        if (this.hasInvalidControls()) {
+            this.markControlsTouched();
+            return;
+        }
+        this.modalRef.close({
+            action: 'apply',
+            searchText: this.draftSearchText(),
+            values: this.cloneSelections(this.draft()),
+        });
+    }
+    templateContext(config) {
+        return {
+            key: config.key,
+            value: this.getValue(config.key),
+            config,
+            setValue: (value) => this.setValue(config, value),
+        };
+    }
+    ensureInternalControls() {
+        for (const config of this.configs) {
+            if (config.formBinding)
+                continue;
+            if (config.type === 'date-range') {
+                for (const index of [0, 1]) {
+                    const controlName = this.getRangeControlName(config, index);
+                    if (!this.internalForm.contains(controlName)) {
+                        this.internalForm.addControl(controlName, new FormControl(null, {
+                            validators: config.required ? [Validators.required] : [],
+                            nonNullable: false,
+                        }));
+                    }
+                }
+                continue;
+            }
+            if (!this.internalForm.contains(config.key)) {
+                this.internalForm.addControl(config.key, new FormControl(this.emptyValueFor(config), {
+                    validators: config.required ? [Validators.required] : [],
+                    nonNullable: false,
+                }));
+            }
+        }
+    }
+    loadDraft(values, emitDraftCallbacks = false) {
+        const next = {};
+        for (const config of this.configs) {
+            const value = values[config.key] ?? this.emptyValueFor(config);
+            next[config.key] = this.cloneValue(value);
+            this.patchBoundControl(config, value, false, emitDraftCallbacks);
+            this.patchRangeControls(config, value);
+        }
+        this.draft.set(next);
+    }
+    setValue(config, value) {
+        const normalizedValue = this.normalizeValue(config, value);
+        this.draft.update((current) => ({
+            ...current,
+            [config.key]: this.cloneValue(normalizedValue),
+        }));
+        this.patchBoundControl(config, normalizedValue, false, true);
+        this.patchRangeControls(config, normalizedValue);
+    }
+    patchRangeControls(config, value) {
+        if (config.type !== 'date-range')
+            return;
+        const values = Array.isArray(value) ? value : [];
+        this.internalForm.get(this.getRangeControlName(config, 0))?.setValue(values[0] ?? null, { emitEvent: false });
+        this.internalForm.get(this.getRangeControlName(config, 1))?.setValue(values[1] ?? null, { emitEvent: false });
+    }
+    patchBoundControl(config, value, emitAppliedCallback, emitDraftCallback = false) {
+        const form = this.getForm(config);
+        const controlName = this.getControlName(config);
+        const control = form.get(controlName);
+        if (control) {
+            control.setValue(value, { emitEvent: false });
+            if (config.disabled)
+                control.disable({ emitEvent: false });
+            if (!config.disabled)
+                control.enable({ emitEvent: false });
+        }
+        if (emitAppliedCallback) {
+            config.formBinding?.onValueChange?.(value);
+            return;
+        }
+        if (emitDraftCallback) {
+            config.formBinding?.draftValueChange?.(value);
+        }
+    }
+    hasInvalidControls() {
+        return this.configs.some((config) => {
+            const control = this.getForm(config).get(this.getControlName(config));
+            return !!control && control.invalid;
+        });
+    }
+    markControlsTouched() {
+        for (const config of this.configs) {
+            this.getForm(config).get(this.getControlName(config))?.markAsTouched();
+        }
+    }
+    emptyValueFor(config) {
+        return config.type === 'multi-select' || config.type === 'date-range' ? [] : null;
+    }
+    normalizeValue(config, value) {
+        if (config.type === 'multi-select' || config.type === 'date-range') {
+            return Array.isArray(value) ? [...value] : [];
+        }
+        if (config.type === 'number')
+            return typeof value === 'number' ? value : this.toNumberValue(String(value ?? ''));
+        return value ?? null;
+    }
+    toNumberValue(value) {
+        if (value.trim() === '')
+            return null;
+        const numericValue = Number(value);
+        return Number.isNaN(numericValue) ? null : numericValue;
+    }
+    cloneSelections(values) {
+        return Object.entries(values).reduce((acc, [key, value]) => {
+            acc[key] = this.cloneValue(value);
+            return acc;
+        }, {});
+    }
+    cloneValue(value) {
+        if (Array.isArray(value))
+            return [...value];
+        if (value instanceof Date)
+            return new Date(value.getTime());
+        return value;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterDialogComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-dialog", inputs: { configs: "configs", draftValues: "draftValues", searchText: "searchText", searchInputPlaceholder: "searchInputPlaceholder", validateNumber: "validateNumber" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"filter-modal\">\r\n  <div class=\"filter-modal__header\">\r\n\r\n    <custom-reactive-search-input\r\n      [model]=\"draftSearchText()\"\r\n      (search)=\"onSearchChange($event)\"\r\n      (clear)=\"onSearchChange('')\"\r\n      [containerClass]=\"'filter-modal__search'\"\r\n      [inputClass]=\"'filter-modal__search-input'\"\r\n      [inputPlaceholder]=\"searchInputPlaceholder\"\r\n      [validateNumber]=\"validateNumber\"\r\n    />\r\n  </div>\r\n\r\n  <div class=\"filter-modal__grid\">\r\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  <!-- @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  } -->\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n        {{ 'GENERAL.RESET' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(63rem,83vw);color:var(--smp-text-primary, #1f1f1f);overflow:visible}::ng-deep .modal-content:has(.filter-modal){max-height:calc(100vh - 4rem);overflow:hidden}::ng-deep .modal-main-content:has(.filter-modal){max-height:calc(100vh - 12rem);overflow-x:hidden;overflow-y:auto;padding-inline-end:.6rem}.filter-modal__header{border-bottom:1px solid var(--smp-line-border-color);padding-bottom:1.5em;margin-bottom:1.5em;margin-top:1.5em}::ng-deep .filter-modal .filter-modal__search{display:block;width:100%;margin-block:.8rem 1.6rem;padding:0;border:none;background:transparent;--cri-height: 4.8rem;--cri-radius: 1.2rem;--cri-font-size: 1.6rem}::ng-deep .filter-modal .filter-modal__search-input{width:100%;font-size:1.6rem;margin-inline:.2em}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;overflow:visible;padding-block:.8rem 1.6rem;max-height:none}.filter-modal__field{min-width:0;overflow:visible;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1;width:100%}.filter-modal__field:last-child:nth-child(odd){grid-column:1 / -1;width:100%}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.8rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:1.2rem;color:var(--smp-form-text, #1f1f1f);font-size:1.6rem;height:4.8rem}::ng-deep .filter-modal .dropdown-options:not(.dropdown-options--fixed){min-width:100%!important;width:100%!important;border-radius:1.2rem;z-index:1100}::ng-deep .filter-modal .dropdown-options--fixed{min-width:0!important;width:auto!important;max-width:none!important;border-radius:1.2rem;z-index:999999}::ng-deep .filter-modal .calendar-popup--fixed{z-index:999999}::ng-deep .filter-modal .dropdown-option{min-height:4rem;padding:1rem 1.6rem;font-size:1.6rem}::ng-deep .filter-modal .dropdown-option:hover,::ng-deep .filter-modal .dropdown-option.selected{background:var(--tahakom-colors-brand-primary-light, #efe9ee);color:var(--smp-color-primary, #602650)}::ng-deep .filter-modal .dropdown-icons svg path{fill:currentColor}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;background:var(--smp-dialog-bg, #fff);display:flex;gap:1rem;justify-content:flex-end;position:sticky;bottom:0;z-index:5;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__reset{align-items:center;border-radius:1.2rem;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-text-inverse, #fff);border:none}.filter-modal__reset{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__apply:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__field{width:100%}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__reset{flex:1}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "component", type: CustomReactiveSearchInputComponent, selector: "custom-reactive-search-input", inputs: ["model", "headerSearchIcon", "showSearchIcon", "containerClass", "inputClass", "inputPlaceholder", "validateNumber"], outputs: ["modelChange", "search", "clear"] }, { kind: "component", type: CustomDropdownComponent, selector: "custom-dropdown", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "selectedClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "openUp", "overlayMode", "options", "name", "value", "height", "userOptions", "isUserMode", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomMultiSelectComponent, selector: "custom-multi-select", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "openUp", "overlayMode", "options", "value", "height", "showSelectedCountOnly", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomInputFormComponent, selector: "custom-input-form", inputs: ["numberType", "timeText", "inputExtraTextLabel", "time", "class", "labelClass", "label", "placeholder", "name", "type", "controlName", "parentForm", "validation", "pattern", "height", "disabled"], outputs: ["valueChange"] }, { kind: "component", type: CustomCalenderFormComponent, selector: "custom-calender-form", inputs: ["label", "placeholder", "filterDesign", "labelClass", "calendarPopUpClass", "calendarInputClass", "calendarContainerClass", "componentClass", "minDate", "maxDate", "controlName", "parentForm", "validation", "name", "disabled", "openUp", "overlayMode", "height"], outputs: ["valueChange", "toggledCalendar"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-main-pages-modal-filter-dialog', standalone: true, imports: [
+                        CommonModule,
+                        ReactiveFormsModule,
+                        TranslateModule,
+                        CustomReactiveSearchInputComponent,
+                        CustomDropdownComponent,
+                        CustomMultiSelectComponent,
+                        CustomInputFormComponent,
+                        CustomCalenderFormComponent,
+                    ], template: "<div class=\"filter-modal\">\r\n  <div class=\"filter-modal__header\">\r\n\r\n    <custom-reactive-search-input\r\n      [model]=\"draftSearchText()\"\r\n      (search)=\"onSearchChange($event)\"\r\n      (clear)=\"onSearchChange('')\"\r\n      [containerClass]=\"'filter-modal__search'\"\r\n      [inputClass]=\"'filter-modal__search-input'\"\r\n      [inputPlaceholder]=\"searchInputPlaceholder\"\r\n      [validateNumber]=\"validateNumber\"\r\n    />\r\n  </div>\r\n\r\n  <div class=\"filter-modal__grid\">\r\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  <!-- @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  } -->\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n        {{ 'GENERAL.RESET' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(63rem,83vw);color:var(--smp-text-primary, #1f1f1f);overflow:visible}::ng-deep .modal-content:has(.filter-modal){max-height:calc(100vh - 4rem);overflow:hidden}::ng-deep .modal-main-content:has(.filter-modal){max-height:calc(100vh - 12rem);overflow-x:hidden;overflow-y:auto;padding-inline-end:.6rem}.filter-modal__header{border-bottom:1px solid var(--smp-line-border-color);padding-bottom:1.5em;margin-bottom:1.5em;margin-top:1.5em}::ng-deep .filter-modal .filter-modal__search{display:block;width:100%;margin-block:.8rem 1.6rem;padding:0;border:none;background:transparent;--cri-height: 4.8rem;--cri-radius: 1.2rem;--cri-font-size: 1.6rem}::ng-deep .filter-modal .filter-modal__search-input{width:100%;font-size:1.6rem;margin-inline:.2em}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;overflow:visible;padding-block:.8rem 1.6rem;max-height:none}.filter-modal__field{min-width:0;overflow:visible;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1;width:100%}.filter-modal__field:last-child:nth-child(odd){grid-column:1 / -1;width:100%}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.8rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:1.2rem;color:var(--smp-form-text, #1f1f1f);font-size:1.6rem;height:4.8rem}::ng-deep .filter-modal .dropdown-options:not(.dropdown-options--fixed){min-width:100%!important;width:100%!important;border-radius:1.2rem;z-index:1100}::ng-deep .filter-modal .dropdown-options--fixed{min-width:0!important;width:auto!important;max-width:none!important;border-radius:1.2rem;z-index:999999}::ng-deep .filter-modal .calendar-popup--fixed{z-index:999999}::ng-deep .filter-modal .dropdown-option{min-height:4rem;padding:1rem 1.6rem;font-size:1.6rem}::ng-deep .filter-modal .dropdown-option:hover,::ng-deep .filter-modal .dropdown-option.selected{background:var(--tahakom-colors-brand-primary-light, #efe9ee);color:var(--smp-color-primary, #602650)}::ng-deep .filter-modal .dropdown-icons svg path{fill:currentColor}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;background:var(--smp-dialog-bg, #fff);display:flex;gap:1rem;justify-content:flex-end;position:sticky;bottom:0;z-index:5;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__reset{align-items:center;border-radius:1.2rem;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-text-inverse, #fff);border:none}.filter-modal__reset{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__apply:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__field{width:100%}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__reset{flex:1}}\n"] }]
+        }], propDecorators: { configs: [{
+                type: Input
+            }], draftValues: [{
+                type: Input
+            }], searchText: [{
+                type: Input
+            }], searchInputPlaceholder: [{
+                type: Input
+            }], validateNumber: [{
+                type: Input
+            }] } });
+
+class CustomMainPagesModalFilterContainerComponent {
+    dropdownOptions = input([]);
+    dropdownSelectedValues = input([]);
+    dropdownPlaceholder = input('');
+    searchInputPlaceholder = input('GENERAL.SEARCH');
+    defaultBehaviorFlag = input(true);
+    configs = input([]);
+    moreConfigs = input([]);
+    showMore = input(false);
+    validateNumber = input(false);
+    externalFiltersHasValue = input(false);
+    hasFiltered = input(false);
+    modalTitle = input('');
+    showModalTitleMarker = input(true);
+    modalTitleMarkerColor = input('var(--smp-color-info-light, #b8f3ee)');
+    customTemplates = input({});
+    chipsPlacement = input('default');
+    resultSummary = input(null);
+    filterChange = output();
+    filterReset = output();
+    modalService = inject(CustomModalService);
+    translateService = inject(TranslateService);
+    appliedState = signal({
+        searchText: '',
+        selectedIdsLegacy: [],
+        selectionsMap: {},
+    });
+    initialState = signal({
+        searchText: '',
+        selectedIdsLegacy: [],
+        selectionsMap: {},
+    });
+    normalizedConfigs = computed(() => this.normalizeConfigs());
+    hasAnyFilterValue = computed(() => {
+        const state = this.appliedState();
+        return (state.searchText.trim().length > 0 ||
+            state.selectedIdsLegacy.length > 0 ||
+            Object.values(state.selectionsMap).some((value) => this.hasValue(value)) ||
+            this.externalFiltersHasValue());
+    });
+    hasChangedFromInitial = computed(() => {
+        const current = this.appliedState();
+        const initial = this.initialState();
+        return (current.searchText !== initial.searchText ||
+            !this.arraysEqual(current.selectedIdsLegacy, initial.selectedIdsLegacy) ||
+            !this.selectionsEqual(current.selectionsMap, initial.selectionsMap));
+    });
+    appliedChips = computed(() => {
+        const configs = this.normalizedConfigs();
+        const selections = this.appliedState().selectionsMap;
+        const searchChip = this.appliedState().searchText.trim()
+            ? [
+                {
+                    key: '__search',
+                    value: this.appliedState().searchText,
+                    label: this.appliedState().searchText,
+                    removable: true,
+                },
+            ]
+            : [];
+        return [
+            ...searchChip,
+            ...configs.flatMap((config) => this.buildChipsForConfig(config, selections[config.key])),
+        ];
+    });
+    shouldDisableReset = computed(() => !this.hasFiltered() && !this.hasAnyFilterValue());
+    constructor() {
+        effect(() => {
+            const nextState = this.stateFromExternalInputs();
+            this.appliedState.set(nextState);
+            this.initialState.set(this.cloneState(nextState));
+            this.syncFormBindings(nextState.selectionsMap, false);
+        });
+    }
+    async openFilters() {
+        const applied = this.appliedState();
+        this.syncFormBindings(applied.selectionsMap, true);
+        const modalRef = await this.modalService.openComponentInModal(CustomMainPagesModalFilterDialogComponent, {
+            title: this.modalTitleValue(),
+            showTitleMarker: this.showModalTitleMarker(),
+            titleMarkerColor: this.modalTitleMarkerColor(),
+            overlayClickClose: true,
+            showHeader: true,
+        });
+        modalRef.childComponentRef.setInput('configs', this.normalizedConfigs());
+        modalRef.childComponentRef.setInput('draftValues', this.cloneSelections(applied.selectionsMap));
+        modalRef.childComponentRef.setInput('searchText', applied.searchText);
+        modalRef.childComponentRef.setInput('searchInputPlaceholder', this.searchInputPlaceholder());
+        modalRef.childComponentRef.setInput('validateNumber', this.validateNumber());
+        modalRef.childComponentRef.changeDetectorRef.detectChanges();
+        const result = (await modalRef.afterClosed);
+        if (result?.action === 'apply') {
+            this.applyDraft(result.values, result.searchText);
+            return;
+        }
+        if (result?.action === 'reset') {
+            this.resetFilters();
+            return;
+        }
+        this.syncFormBindings(this.appliedState().selectionsMap, true);
+    }
+    applyDraft(values, searchText = this.appliedState().searchText) {
+        const nextSelections = this.normalizeSelections(values);
+        this.appliedState.update((state) => ({
+            ...state,
+            searchText: searchText || '',
+            selectedIdsLegacy: this.defaultBehaviorFlag()
+                ? this.toArray(nextSelections['legacy'])
+                : state.selectedIdsLegacy,
+            selectionsMap: nextSelections,
+        }));
+        this.syncFormBindings(nextSelections, true);
+        this.emitAppliedChange();
+    }
+    removeChip(chip) {
+        if (chip.key === '__search') {
+            this.appliedState.update((state) => ({ ...state, searchText: '' }));
+            this.emitAppliedChange();
+            return;
+        }
+        const config = this.normalizedConfigs().find((item) => item.key === chip.key);
+        if (!config)
+            return;
+        const selections = this.cloneSelections(this.appliedState().selectionsMap);
+        const currentValue = selections[chip.key];
+        selections[chip.key] = Array.isArray(currentValue)
+            ? currentValue.filter((item) => item !== chip.value)
+            : this.emptyValueFor(config);
+        this.appliedState.update((state) => ({ ...state, selectionsMap: this.normalizeSelections(selections) }));
+        this.syncFormBindings(this.appliedState().selectionsMap, true);
+        this.emitAppliedChange();
+    }
+    resetFilters() {
+        const emptySelections = this.normalizedConfigs().reduce((acc, config) => {
+            acc[config.key] = this.emptyValueFor(config);
+            return acc;
+        }, {});
+        this.appliedState.set({
+            searchText: '',
+            selectedIdsLegacy: [],
+            selectionsMap: emptySelections,
+        });
+        this.initialState.set({
+            searchText: '',
+            selectedIdsLegacy: [],
+            selectionsMap: this.cloneSelections(emptySelections),
+        });
+        this.syncFormBindings(emptySelections, true);
+        this.filterReset.emit(true);
+    }
+    emitAppliedChange() {
+        const state = this.appliedState();
+        const payload = this.defaultBehaviorFlag()
+            ? {
+                searchText: state.searchText,
+                selectedIds: [...state.selectedIdsLegacy],
+            }
+            : {
+                searchText: state.searchText,
+                selectedIds: [],
+                selections: this.toPayloadSelections(state.selectionsMap),
+            };
+        this.filterChange.emit(payload);
+    }
+    modalTitleValue() {
+        return this.resultSummaryTitle() || this.modalTitle();
+    }
+    resultSummaryTitle() {
+        const summary = this.resultSummary();
+        if (!summary)
+            return '';
+        const showing = this.translateService.instant(summary.showingLabel || 'GENERAL.PAGINATION.SHOWING');
+        const of = this.translateService.instant(summary.ofLabel || 'GENERAL.PAGINATION.OF');
+        const itemLabel = summary?.itemLabel ? this.translateService.instant(summary.itemLabel) : '';
+        return `${showing} ${summary.shownCount} ${of} ${summary.totalCount} ${itemLabel}`;
+    }
+    stateFromExternalInputs() {
+        const current = untracked(() => this.appliedState());
+        const selectionsMap = this.normalizedConfigs().reduce((acc, config) => {
+            const hasExplicitInitialValue = this.hasExplicitInitialValue(config);
+            acc[config.key] = hasExplicitInitialValue
+                ? this.cloneValue(config.initialValue)
+                : this.cloneValue(current.selectionsMap[config.key] ?? this.emptyValueFor(config));
+            return acc;
+        }, {});
+        return {
+            searchText: current.searchText,
+            selectedIdsLegacy: [...this.dropdownSelectedValues()],
+            selectionsMap,
+        };
+    }
+    normalizeConfigs() {
+        if (this.defaultBehaviorFlag()) {
+            return [
+                this.normalizeConfig({
+                    key: 'legacy',
+                    type: 'multi-select',
+                    placeholder: this.dropdownPlaceholder(),
+                    options: this.dropdownOptions(),
+                    initialValue: this.dropdownSelectedValues(),
+                    multiSelect: true,
+                }),
+            ];
+        }
+        return [...(this.configs() ?? []), ...(this.moreConfigs() ?? [])]
+            .filter((config) => !!config?.key)
+            .map((config) => this.normalizeConfig(config));
+    }
+    normalizeConfig(config) {
+        const inferredType = config.type ?? (config.multiSelect ? 'multi-select' : 'select');
+        const initialValue = config.initialValue !== undefined
+            ? config.initialValue
+            : config.selected !== undefined
+                ? [...config.selected]
+                : this.emptyValueByType(inferredType);
+        return {
+            ...config,
+            type: inferredType,
+            options: config.options ?? [],
+            initialValue: this.cloneValue(initialValue),
+            searchable: config.searchable ?? config.enableFilter ?? false,
+            clearable: config.clearable ?? config.showClear ?? true,
+            disabled: config.disabled ?? false,
+            required: config.required ?? false,
+            loading: config.loading ?? false,
+            gridSpan: config.gridSpan ?? (inferredType === 'date-range' || inferredType === 'custom' ? 2 : 1),
+            height: config.height ?? '4rem',
+            customTemplate: config.customTemplate ??
+                this.customTemplates()[config.key],
+        };
+    }
+    hasExplicitInitialValue(config) {
+        return config.initialValue !== undefined || config.selected !== undefined;
+    }
+    normalizeSelections(values) {
+        return this.normalizedConfigs().reduce((acc, config) => {
+            const value = values[config.key] ?? this.emptyValueFor(config);
+            acc[config.key] = config.type === 'multi-select' ? this.toArray(value) : this.cloneValue(value);
+            return acc;
+        }, {});
+    }
+    toPayloadSelections(selections) {
+        return Object.entries(selections).reduce((acc, [key, value]) => {
+            acc[key] = Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
+            return acc;
+        }, {});
+    }
+    buildChipsForConfig(config, value) {
+        if (!this.hasValue(value))
+            return [];
+        if (Array.isArray(value)) {
+            return value.map((item) => ({
+                key: config.key,
+                value: item,
+                label: this.labelForValue(config, item),
+                removable: true,
+            }));
+        }
+        return [
+            {
+                key: config.key,
+                value,
+                label: this.labelForValue(config, value),
+                removable: true,
+            },
+        ];
+    }
+    labelForValue(config, value) {
+        const option = config.options.find((item) => item.id === value);
+        if (config.chipLabelFormatter)
+            return config.chipLabelFormatter(value, option);
+        if (option)
+            return option.nameEn || option.nameAr || String(option.id);
+        if (value instanceof Date)
+            return value.toLocaleDateString('en-GB');
+        if (config.valueLabelFormatter)
+            return config.valueLabelFormatter(value, option);
+        return String(value);
+    }
+    syncFormBindings(selections, emitCallbacks) {
+        for (const config of this.normalizedConfigs()) {
+            const binding = config.formBinding;
+            if (!binding)
+                continue;
+            const value = selections[config.key] ?? this.emptyValueFor(config);
+            binding.parentForm.get(binding.controlName)?.setValue(value, { emitEvent: false });
+            if (emitCallbacks) {
+                binding.onValueChange?.(value);
+            }
+        }
+    }
+    emptyValueFor(config) {
+        return this.emptyValueByType(config.type);
+    }
+    emptyValueByType(type) {
+        return type === 'multi-select' || type === 'date-range' ? [] : null;
+    }
+    hasValue(value) {
+        if (Array.isArray(value))
+            return value.length > 0;
+        if (typeof value === 'string')
+            return value.trim().length > 0;
+        return value !== null && value !== undefined;
+    }
+    toArray(value) {
+        return Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
+    }
+    selectionsEqual(a, b) {
+        const keys = Array.from(new Set([...Object.keys(a), ...Object.keys(b)]));
+        return keys.every((key) => this.valuesEqual(a[key], b[key]));
+    }
+    valuesEqual(a, b) {
+        if (Array.isArray(a) && Array.isArray(b))
+            return this.arraysEqual(a, b);
+        if (a instanceof Date && b instanceof Date)
+            return a.getTime() === b.getTime();
+        return a === b;
+    }
+    arraysEqual(a, b) {
+        if (a.length !== b.length)
+            return false;
+        return a.every((value, index) => value === b[index]);
+    }
+    cloneState(state) {
+        return {
+            searchText: state.searchText,
+            selectedIdsLegacy: [...state.selectedIdsLegacy],
+            selectionsMap: this.cloneSelections(state.selectionsMap),
+        };
+    }
+    cloneSelections(values) {
+        return Object.entries(values).reduce((acc, [key, value]) => {
+            acc[key] = this.cloneValue(value);
+            return acc;
+        }, {});
+    }
+    cloneValue(value) {
+        if (Array.isArray(value))
+            return [...value];
+        if (value instanceof Date)
+            return new Date(value.getTime());
+        return value ?? null;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterContainerComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-container", inputs: { dropdownOptions: { classPropertyName: "dropdownOptions", publicName: "dropdownOptions", isSignal: true, isRequired: false, transformFunction: null }, dropdownSelectedValues: { classPropertyName: "dropdownSelectedValues", publicName: "dropdownSelectedValues", isSignal: true, isRequired: false, transformFunction: null }, dropdownPlaceholder: { classPropertyName: "dropdownPlaceholder", publicName: "dropdownPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, searchInputPlaceholder: { classPropertyName: "searchInputPlaceholder", publicName: "searchInputPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, defaultBehaviorFlag: { classPropertyName: "defaultBehaviorFlag", publicName: "defaultBehaviorFlag", isSignal: true, isRequired: false, transformFunction: null }, configs: { classPropertyName: "configs", publicName: "configs", isSignal: true, isRequired: false, transformFunction: null }, moreConfigs: { classPropertyName: "moreConfigs", publicName: "moreConfigs", isSignal: true, isRequired: false, transformFunction: null }, showMore: { classPropertyName: "showMore", publicName: "showMore", isSignal: true, isRequired: false, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: true, isRequired: false, transformFunction: null }, externalFiltersHasValue: { classPropertyName: "externalFiltersHasValue", publicName: "externalFiltersHasValue", isSignal: true, isRequired: false, transformFunction: null }, hasFiltered: { classPropertyName: "hasFiltered", publicName: "hasFiltered", isSignal: true, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: true, isRequired: false, transformFunction: null }, showModalTitleMarker: { classPropertyName: "showModalTitleMarker", publicName: "showModalTitleMarker", isSignal: true, isRequired: false, transformFunction: null }, modalTitleMarkerColor: { classPropertyName: "modalTitleMarkerColor", publicName: "modalTitleMarkerColor", isSignal: true, isRequired: false, transformFunction: null }, customTemplates: { classPropertyName: "customTemplates", publicName: "customTemplates", isSignal: true, isRequired: false, transformFunction: null }, chipsPlacement: { classPropertyName: "chipsPlacement", publicName: "chipsPlacement", isSignal: true, isRequired: false, transformFunction: null }, resultSummary: { classPropertyName: "resultSummary", publicName: "resultSummary", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { filterChange: "filterChange", filterReset: "filterReset" }, ngImport: i0, template: "<section\r\n  class=\"main-filter\"\r\n  [class.main-filter--chips-below-header]=\"chipsPlacement() === 'below-header'\"\r\n  aria-label=\"Page filters\"\r\n>\r\n  <div class=\"main-filter__toolbar\">\r\n    <button\r\n      type=\"button\"\r\n      class=\"smp-btn smp-btn-white main-filter__toggle\"\r\n      (click)=\"openFilters()\"\r\n    >\r\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"auto\"\r\n          viewBox=\"0 0 15 15\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            fill-rule=\"evenodd\"\r\n            clip-rule=\"evenodd\"\r\n            d=\"M2.9491 1.185e-06C2.9621 1.76614e-06 2.97514 2.34729e-06 2.98823 2.34729e-06L11.6759 1.185e-06C12.2538 -2.53689e-05 12.7444 -4.78998e-05 13.1315 0.0527277C13.5412 0.108589 13.933 0.234685 14.2329 0.564823C14.5354 0.897853 14.6182 1.2992 14.6246 1.70946C14.6305 2.0926 14.5693 2.56854 14.4978 3.12346L14.4926 3.16387C14.4674 3.36024 14.4295 3.55017 14.3505 3.74033C14.2703 3.9334 14.1599 4.09783 14.0223 4.26124C13.2875 5.13415 11.9216 6.71168 9.99857 8.14829C9.96747 8.17153 9.92821 8.22661 9.92073 8.30925C9.73389 10.3739 9.56953 11.4663 9.45095 12.0992C9.32273 12.7836 8.8007 13.2573 8.35061 13.5834C8.11507 13.7541 7.86505 13.9078 7.64236 14.0433C7.6245 14.0542 7.60687 14.0649 7.58945 14.0755C7.38143 14.202 7.20458 14.3095 7.05675 14.414C6.65137 14.7007 6.18369 14.6806 5.8262 14.4723C5.48885 14.2758 5.25147 13.9174 5.20347 13.512C5.09813 12.6222 4.90714 10.8802 4.69632 8.30444C4.68956 8.22182 4.67665 8.19784 4.67557 8.19584C4.67484 8.19446 4.67294 8.19097 4.66664 8.18404C4.6596 8.1763 4.64552 8.16259 4.61876 8.14258C2.69964 6.70776 1.33637 5.133 0.60263 4.26121C0.465602 4.0984 0.351907 3.93788 0.270842 3.74267C0.191483 3.55156 0.157644 3.36067 0.13233 3.16387C0.130591 3.15035 0.128857 3.13688 0.127129 3.12345C0.0557165 2.56854 -0.00553308 2.0926 0.000397735 1.70945C0.00674827 1.2992 0.0895642 0.897853 0.392103 0.564823C0.692014 0.234685 1.08377 0.108588 1.49348 0.0527277C1.88056 -4.78998e-05 2.37118 -2.53689e-05 2.9491 1.185e-06ZM1.64546 1.16741C1.35738 1.20669 1.2706 1.27087 1.2248 1.32128C1.18163 1.36881 1.12951 1.45249 1.12526 1.72687C1.12074 2.01909 1.17009 2.41359 1.24814 3.02034C1.26982 3.18895 1.28882 3.26065 1.30982 3.31122C1.32911 3.35768 1.3633 3.41791 1.46335 3.53679C2.18207 4.39073 3.47885 5.88567 5.2924 7.24156C5.43811 7.3505 5.57178 7.48535 5.6685 7.66695C5.76378 7.84587 5.80278 8.03202 5.81757 8.21267C6.02724 10.7744 6.21685 12.5028 6.32067 13.3797C6.32383 13.4065 6.33357 13.4328 6.34856 13.4558C6.36388 13.4793 6.38091 13.4935 6.3925 13.5002C6.39398 13.5011 6.39527 13.5018 6.39639 13.5023C6.39906 13.5009 6.40266 13.4987 6.40724 13.4955C6.58882 13.3671 6.79958 13.239 6.9985 13.1182C7.0183 13.1061 7.03799 13.0942 7.05752 13.0823C7.28162 12.9459 7.49595 12.8134 7.69051 12.6724C8.10062 12.3753 8.30177 12.1238 8.34519 11.8921C8.45506 11.3057 8.61541 10.2511 8.80031 8.20786C8.83419 7.8335 9.01798 7.4766 9.32526 7.24703C11.1425 5.8894 12.4419 4.39178 13.1616 3.53677C13.2489 3.43308 13.2877 3.36623 13.3116 3.3087C13.3367 3.24827 13.3578 3.1683 13.3768 3.02034C13.4549 2.41359 13.5042 2.01909 13.4997 1.72687C13.4955 1.45249 13.4433 1.36881 13.4002 1.32128C13.3544 1.27087 13.2676 1.20669 12.9795 1.16741C12.6775 1.12624 12.2645 1.125 11.6367 1.125H2.98823C2.36045 1.125 1.94745 1.12624 1.64546 1.16741ZM6.39049 13.505C6.39052 13.5049 6.39089 13.5048 6.39158 13.5046L6.39049 13.505Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </span>\r\n      <span>{{ \"GENERAL.FILTER\" | translate }}</span>\r\n      <!-- @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\r\n      } -->\r\n    </button>\r\n  </div>\r\n\r\n  @if (appliedChips().length || hasAnyFilterValue()) {\r\n    <div class=\"main-filter__applied-row\">\r\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\r\n        @for (chip of appliedChips(); track chip.key + \":\" + chip.value) {\r\n          <button\r\n            type=\"button\"\r\n            class=\"main-filter__chip\"\r\n            (click)=\"removeChip(chip)\"\r\n          >\r\n            <span>{{ chip.label }}</span>\r\n            <div class=\"main-filter__chip-remove\" aria-hidden=\"true\">\r\n              <svg\r\n                width=\"auto\"\r\n                height=\"auto\"\r\n                viewBox=\"0 0 9 9\"\r\n                fill=\"none\"\r\n                xmlns=\"http://www.w3.org/2000/svg\"\r\n              >\r\n                <path\r\n                  fill-rule=\"evenodd\"\r\n                  clip-rule=\"evenodd\"\r\n                  d=\"M0.484835 0.484835C0.631282 0.338388 0.868718 0.338388 1.01517 0.484835L4.25 3.71967L7.48484 0.484835C7.63128 0.338388 7.86872 0.338388 8.01516 0.484835C8.16161 0.631282 8.16161 0.868718 8.01516 1.01517L4.78033 4.25L8.01516 7.48484C8.16161 7.63128 8.16161 7.86872 8.01516 8.01516C7.86872 8.16161 7.63128 8.16161 7.48484 8.01516L4.25 4.78033L1.01517 8.01516C0.868718 8.16161 0.631282 8.16161 0.484835 8.01516C0.338388 7.86872 0.338388 7.63128 0.484835 7.48484L3.71967 4.25L0.484835 1.01517C0.338388 0.868718 0.338388 0.631282 0.484835 0.484835Z\"\r\n                  fill=\"currentColor\"\r\n                  stroke=\"currentColor\"\r\n                  stroke-width=\"0.75\"\r\n                  stroke-linecap=\"round\"\r\n                  stroke-linejoin=\"round\"\r\n                />\r\n              </svg>\r\n            </div>\r\n          </button>\r\n        }\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"main-filter__reset-all\"\r\n        [disabled]=\"shouldDisableReset()\"\r\n        (click)=\"resetFilters()\"\r\n      >\r\n        <div class=\"main-filter__reset-all-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 12 12\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M4.55504 2.53995C4.99004 2.40995 5.47004 2.32495 6.00004 2.32495C8.39504 2.32495 10.335 4.26495 10.335 6.65995C10.335 9.05495 8.39504 10.995 6.00004 10.995C3.60504 10.995 1.66504 9.05495 1.66504 6.65995C1.66504 5.76995 1.93504 4.93995 2.39504 4.24995\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.66L5.38006 1\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.65991L5.62006 3.88991\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </div>\r\n     \r\n\r\n          {{ \"GENERAL.RESET\" | translate }}\r\n    \r\n      </button>\r\n    </div>\r\n  }\r\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle{display:inline-flex;align-items:center;justify-content:center;gap:1.2rem;font-size:1.2rem;padding-inline-end:1.5em;padding-inline-start:1.5em}.main-filter__toggle-icon{color:var(--pages-filter-header-filter-icon-color, var(--smp-text-primary));display:inline-flex;width:1.4rem;height:1.4rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:calc(100% - 4rem);border-top:1px solid var(--pages-filter-header-border-color);padding-top:1rem;margin-bottom:2rem}.main-filter__reset-all{align-items:center;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;gap:.8rem;background-color:transparent;color:var(--pages-filter-header-reset-color, var(--tahakom-colors-red-normal));justify-content:center}.main-filter__reset-all-icon{width:1.4rem;height:1.4rem}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:1.2rem}.main-filter__chip{background-color:transparent;color:var(--pages-filter-header-chip-text-color, var(--smp-text-primary));border:1px solid var(--pages-filter-header-chip-border-color, var(--tahakom-colors-neutral-light));max-width:28rem;min-height:2.6rem;padding:0 .8rem;align-items:center;border-radius:var(--pages-filter-header-chip-radius, var(--smp-radius-md));cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem;box-shadow:var(--pages-filter-header-chip-shadow, 0px 1px 3px 0px #1018280D)}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{width:.9em;height:.9em;color:var(--pages-filter-header-chip-remove-color, var(--tahakom-colors-neutral-normal))}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-main-pages-modal-filter-container', imports: [TranslateModule], template: "<section\r\n  class=\"main-filter\"\r\n  [class.main-filter--chips-below-header]=\"chipsPlacement() === 'below-header'\"\r\n  aria-label=\"Page filters\"\r\n>\r\n  <div class=\"main-filter__toolbar\">\r\n    <button\r\n      type=\"button\"\r\n      class=\"smp-btn smp-btn-white main-filter__toggle\"\r\n      (click)=\"openFilters()\"\r\n    >\r\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"auto\"\r\n          viewBox=\"0 0 15 15\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            fill-rule=\"evenodd\"\r\n            clip-rule=\"evenodd\"\r\n            d=\"M2.9491 1.185e-06C2.9621 1.76614e-06 2.97514 2.34729e-06 2.98823 2.34729e-06L11.6759 1.185e-06C12.2538 -2.53689e-05 12.7444 -4.78998e-05 13.1315 0.0527277C13.5412 0.108589 13.933 0.234685 14.2329 0.564823C14.5354 0.897853 14.6182 1.2992 14.6246 1.70946C14.6305 2.0926 14.5693 2.56854 14.4978 3.12346L14.4926 3.16387C14.4674 3.36024 14.4295 3.55017 14.3505 3.74033C14.2703 3.9334 14.1599 4.09783 14.0223 4.26124C13.2875 5.13415 11.9216 6.71168 9.99857 8.14829C9.96747 8.17153 9.92821 8.22661 9.92073 8.30925C9.73389 10.3739 9.56953 11.4663 9.45095 12.0992C9.32273 12.7836 8.8007 13.2573 8.35061 13.5834C8.11507 13.7541 7.86505 13.9078 7.64236 14.0433C7.6245 14.0542 7.60687 14.0649 7.58945 14.0755C7.38143 14.202 7.20458 14.3095 7.05675 14.414C6.65137 14.7007 6.18369 14.6806 5.8262 14.4723C5.48885 14.2758 5.25147 13.9174 5.20347 13.512C5.09813 12.6222 4.90714 10.8802 4.69632 8.30444C4.68956 8.22182 4.67665 8.19784 4.67557 8.19584C4.67484 8.19446 4.67294 8.19097 4.66664 8.18404C4.6596 8.1763 4.64552 8.16259 4.61876 8.14258C2.69964 6.70776 1.33637 5.133 0.60263 4.26121C0.465602 4.0984 0.351907 3.93788 0.270842 3.74267C0.191483 3.55156 0.157644 3.36067 0.13233 3.16387C0.130591 3.15035 0.128857 3.13688 0.127129 3.12345C0.0557165 2.56854 -0.00553308 2.0926 0.000397735 1.70945C0.00674827 1.2992 0.0895642 0.897853 0.392103 0.564823C0.692014 0.234685 1.08377 0.108588 1.49348 0.0527277C1.88056 -4.78998e-05 2.37118 -2.53689e-05 2.9491 1.185e-06ZM1.64546 1.16741C1.35738 1.20669 1.2706 1.27087 1.2248 1.32128C1.18163 1.36881 1.12951 1.45249 1.12526 1.72687C1.12074 2.01909 1.17009 2.41359 1.24814 3.02034C1.26982 3.18895 1.28882 3.26065 1.30982 3.31122C1.32911 3.35768 1.3633 3.41791 1.46335 3.53679C2.18207 4.39073 3.47885 5.88567 5.2924 7.24156C5.43811 7.3505 5.57178 7.48535 5.6685 7.66695C5.76378 7.84587 5.80278 8.03202 5.81757 8.21267C6.02724 10.7744 6.21685 12.5028 6.32067 13.3797C6.32383 13.4065 6.33357 13.4328 6.34856 13.4558C6.36388 13.4793 6.38091 13.4935 6.3925 13.5002C6.39398 13.5011 6.39527 13.5018 6.39639 13.5023C6.39906 13.5009 6.40266 13.4987 6.40724 13.4955C6.58882 13.3671 6.79958 13.239 6.9985 13.1182C7.0183 13.1061 7.03799 13.0942 7.05752 13.0823C7.28162 12.9459 7.49595 12.8134 7.69051 12.6724C8.10062 12.3753 8.30177 12.1238 8.34519 11.8921C8.45506 11.3057 8.61541 10.2511 8.80031 8.20786C8.83419 7.8335 9.01798 7.4766 9.32526 7.24703C11.1425 5.8894 12.4419 4.39178 13.1616 3.53677C13.2489 3.43308 13.2877 3.36623 13.3116 3.3087C13.3367 3.24827 13.3578 3.1683 13.3768 3.02034C13.4549 2.41359 13.5042 2.01909 13.4997 1.72687C13.4955 1.45249 13.4433 1.36881 13.4002 1.32128C13.3544 1.27087 13.2676 1.20669 12.9795 1.16741C12.6775 1.12624 12.2645 1.125 11.6367 1.125H2.98823C2.36045 1.125 1.94745 1.12624 1.64546 1.16741ZM6.39049 13.505C6.39052 13.5049 6.39089 13.5048 6.39158 13.5046L6.39049 13.505Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </span>\r\n      <span>{{ \"GENERAL.FILTER\" | translate }}</span>\r\n      <!-- @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\r\n      } -->\r\n    </button>\r\n  </div>\r\n\r\n  @if (appliedChips().length || hasAnyFilterValue()) {\r\n    <div class=\"main-filter__applied-row\">\r\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\r\n        @for (chip of appliedChips(); track chip.key + \":\" + chip.value) {\r\n          <button\r\n            type=\"button\"\r\n            class=\"main-filter__chip\"\r\n            (click)=\"removeChip(chip)\"\r\n          >\r\n            <span>{{ chip.label }}</span>\r\n            <div class=\"main-filter__chip-remove\" aria-hidden=\"true\">\r\n              <svg\r\n                width=\"auto\"\r\n                height=\"auto\"\r\n                viewBox=\"0 0 9 9\"\r\n                fill=\"none\"\r\n                xmlns=\"http://www.w3.org/2000/svg\"\r\n              >\r\n                <path\r\n                  fill-rule=\"evenodd\"\r\n                  clip-rule=\"evenodd\"\r\n                  d=\"M0.484835 0.484835C0.631282 0.338388 0.868718 0.338388 1.01517 0.484835L4.25 3.71967L7.48484 0.484835C7.63128 0.338388 7.86872 0.338388 8.01516 0.484835C8.16161 0.631282 8.16161 0.868718 8.01516 1.01517L4.78033 4.25L8.01516 7.48484C8.16161 7.63128 8.16161 7.86872 8.01516 8.01516C7.86872 8.16161 7.63128 8.16161 7.48484 8.01516L4.25 4.78033L1.01517 8.01516C0.868718 8.16161 0.631282 8.16161 0.484835 8.01516C0.338388 7.86872 0.338388 7.63128 0.484835 7.48484L3.71967 4.25L0.484835 1.01517C0.338388 0.868718 0.338388 0.631282 0.484835 0.484835Z\"\r\n                  fill=\"currentColor\"\r\n                  stroke=\"currentColor\"\r\n                  stroke-width=\"0.75\"\r\n                  stroke-linecap=\"round\"\r\n                  stroke-linejoin=\"round\"\r\n                />\r\n              </svg>\r\n            </div>\r\n          </button>\r\n        }\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"main-filter__reset-all\"\r\n        [disabled]=\"shouldDisableReset()\"\r\n        (click)=\"resetFilters()\"\r\n      >\r\n        <div class=\"main-filter__reset-all-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 12 12\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M4.55504 2.53995C4.99004 2.40995 5.47004 2.32495 6.00004 2.32495C8.39504 2.32495 10.335 4.26495 10.335 6.65995C10.335 9.05495 8.39504 10.995 6.00004 10.995C3.60504 10.995 1.66504 9.05495 1.66504 6.65995C1.66504 5.76995 1.93504 4.93995 2.39504 4.24995\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.66L5.38006 1\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.65991L5.62006 3.88991\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </div>\r\n     \r\n\r\n          {{ \"GENERAL.RESET\" | translate }}\r\n    \r\n      </button>\r\n    </div>\r\n  }\r\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle{display:inline-flex;align-items:center;justify-content:center;gap:1.2rem;font-size:1.2rem;padding-inline-end:1.5em;padding-inline-start:1.5em}.main-filter__toggle-icon{color:var(--pages-filter-header-filter-icon-color, var(--smp-text-primary));display:inline-flex;width:1.4rem;height:1.4rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:calc(100% - 4rem);border-top:1px solid var(--pages-filter-header-border-color);padding-top:1rem;margin-bottom:2rem}.main-filter__reset-all{align-items:center;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;gap:.8rem;background-color:transparent;color:var(--pages-filter-header-reset-color, var(--tahakom-colors-red-normal));justify-content:center}.main-filter__reset-all-icon{width:1.4rem;height:1.4rem}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:1.2rem}.main-filter__chip{background-color:transparent;color:var(--pages-filter-header-chip-text-color, var(--smp-text-primary));border:1px solid var(--pages-filter-header-chip-border-color, var(--tahakom-colors-neutral-light));max-width:28rem;min-height:2.6rem;padding:0 .8rem;align-items:center;border-radius:var(--pages-filter-header-chip-radius, var(--smp-radius-md));cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem;box-shadow:var(--pages-filter-header-chip-shadow, 0px 1px 3px 0px #1018280D)}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{width:.9em;height:.9em;color:var(--pages-filter-header-chip-remove-color, var(--tahakom-colors-neutral-normal))}\n"] }]
+        }], ctorParameters: () => [] });
+
+class CustomTabsWithDialogFilterComponent {
+    translationService = inject(TranslationService);
+    tabsList = input.required();
+    selectedTab = input({});
+    color = input('#979797');
+    colorSelected = input('#000000');
+    tabTemplates = input({});
+    hideFilter = input(false);
+    defaultBehaviorFlag = input(false);
+    configs = input([]);
+    hasFiltered = input(false);
+    externalFiltersHasValue = input(false);
+    searchInputPlaceholder = input('GENERAL.SEARCH');
+    validateNumber = input(false);
+    modalTitle = input('FILTER.FILTER');
+    showModalTitleMarker = input(true);
+    modalTitleMarkerColor = input('var(--tahakom-colors-brand-secondary-light-active)');
+    resultSummary = input(null);
+    tabSelected = new EventEmitter();
+    filterChange = new EventEmitter();
+    filterReset = new EventEmitter();
+    activeTab = computed(() => {
+        const selectedTab = this.selectedTab();
+        return selectedTab?.id ? selectedTab : this.tabsList()[0];
+    });
+    selectTab(tab) {
+        this.tabSelected.emit(tab);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTabsWithDialogFilterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTabsWithDialogFilterComponent, isStandalone: true, selector: "custom-tabs-with-dialog-filter", inputs: { tabsList: { classPropertyName: "tabsList", publicName: "tabsList", isSignal: true, isRequired: true, transformFunction: null }, selectedTab: { classPropertyName: "selectedTab", publicName: "selectedTab", isSignal: true, isRequired: false, transformFunction: null }, color: { classPropertyName: "color", publicName: "color", isSignal: true, isRequired: false, transformFunction: null }, colorSelected: { classPropertyName: "colorSelected", publicName: "colorSelected", isSignal: true, isRequired: false, transformFunction: null }, tabTemplates: { classPropertyName: "tabTemplates", publicName: "tabTemplates", isSignal: true, isRequired: false, transformFunction: null }, hideFilter: { classPropertyName: "hideFilter", publicName: "hideFilter", isSignal: true, isRequired: false, transformFunction: null }, defaultBehaviorFlag: { classPropertyName: "defaultBehaviorFlag", publicName: "defaultBehaviorFlag", isSignal: true, isRequired: false, transformFunction: null }, configs: { classPropertyName: "configs", publicName: "configs", isSignal: true, isRequired: false, transformFunction: null }, hasFiltered: { classPropertyName: "hasFiltered", publicName: "hasFiltered", isSignal: true, isRequired: false, transformFunction: null }, externalFiltersHasValue: { classPropertyName: "externalFiltersHasValue", publicName: "externalFiltersHasValue", isSignal: true, isRequired: false, transformFunction: null }, searchInputPlaceholder: { classPropertyName: "searchInputPlaceholder", publicName: "searchInputPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: true, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: true, isRequired: false, transformFunction: null }, showModalTitleMarker: { classPropertyName: "showModalTitleMarker", publicName: "showModalTitleMarker", isSignal: true, isRequired: false, transformFunction: null }, modalTitleMarkerColor: { classPropertyName: "modalTitleMarkerColor", publicName: "modalTitleMarkerColor", isSignal: true, isRequired: false, transformFunction: null }, resultSummary: { classPropertyName: "resultSummary", publicName: "resultSummary", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { tabSelected: "tabSelected", filterChange: "filterChange", filterReset: "filterReset" }, ngImport: i0, template: "<div\r\n  class=\"tabs-filter tabs-tokens-container\"\r\n  [style.--tabs-filter-tab-color]=\"color()\"\r\n  [style.--tabs-filter-tab-selected-color]=\"colorSelected()\"\r\n  [style.--tabs-filter-underline-color]=\"colorSelected()\"\r\n>\r\n  <div class=\"tab-container\">\r\n    @for (tab of tabsList(); track tab) {\r\n      <button\r\n        class=\"tab-button\"\r\n        [class.selected]=\"activeTab()?.id === tab.id\"\r\n        (click)=\"selectTab(tab)\"\r\n      >\r\n        @if (tabTemplates()[tab.id]) {\r\n          <ng-template *ngTemplateOutlet=\"tabTemplates()[tab.id]\"></ng-template>\r\n        } @else {\r\n          {{ tab | localize:'name' : translationService.currentLang() }}\r\n        }\r\n        <span\r\n          class=\"underline\"\r\n          [class.visible]=\"activeTab()?.id === tab.id\"\r\n        ></span>\r\n      </button>\r\n    }\r\n  </div>\r\n\r\n  @if (!hideFilter()) {\r\n    <custom-main-pages-modal-filter-container\r\n      [defaultBehaviorFlag]=\"defaultBehaviorFlag()\"\r\n      [configs]=\"configs()\"\r\n      [hasFiltered]=\"hasFiltered()\"\r\n      [externalFiltersHasValue]=\"externalFiltersHasValue()\"\r\n      [searchInputPlaceholder]=\"searchInputPlaceholder()\"\r\n      [validateNumber]=\"validateNumber()\"\r\n      [modalTitle]=\"modalTitle()\"\r\n      [showModalTitleMarker]=\"showModalTitleMarker()\"\r\n      [modalTitleMarkerColor]=\"modalTitleMarkerColor()\"\r\n      [resultSummary]=\"resultSummary()\"\r\n      chipsPlacement=\"below-header\"\r\n      (filterChange)=\"filterChange.emit($event)\"\r\n      (filterReset)=\"filterReset.emit($event)\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".tabs-tokens-container{--tabs-filter-tab-selected-color: var(--smp-text-primary);--tabs-filter-underline-color: var(--smp-text-primary);--tabs-filter-border-color: var(--smp-line-border-color);--tabs-filter-filter-icon-color: var(--smp-text-primary);--tabs-filter-chip-text-color: var(--smp-text-primary);--tabs-filter-chip-border-color: var(--tahakom-colors-neutral-light);--tabs-filter-chip-remove-color: var(--tahakom-colors-neutral-normal);--tabs-filter-chip-radius: var(--smp-radius-md);--tabs-filter-chip-shadow: 0px 1px 3px 0px #1018280d;--tabs-filter-reset-color: var(--tahakom-colors-red-normal);--pages-filter-header-border-color: var(--smp-line-border-color)}.tabs-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:\"tabs filter\" \"chips chips\";align-items:start;column-gap:1rem;row-gap:1rem;width:100%;padding:0 2rem 1rem}.tab-container{grid-area:tabs;display:flex;gap:1.5rem;min-width:0;padding-top:.5rem;padding-bottom:.3rem;font-size:1.4rem}.tab-button{position:relative;padding:.5rem 1rem;color:var(--tabs-filter-tab-selected-color);background:none;border:none;outline:none;cursor:pointer;transition:color .2s;opacity:.4}.tab-button.selected{color:var(--tabs-filter-tab-selected-color);cursor:default;opacity:1}.underline{position:absolute;left:0;bottom:-.25rem;width:100%;height:.1em;background-color:var(--tabs-filter-underline-color);border-radius:4px;opacity:0;transform:scaleX(0);transition:transform .3s,opacity .3s}.underline.visible{opacity:1;transform:scaleX(1)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container{display:contents}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header{display:contents}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toolbar{grid-area:filter;justify-self:end;width:fit-content}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toggle{width:fit-content}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__applied-row{grid-area:chips;justify-content:space-between;width:100%;margin-bottom:0;border-top:1px solid var(--pages-filter-header-border-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__toggle-icon{color:var(--tabs-filter-filter-icon-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__chip{color:var(--tabs-filter-chip-text-color);border-color:var(--tabs-filter-chip-border-color);border-radius:var(--tabs-filter-chip-radius);box-shadow:var(--tabs-filter-chip-shadow)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__chip-remove{color:var(--tabs-filter-chip-remove-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__reset-all{color:var(--tabs-filter-reset-color)}@media (max-width: 768px){.tabs-filter{grid-template-columns:1fr;grid-template-areas:\"tabs\" \"filter\" \"chips\"}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toolbar,::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toggle{width:100%}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "pipe", type: LocalizePipe, name: "localize" }, { kind: "component", type: CustomMainPagesModalFilterContainerComponent, selector: "custom-main-pages-modal-filter-container", inputs: ["dropdownOptions", "dropdownSelectedValues", "dropdownPlaceholder", "searchInputPlaceholder", "defaultBehaviorFlag", "configs", "moreConfigs", "showMore", "validateNumber", "externalFiltersHasValue", "hasFiltered", "modalTitle", "showModalTitleMarker", "modalTitleMarkerColor", "customTemplates", "chipsPlacement", "resultSummary"], outputs: ["filterChange", "filterReset"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTabsWithDialogFilterComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-tabs-with-dialog-filter', standalone: true, imports: [CommonModule, LocalizePipe, CustomMainPagesModalFilterContainerComponent], template: "<div\r\n  class=\"tabs-filter tabs-tokens-container\"\r\n  [style.--tabs-filter-tab-color]=\"color()\"\r\n  [style.--tabs-filter-tab-selected-color]=\"colorSelected()\"\r\n  [style.--tabs-filter-underline-color]=\"colorSelected()\"\r\n>\r\n  <div class=\"tab-container\">\r\n    @for (tab of tabsList(); track tab) {\r\n      <button\r\n        class=\"tab-button\"\r\n        [class.selected]=\"activeTab()?.id === tab.id\"\r\n        (click)=\"selectTab(tab)\"\r\n      >\r\n        @if (tabTemplates()[tab.id]) {\r\n          <ng-template *ngTemplateOutlet=\"tabTemplates()[tab.id]\"></ng-template>\r\n        } @else {\r\n          {{ tab | localize:'name' : translationService.currentLang() }}\r\n        }\r\n        <span\r\n          class=\"underline\"\r\n          [class.visible]=\"activeTab()?.id === tab.id\"\r\n        ></span>\r\n      </button>\r\n    }\r\n  </div>\r\n\r\n  @if (!hideFilter()) {\r\n    <custom-main-pages-modal-filter-container\r\n      [defaultBehaviorFlag]=\"defaultBehaviorFlag()\"\r\n      [configs]=\"configs()\"\r\n      [hasFiltered]=\"hasFiltered()\"\r\n      [externalFiltersHasValue]=\"externalFiltersHasValue()\"\r\n      [searchInputPlaceholder]=\"searchInputPlaceholder()\"\r\n      [validateNumber]=\"validateNumber()\"\r\n      [modalTitle]=\"modalTitle()\"\r\n      [showModalTitleMarker]=\"showModalTitleMarker()\"\r\n      [modalTitleMarkerColor]=\"modalTitleMarkerColor()\"\r\n      [resultSummary]=\"resultSummary()\"\r\n      chipsPlacement=\"below-header\"\r\n      (filterChange)=\"filterChange.emit($event)\"\r\n      (filterReset)=\"filterReset.emit($event)\"\r\n    />\r\n  }\r\n</div>\r\n", styles: [".tabs-tokens-container{--tabs-filter-tab-selected-color: var(--smp-text-primary);--tabs-filter-underline-color: var(--smp-text-primary);--tabs-filter-border-color: var(--smp-line-border-color);--tabs-filter-filter-icon-color: var(--smp-text-primary);--tabs-filter-chip-text-color: var(--smp-text-primary);--tabs-filter-chip-border-color: var(--tahakom-colors-neutral-light);--tabs-filter-chip-remove-color: var(--tahakom-colors-neutral-normal);--tabs-filter-chip-radius: var(--smp-radius-md);--tabs-filter-chip-shadow: 0px 1px 3px 0px #1018280d;--tabs-filter-reset-color: var(--tahakom-colors-red-normal);--pages-filter-header-border-color: var(--smp-line-border-color)}.tabs-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:\"tabs filter\" \"chips chips\";align-items:start;column-gap:1rem;row-gap:1rem;width:100%;padding:0 2rem 1rem}.tab-container{grid-area:tabs;display:flex;gap:1.5rem;min-width:0;padding-top:.5rem;padding-bottom:.3rem;font-size:1.4rem}.tab-button{position:relative;padding:.5rem 1rem;color:var(--tabs-filter-tab-selected-color);background:none;border:none;outline:none;cursor:pointer;transition:color .2s;opacity:.4}.tab-button.selected{color:var(--tabs-filter-tab-selected-color);cursor:default;opacity:1}.underline{position:absolute;left:0;bottom:-.25rem;width:100%;height:.1em;background-color:var(--tabs-filter-underline-color);border-radius:4px;opacity:0;transform:scaleX(0);transition:transform .3s,opacity .3s}.underline.visible{opacity:1;transform:scaleX(1)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container{display:contents}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header{display:contents}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toolbar{grid-area:filter;justify-self:end;width:fit-content}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toggle{width:fit-content}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__applied-row{grid-area:chips;justify-content:space-between;width:100%;margin-bottom:0;border-top:1px solid var(--pages-filter-header-border-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__toggle-icon{color:var(--tabs-filter-filter-icon-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__chip{color:var(--tabs-filter-chip-text-color);border-color:var(--tabs-filter-chip-border-color);border-radius:var(--tabs-filter-chip-radius);box-shadow:var(--tabs-filter-chip-shadow)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__chip-remove{color:var(--tabs-filter-chip-remove-color)}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter__reset-all{color:var(--tabs-filter-reset-color)}@media (max-width: 768px){.tabs-filter{grid-template-columns:1fr;grid-template-areas:\"tabs\" \"filter\" \"chips\"}::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toolbar,::ng-deep .tabs-filter custom-main-pages-modal-filter-container .main-filter--chips-below-header .main-filter__toggle{width:100%}}\n"] }]
+        }], propDecorators: { tabSelected: [{
+                type: Output
+            }], filterChange: [{
+                type: Output
+            }], filterReset: [{
+                type: Output
+            }] } });
+
 class CustomColorComponent {
     colorsArray = [
         '#9747FF',
@@ -5690,99 +6490,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             }], triggerTemplate: [{
                 type: ContentChild,
                 args: ['customTrigger']
-            }] } });
-
-class CustomReactiveSearchInputComponent {
-    model = '';
-    modelChange = new EventEmitter();
-    search = new EventEmitter();
-    clear = new EventEmitter();
-    headerSearchIcon = input(false);
-    /** When false, hides the leading search glyph (Figma map modal). Default true. */
-    showSearchIcon = input(true);
-    containerClass = '';
-    inputClass = '';
-    inputPlaceholder = '';
-    validateNumber = false;
-    inputSubject = new Subject();
-    constructor() {
-        this.inputSubject
-            .pipe(debounceTime(0), distinctUntilChanged(), takeUntilDestroyed())
-            .subscribe((val) => this.search.emit(val.trim()));
-    }
-    onInputChange(value) {
-        this.modelChange.emit(value); // for ngModel sync
-        this.inputSubject.next(value); // for debounce emit
-    }
-    clearInput() {
-        if (this.model === '') {
-            this.search.emit('');
-            this.clear.emit();
-            return;
-        }
-        this.model = '';
-        this.modelChange.emit('');
-        this.search.emit('');
-        this.clear.emit();
-    }
-    preventInvalidNumberInput(event) {
-        if (this.validateNumber) {
-            const allowedKeys = [
-                'Backspace',
-                'Delete',
-                'Tab',
-                'Escape',
-                'Enter',
-                'ArrowLeft',
-                'ArrowRight',
-                'ArrowUp',
-                'ArrowDown',
-            ];
-            if (allowedKeys.includes(event.key)) {
-                return;
-            }
-            // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-            if ((event.ctrlKey || event.metaKey) &&
-                ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
-                return;
-            }
-            // Only allow numbers (0-9) and plus sign (+)
-            const validPattern = /^[0-9+]$/;
-            if (!validPattern.test(event.key)) {
-                event.preventDefault();
-            }
-        }
-    }
-    preventPaste(event) {
-        // if (this.validateNumber) {
-        //   event.preventDefault();
-        // }
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomReactiveSearchInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomReactiveSearchInputComponent, isStandalone: true, selector: "custom-reactive-search-input", inputs: { model: { classPropertyName: "model", publicName: "model", isSignal: false, isRequired: false, transformFunction: null }, headerSearchIcon: { classPropertyName: "headerSearchIcon", publicName: "headerSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, showSearchIcon: { classPropertyName: "showSearchIcon", publicName: "showSearchIcon", isSignal: true, isRequired: false, transformFunction: null }, containerClass: { classPropertyName: "containerClass", publicName: "containerClass", isSignal: false, isRequired: true, transformFunction: null }, inputClass: { classPropertyName: "inputClass", publicName: "inputClass", isSignal: false, isRequired: true, transformFunction: null }, inputPlaceholder: { classPropertyName: "inputPlaceholder", publicName: "inputPlaceholder", isSignal: false, isRequired: true, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { modelChange: "modelChange", search: "search", clear: "clear" }, ngImport: i0, template: "<div\r\n  [ngClass]=\"containerClass\"\r\n  class=\"search-input-tokens-wrapper cri-form-tokens cri-wrap\"\r\n  [class.cri-wrap--no-icon]=\"!showSearchIcon()\"\r\n>\r\n  @if (showSearchIcon()) {\r\n    <div class=\"search-icon\">\r\n      @if (headerSearchIcon()) {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"24\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n          <path\r\n            opacity=\"0.3\"\r\n            d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      } @else {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"18\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      }\r\n    </div>\r\n  }\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder | translate\"\r\n    class=\"cri-input\"\r\n    (keydown)=\"preventInvalidNumberInput($event)\"\r\n    (paste)=\"preventPaste($event)\"\r\n  />\r\n\r\n  @if (model?.length) {\r\n    <button\r\n      type=\"button\"\r\n      class=\"cri-clear\"\r\n      (click)=\"clearInput()\"\r\n      aria-label=\"Clear\"\r\n    >\r\n      <svg\r\n        width=\"16\"\r\n        height=\"16\"\r\n        viewBox=\"0 0 16 16\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n        aria-hidden=\"true\"\r\n      >\r\n        <path\r\n          d=\"M1.00098 1L15 14.9991\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M0.999964 14.9991L14.999 1\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </button>\r\n  }\r\n</div>\r\n", styles: [".search-input-tokens-wrapper{--search-input-bg: var(--tahakom-colors-neutral-lightest-active);--search-input-border-color: transparent;--search-input-border-hover: var(--tahakom-colors-neutral-light-active);--search-input-border-focus: var(--tahakom-colors-neutral-light-active);--search-input-text-color: var(--smp-text-primary);--search-input-placeholder-color: var(--tahakom-colors-neutral-light-active);--search-input-icon-color: var(--tahakom-colors-neutral-normal);--search-input-clear-color: var(--tahakom-colors-neutral-normal);--search-input-clear-hover-color: var(--smp-text-primary);--search-input-caret-color: var(--smp-color-primary, #602650);--search-input-focus-ring: 0 0 0 .2rem rgba(96, 38, 80, .12)}.cri-wrap{position:relative;width:100%;display:flex;align-items:center}.cri-wrap--no-icon{--search-input-no-icon: 1}.search-icon{position:absolute;inset-inline-start:1.4rem;top:50%;transform:translateY(-50%);height:auto;width:2rem;min-width:2rem;color:var(--search-input-icon-color);pointer-events:none;z-index:1;display:inline-flex;align-items:center}.search-icon svg{width:100%!important;height:auto;display:block;color:inherit}.cri-input{width:100%;height:4.8rem;border-radius:var(--smp-radius-lg, 1.2rem);border:0 solid var(--search-input-border-color);background-color:var(--search-input-bg);color:var(--search-input-text-color);caret-color:var(--search-input-caret-color);font-size:1.6rem;font-weight:400;padding-inline-start:5rem;padding-inline-end:3.6rem;outline:none!important;box-shadow:none;box-sizing:border-box;transition:background-color .2s ease,box-shadow .2s ease}.cri-wrap--no-icon .cri-input{padding-inline-start:1.6rem;padding-inline-end:4rem}.cri-input:hover{border-color:var(--search-input-border-hover)}.cri-input:focus{border-color:var(--search-input-border-focus);box-shadow:var(--search-input-focus-ring)}.cri-input::placeholder{color:var(--search-input-placeholder-color)}.cri-clear{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);width:1.6rem;height:1.6rem;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;appearance:none;color:var(--search-input-clear-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.cri-clear svg{width:1.4rem;height:1.4rem;display:block}.cri-clear:hover,.cri-clear:focus,.cri-clear:focus-visible{border:0;outline:none;box-shadow:none;background:transparent;color:var(--search-input-clear-hover-color)}\n"], dependencies: [{ kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomReactiveSearchInputComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-reactive-search-input', imports: [NgClass, FormsModule, TranslateModule], template: "<div\r\n  [ngClass]=\"containerClass\"\r\n  class=\"search-input-tokens-wrapper cri-form-tokens cri-wrap\"\r\n  [class.cri-wrap--no-icon]=\"!showSearchIcon()\"\r\n>\r\n  @if (showSearchIcon()) {\r\n    <div class=\"search-icon\">\r\n      @if (headerSearchIcon()) {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"24\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M16.5422 14.698L14.2172 12.373C13.6922 13.198 12.9422 13.948 12.1172 14.473L14.4422 16.798C14.7422 17.098 15.1922 17.098 15.4922 16.798L16.5422 15.748C16.8422 15.448 16.8422 14.998 16.5422 14.698Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n          <path\r\n            opacity=\"0.3\"\r\n            d=\"M8.51758 15.5234C4.76758 15.5234 1.76758 12.5234 1.76758 8.77344C1.76758 5.02344 4.76758 2.02344 8.51758 2.02344C12.2676 2.02344 15.2676 5.02344 15.2676 8.77344C15.2676 12.5234 12.2676 15.5234 8.51758 15.5234ZM8.51758 3.52344C5.59258 3.52344 3.26758 5.84844 3.26758 8.77344C3.26758 11.6984 5.59258 14.0234 8.51758 14.0234C11.4426 14.0234 13.7676 11.6984 13.7676 8.77344C13.7676 5.84844 11.4426 3.52344 8.51758 3.52344ZM6.26758 8.77344C6.26758 7.49844 7.24258 6.52344 8.51758 6.52344C8.96758 6.52344 9.26758 6.22344 9.26758 5.77344C9.26758 5.32344 8.96758 5.02344 8.51758 5.02344C6.41758 5.02344 4.76758 6.67344 4.76758 8.77344C4.76758 9.22344 5.06758 9.52344 5.51758 9.52344C5.96758 9.52344 6.26758 9.22344 6.26758 8.77344Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      } @else {\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"18\"\r\n          viewBox=\"0 0 18 18\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M8.16638 0.0410156C3.67923 0.0412021 0.0413818 3.67882 0.0413818 8.16602C0.0415579 12.6531 3.67934 16.2908 8.16638 16.291C10.1851 16.291 12.0306 15.5526 13.4515 14.334L16.891 17.7744C17.1351 18.0185 17.5317 18.0185 17.7758 17.7744C18.0196 17.5304 18.0195 17.1347 17.7758 16.8906L14.3363 13.4502C15.5544 12.0294 16.2913 10.1842 16.2914 8.16602C16.2914 3.6787 12.6537 0.0410156 8.16638 0.0410156ZM8.16638 1.29102C11.9633 1.29102 15.0414 4.36906 15.0414 8.16602C15.0412 11.9628 11.9632 15.041 8.16638 15.041C4.36969 15.0408 1.29156 11.9627 1.29138 8.16602C1.29138 4.36917 4.36958 1.2912 8.16638 1.29102Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      }\r\n    </div>\r\n  }\r\n\r\n  <input\r\n    type=\"text\"\r\n    [ngModel]=\"model\"\r\n    (ngModelChange)=\"onInputChange($event)\"\r\n    [ngClass]=\"inputClass\"\r\n    [placeholder]=\"inputPlaceholder | translate\"\r\n    class=\"cri-input\"\r\n    (keydown)=\"preventInvalidNumberInput($event)\"\r\n    (paste)=\"preventPaste($event)\"\r\n  />\r\n\r\n  @if (model?.length) {\r\n    <button\r\n      type=\"button\"\r\n      class=\"cri-clear\"\r\n      (click)=\"clearInput()\"\r\n      aria-label=\"Clear\"\r\n    >\r\n      <svg\r\n        width=\"16\"\r\n        height=\"16\"\r\n        viewBox=\"0 0 16 16\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n        aria-hidden=\"true\"\r\n      >\r\n        <path\r\n          d=\"M1.00098 1L15 14.9991\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n        <path\r\n          d=\"M0.999964 14.9991L14.999 1\"\r\n          stroke=\"currentColor\"\r\n          stroke-width=\"1.5\"\r\n          stroke-linecap=\"round\"\r\n          stroke-linejoin=\"round\"\r\n        />\r\n      </svg>\r\n    </button>\r\n  }\r\n</div>\r\n", styles: [".search-input-tokens-wrapper{--search-input-bg: var(--tahakom-colors-neutral-lightest-active);--search-input-border-color: transparent;--search-input-border-hover: var(--tahakom-colors-neutral-light-active);--search-input-border-focus: var(--tahakom-colors-neutral-light-active);--search-input-text-color: var(--smp-text-primary);--search-input-placeholder-color: var(--tahakom-colors-neutral-light-active);--search-input-icon-color: var(--tahakom-colors-neutral-normal);--search-input-clear-color: var(--tahakom-colors-neutral-normal);--search-input-clear-hover-color: var(--smp-text-primary);--search-input-caret-color: var(--smp-color-primary, #602650);--search-input-focus-ring: 0 0 0 .2rem rgba(96, 38, 80, .12)}.cri-wrap{position:relative;width:100%;display:flex;align-items:center}.cri-wrap--no-icon{--search-input-no-icon: 1}.search-icon{position:absolute;inset-inline-start:1.4rem;top:50%;transform:translateY(-50%);height:auto;width:2rem;min-width:2rem;color:var(--search-input-icon-color);pointer-events:none;z-index:1;display:inline-flex;align-items:center}.search-icon svg{width:100%!important;height:auto;display:block;color:inherit}.cri-input{width:100%;height:4.8rem;border-radius:var(--smp-radius-lg, 1.2rem);border:0 solid var(--search-input-border-color);background-color:var(--search-input-bg);color:var(--search-input-text-color);caret-color:var(--search-input-caret-color);font-size:1.6rem;font-weight:400;padding-inline-start:5rem;padding-inline-end:3.6rem;outline:none!important;box-shadow:none;box-sizing:border-box;transition:background-color .2s ease,box-shadow .2s ease}.cri-wrap--no-icon .cri-input{padding-inline-start:1.6rem;padding-inline-end:4rem}.cri-input:hover{border-color:var(--search-input-border-hover)}.cri-input:focus{border-color:var(--search-input-border-focus);box-shadow:var(--search-input-focus-ring)}.cri-input::placeholder{color:var(--search-input-placeholder-color)}.cri-clear{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);width:1.6rem;height:1.6rem;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;appearance:none;color:var(--search-input-clear-color);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}.cri-clear svg{width:1.4rem;height:1.4rem;display:block}.cri-clear:hover,.cri-clear:focus,.cri-clear:focus-visible{border:0;outline:none;box-shadow:none;background:transparent;color:var(--search-input-clear-hover-color)}\n"] }]
-        }], ctorParameters: () => [], propDecorators: { model: [{
-                type: Input
-            }], modelChange: [{
-                type: Output
-            }], search: [{
-                type: Output
-            }], clear: [{
-                type: Output
-            }], containerClass: [{
-                type: Input,
-                args: [{ required: true }]
-            }], inputClass: [{
-                type: Input,
-                args: [{ required: true }]
-            }], inputPlaceholder: [{
-                type: Input,
-                args: [{ required: true }]
-            }], validateNumber: [{
-                type: Input
             }] } });
 
 class CustomFilterDropdownComponent {
@@ -6162,671 +6869,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             }], cancelBtnClicked: [{
                 type: Output
             }] } });
-
-const MODAL_REF = new InjectionToken('MODAL_REF');
-function injectModalRef() {
-    return inject(MODAL_REF);
-}
-class CustomModalService {
-    translate;
-    applicationRef = inject(ApplicationRef);
-    environmentInjector = inject(EnvironmentInjector);
-    /** Open any component inside the modal (child must be standalone or resolvable). */
-    constructor(translate) {
-        this.translate = translate;
-    }
-    async openComponentInModal(childComponent, options = {}) {
-        const hostElement = this.createHostElement();
-        const modalRef = this.createModal(hostElement);
-        this.applyModalInputs(modalRef.instance, options);
-        // Render the *ngIf branch so the anchor exists
-        modalRef.instance.open();
-        modalRef.changeDetectorRef.detectChanges();
-        // Wait until the ViewChild anchor is resolved
-        await firstValueFrom(modalRef.instance.contentReady$);
-        // Attach the child
-        const modalRefApi = { close: (result) => modalRef.instance.close(result) };
-        const childInjector = Injector.create({
-            providers: [{ provide: MODAL_REF, useValue: modalRefApi }],
-            parent: modalRef.instance.contentInjector,
-        });
-        const childRef = modalRef.instance.attachContent(childComponent, childInjector);
-        // Resolve when closed, then cleanup
-        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
-        return {
-            modalComponentRef: modalRef,
-            childComponentRef: childRef,
-            close: (result) => modalRef.instance.close(result),
-            afterClosed,
-        };
-    }
-    // ——— helpers ———
-    createHostElement() {
-        const host = document.createElement('div');
-        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
-        document.body.appendChild(host);
-        return host;
-    }
-    createModal(host) {
-        const ref = createComponent(CustomModalComponent, {
-            environmentInjector: this.environmentInjector,
-            hostElement: host,
-        });
-        this.applicationRef.attachView(ref.hostView);
-        return ref;
-    }
-    destroyModal(ref, host) {
-        this.applicationRef.detachView(ref.hostView);
-        ref.destroy();
-        host.remove();
-    }
-    applyModalInputs(modal, o) {
-        if (o.title) {
-            modal.modalTitle = this.translate.instant(o.title);
-        }
-        else {
-            modal.modalTitle;
-        }
-        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
-        modal.modalIconBackground = o.iconBackground ?? modal.modalIconBackground;
-        modal.modalIconColor = o.iconColor ?? modal.modalIconColor;
-        modal.showTitleMarker = o.showTitleMarker ?? modal.showTitleMarker;
-        modal.modalTitleMarkerColor = o.titleMarkerColor ?? modal.modalTitleMarkerColor;
-        modal.showHeader = o.showHeader ?? true;
-        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
-    }
-    async waitForClose(ref) {
-        return firstValueFrom(ref.instance.closed);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
-
-class CustomMainPagesModalFilterDialogComponent {
-    configs = [];
-    draftValues = {};
-    searchText = '';
-    searchInputPlaceholder = 'GENERAL.SEARCH';
-    validateNumber = false;
-    fb = inject(FormBuilder);
-    modalRef = injectModalRef();
-    internalForm = this.fb.group({});
-    draft = signal({});
-    draftSearchText = signal('');
-    hasConfigs = computed(() => this.configs.length > 0);
-    ngOnChanges(changes) {
-        if (changes['configs']) {
-            this.ensureInternalControls();
-        }
-        if (changes['draftValues'] || changes['configs']) {
-            this.loadDraft(this.draftValues);
-        }
-        if (changes['searchText']) {
-            this.draftSearchText.set(this.searchText || '');
-        }
-    }
-    getControlName(config) {
-        return config.formBinding?.controlName ?? config.key;
-    }
-    getRangeControlName(config, index) {
-        return `${config.key}${index === 0 ? 'From' : 'To'}`;
-    }
-    getForm(config) {
-        return config.formBinding?.parentForm ?? this.internalForm;
-    }
-    getMinDate(config) {
-        const value = config.formBinding?.minDate;
-        return typeof value === 'function' ? value() : value ?? null;
-    }
-    getMaxDate(config) {
-        const value = config.formBinding?.maxDate;
-        return typeof value === 'function' ? value() : value ?? null;
-    }
-    getValue(key) {
-        return this.draft()[key] ?? null;
-    }
-    getArrayValue(key) {
-        const value = this.getValue(key);
-        return Array.isArray(value) ? [...value] : [];
-    }
-    getRangeValue(key, index) {
-        const value = this.getArrayValue(key)[index];
-        return value instanceof Date ? value : null;
-    }
-    onSingleSelectChange(config, option) {
-        this.setValue(config, option?.id ?? null);
-    }
-    onMultiSelectChange(config, value) {
-        this.setValue(config, [...value]);
-    }
-    onInputChange(config, value) {
-        const next = config.type === 'number' ? this.toNumberValue(value) : value;
-        this.setValue(config, next);
-    }
-    onDateChange(config, value) {
-        this.setValue(config, value);
-    }
-    onDateRangeChange(config, index, value) {
-        const next = [...this.getArrayValue(config.key)];
-        next[index] = value;
-        this.setValue(config, next.filter((item) => item !== null));
-    }
-    onSearchChange(value) {
-        this.draftSearchText.set(value || '');
-    }
-    resetDraft() {
-        const next = {};
-        for (const config of this.configs) {
-            next[config.key] = this.emptyValueFor(config);
-        }
-        this.loadDraft(next, true);
-    }
-    apply() {
-        if (this.hasInvalidControls()) {
-            this.markControlsTouched();
-            return;
-        }
-        this.modalRef.close({
-            action: 'apply',
-            searchText: this.draftSearchText(),
-            values: this.cloneSelections(this.draft()),
-        });
-    }
-    templateContext(config) {
-        return {
-            key: config.key,
-            value: this.getValue(config.key),
-            config,
-            setValue: (value) => this.setValue(config, value),
-        };
-    }
-    ensureInternalControls() {
-        for (const config of this.configs) {
-            if (config.formBinding)
-                continue;
-            if (config.type === 'date-range') {
-                for (const index of [0, 1]) {
-                    const controlName = this.getRangeControlName(config, index);
-                    if (!this.internalForm.contains(controlName)) {
-                        this.internalForm.addControl(controlName, new FormControl(null, {
-                            validators: config.required ? [Validators.required] : [],
-                            nonNullable: false,
-                        }));
-                    }
-                }
-                continue;
-            }
-            if (!this.internalForm.contains(config.key)) {
-                this.internalForm.addControl(config.key, new FormControl(this.emptyValueFor(config), {
-                    validators: config.required ? [Validators.required] : [],
-                    nonNullable: false,
-                }));
-            }
-        }
-    }
-    loadDraft(values, emitDraftCallbacks = false) {
-        const next = {};
-        for (const config of this.configs) {
-            const value = values[config.key] ?? this.emptyValueFor(config);
-            next[config.key] = this.cloneValue(value);
-            this.patchBoundControl(config, value, false, emitDraftCallbacks);
-            this.patchRangeControls(config, value);
-        }
-        this.draft.set(next);
-    }
-    setValue(config, value) {
-        const normalizedValue = this.normalizeValue(config, value);
-        this.draft.update((current) => ({
-            ...current,
-            [config.key]: this.cloneValue(normalizedValue),
-        }));
-        this.patchBoundControl(config, normalizedValue, false, true);
-        this.patchRangeControls(config, normalizedValue);
-    }
-    patchRangeControls(config, value) {
-        if (config.type !== 'date-range')
-            return;
-        const values = Array.isArray(value) ? value : [];
-        this.internalForm.get(this.getRangeControlName(config, 0))?.setValue(values[0] ?? null, { emitEvent: false });
-        this.internalForm.get(this.getRangeControlName(config, 1))?.setValue(values[1] ?? null, { emitEvent: false });
-    }
-    patchBoundControl(config, value, emitAppliedCallback, emitDraftCallback = false) {
-        const form = this.getForm(config);
-        const controlName = this.getControlName(config);
-        const control = form.get(controlName);
-        if (control) {
-            control.setValue(value, { emitEvent: false });
-            if (config.disabled)
-                control.disable({ emitEvent: false });
-            if (!config.disabled)
-                control.enable({ emitEvent: false });
-        }
-        if (emitAppliedCallback) {
-            config.formBinding?.onValueChange?.(value);
-            return;
-        }
-        if (emitDraftCallback) {
-            config.formBinding?.draftValueChange?.(value);
-        }
-    }
-    hasInvalidControls() {
-        return this.configs.some((config) => {
-            const control = this.getForm(config).get(this.getControlName(config));
-            return !!control && control.invalid;
-        });
-    }
-    markControlsTouched() {
-        for (const config of this.configs) {
-            this.getForm(config).get(this.getControlName(config))?.markAsTouched();
-        }
-    }
-    emptyValueFor(config) {
-        return config.type === 'multi-select' || config.type === 'date-range' ? [] : null;
-    }
-    normalizeValue(config, value) {
-        if (config.type === 'multi-select' || config.type === 'date-range') {
-            return Array.isArray(value) ? [...value] : [];
-        }
-        if (config.type === 'number')
-            return typeof value === 'number' ? value : this.toNumberValue(String(value ?? ''));
-        return value ?? null;
-    }
-    toNumberValue(value) {
-        if (value.trim() === '')
-            return null;
-        const numericValue = Number(value);
-        return Number.isNaN(numericValue) ? null : numericValue;
-    }
-    cloneSelections(values) {
-        return Object.entries(values).reduce((acc, [key, value]) => {
-            acc[key] = this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    cloneValue(value) {
-        if (Array.isArray(value))
-            return [...value];
-        if (value instanceof Date)
-            return new Date(value.getTime());
-        return value;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterDialogComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-dialog", inputs: { configs: "configs", draftValues: "draftValues", searchText: "searchText", searchInputPlaceholder: "searchInputPlaceholder", validateNumber: "validateNumber" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"filter-modal\">\r\n  <div class=\"filter-modal__header\">\r\n\r\n    <custom-reactive-search-input\r\n      [model]=\"draftSearchText()\"\r\n      (search)=\"onSearchChange($event)\"\r\n      (clear)=\"onSearchChange('')\"\r\n      [containerClass]=\"'filter-modal__search'\"\r\n      [inputClass]=\"'filter-modal__search-input'\"\r\n      [inputPlaceholder]=\"searchInputPlaceholder\"\r\n      [validateNumber]=\"validateNumber\"\r\n    />\r\n  </div>\r\n\r\n  <div class=\"filter-modal__grid\">\r\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  <!-- @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  } -->\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n        {{ 'GENERAL.RESET' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(63rem,83vw);color:var(--smp-text-primary, #1f1f1f);overflow:visible}::ng-deep .modal-content:has(.filter-modal){max-height:calc(100vh - 4rem);overflow:hidden}::ng-deep .modal-main-content:has(.filter-modal){max-height:calc(100vh - 12rem);overflow-x:hidden;overflow-y:auto;padding-inline-end:.6rem}.filter-modal__header{border-bottom:1px solid var(--smp-line-border-color);padding-bottom:1.5em;margin-bottom:1.5em;margin-top:1.5em}::ng-deep .filter-modal .filter-modal__search{display:block;width:100%;margin-block:.8rem 1.6rem;padding:0;border:none;background:transparent;--cri-height: 4.8rem;--cri-radius: 1.2rem;--cri-font-size: 1.6rem}::ng-deep .filter-modal .filter-modal__search-input{width:100%;font-size:1.6rem;margin-inline:.2em}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;overflow:visible;padding-block:.8rem 1.6rem;max-height:none}.filter-modal__field{min-width:0;overflow:visible;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1;width:100%}.filter-modal__field:last-child:nth-child(odd){grid-column:1 / -1;width:100%}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.8rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:1.2rem;color:var(--smp-form-text, #1f1f1f);font-size:1.6rem;height:4.8rem}::ng-deep .filter-modal .dropdown-options:not(.dropdown-options--fixed){min-width:100%!important;width:100%!important;border-radius:1.2rem;z-index:1100}::ng-deep .filter-modal .dropdown-options--fixed{min-width:0!important;width:auto!important;max-width:none!important;border-radius:1.2rem;z-index:999999}::ng-deep .filter-modal .calendar-popup--fixed{z-index:999999}::ng-deep .filter-modal .dropdown-option{min-height:4rem;padding:1rem 1.6rem;font-size:1.6rem}::ng-deep .filter-modal .dropdown-option:hover,::ng-deep .filter-modal .dropdown-option.selected{background:var(--tahakom-colors-brand-primary-light, #efe9ee);color:var(--smp-color-primary, #602650)}::ng-deep .filter-modal .dropdown-icons svg path{fill:currentColor}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;background:var(--smp-dialog-bg, #fff);display:flex;gap:1rem;justify-content:flex-end;position:sticky;bottom:0;z-index:5;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__reset{align-items:center;border-radius:1.2rem;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-text-inverse, #fff);border:none}.filter-modal__reset{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__apply:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__field{width:100%}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__reset{flex:1}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1$2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "component", type: CustomReactiveSearchInputComponent, selector: "custom-reactive-search-input", inputs: ["model", "headerSearchIcon", "showSearchIcon", "containerClass", "inputClass", "inputPlaceholder", "validateNumber"], outputs: ["modelChange", "search", "clear"] }, { kind: "component", type: CustomDropdownComponent, selector: "custom-dropdown", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "selectedClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "openUp", "overlayMode", "options", "name", "value", "height", "userOptions", "isUserMode", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomMultiSelectComponent, selector: "custom-multi-select", inputs: ["label", "labelClass", "dropdownOptionsClass", "dropdownHeaderClass", "dropdownContainerClass", "placeholder", "enableFilter", "showClear", "openUp", "overlayMode", "options", "value", "height", "showSelectedCountOnly", "reset"], outputs: ["valueChange", "clear"] }, { kind: "component", type: CustomInputFormComponent, selector: "custom-input-form", inputs: ["numberType", "timeText", "inputExtraTextLabel", "time", "class", "labelClass", "label", "placeholder", "name", "type", "controlName", "parentForm", "validation", "pattern", "height", "disabled"], outputs: ["valueChange"] }, { kind: "component", type: CustomCalenderFormComponent, selector: "custom-calender-form", inputs: ["label", "placeholder", "filterDesign", "labelClass", "calendarPopUpClass", "calendarInputClass", "calendarContainerClass", "componentClass", "minDate", "maxDate", "controlName", "parentForm", "validation", "name", "disabled", "openUp", "overlayMode", "height"], outputs: ["valueChange", "toggledCalendar"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterDialogComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-main-pages-modal-filter-dialog', standalone: true, imports: [
-                        CommonModule,
-                        ReactiveFormsModule,
-                        TranslateModule,
-                        CustomReactiveSearchInputComponent,
-                        CustomDropdownComponent,
-                        CustomMultiSelectComponent,
-                        CustomInputFormComponent,
-                        CustomCalenderFormComponent,
-                    ], template: "<div class=\"filter-modal\">\r\n  <div class=\"filter-modal__header\">\r\n\r\n    <custom-reactive-search-input\r\n      [model]=\"draftSearchText()\"\r\n      (search)=\"onSearchChange($event)\"\r\n      (clear)=\"onSearchChange('')\"\r\n      [containerClass]=\"'filter-modal__search'\"\r\n      [inputClass]=\"'filter-modal__search-input'\"\r\n      [inputPlaceholder]=\"searchInputPlaceholder\"\r\n      [validateNumber]=\"validateNumber\"\r\n    />\r\n  </div>\r\n\r\n  <div class=\"filter-modal__grid\">\r\n    @for (config of configs; track config.key) {\r\n      <div\r\n        class=\"filter-modal__field\"\r\n        [class.filter-modal__field--wide]=\"config.gridSpan === 2\"\r\n        [style.--filter-field-width]=\"config.width || null\"\r\n      >\r\n        @if (config.type === 'multi-select') {\r\n          <custom-multi-select\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getArrayValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            (valueChange)=\"onMultiSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'select') {\r\n          <custom-dropdown\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [name]=\"config.key\"\r\n            [height]=\"config.height\"\r\n            [options]=\"config.options\"\r\n            [value]=\"getValue(config.key)\"\r\n            [enableFilter]=\"config.searchable\"\r\n            [showClear]=\"config.clearable\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT_OPTION'\"\r\n            [dropdownContainerClass]=\"'filter-modal__control'\"\r\n            [dropdownOptionsClass]=\"'filter-modal__options'\"\r\n            [isUserMode]=\"config.isUserMode || false\"\r\n            [userOptions]=\"config.userOptions || []\"\r\n            (valueChange)=\"onSingleSelectChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'text' || config.type === 'number') {\r\n          <custom-input-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || '' | translate\"\r\n            [type]=\"config.type === 'number' ? 'number' : 'text'\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            (valueChange)=\"onInputChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date') {\r\n          <custom-calender-form\r\n            [parentForm]=\"getForm(config)\"\r\n            [controlName]=\"getControlName(config)\"\r\n            [name]=\"config.formBinding?.name || config.key\"\r\n            [label]=\"config.label || (config.placeholder || '') | translate\"\r\n            [placeholder]=\"config.placeholder || 'GENERAL.SELECT' | translate\"\r\n            [validation]=\"[]\"\r\n            [height]=\"config.height\"\r\n            [disabled]=\"config.disabled\"\r\n            [minDate]=\"getMinDate(config)\"\r\n            [maxDate]=\"getMaxDate(config)\"\r\n            [openUp]=\"config.openUp || false\"\r\n            [overlayMode]=\"'fixed'\"\r\n            [filterDesign]=\"true\"\r\n            (valueChange)=\"onDateChange(config, $event)\"\r\n          />\r\n        } @else if (config.type === 'date-range') {\r\n          <div class=\"filter-modal__range\">\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 0)\"\r\n              [name]=\"config.key + 'From'\"\r\n              [label]=\"config.label || (config.placeholder || '') | translate\"\r\n              [placeholder]=\"'FILTER_AND_TABS.FROM' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 0, $event)\"\r\n            />\r\n            <custom-calender-form\r\n              [parentForm]=\"internalForm\"\r\n              [controlName]=\"getRangeControlName(config, 1)\"\r\n              [name]=\"config.key + 'To'\"\r\n              [placeholder]=\"'FILTER_AND_TABS.TO' | translate\"\r\n              [validation]=\"[]\"\r\n              [height]=\"config.height\"\r\n              [disabled]=\"config.disabled\"\r\n              [minDate]=\"getRangeValue(config.key, 0)\"\r\n              [openUp]=\"config.openUp || false\"\r\n              [overlayMode]=\"'fixed'\"\r\n              [filterDesign]=\"true\"\r\n              (valueChange)=\"onDateRangeChange(config, 1, $event)\"\r\n            />\r\n          </div>\r\n        } @else if (config.type === 'custom' && config.customTemplate) {\r\n          <ng-container\r\n            [ngTemplateOutlet]=\"config.customTemplate\"\r\n            [ngTemplateOutletContext]=\"templateContext(config)\"\r\n          />\r\n        }\r\n      </div>\r\n    }\r\n  </div>\r\n\r\n  <!-- @if (!hasConfigs()) {\r\n    <div class=\"filter-modal__empty\">{{ 'GENERAL.NO_OPTIONS_FOUND' | translate }}</div>\r\n  } -->\r\n\r\n  <div class=\"filter-modal__actions\">\r\n    <div class=\"filter-modal__action-group\">\r\n      <button type=\"button\" class=\"filter-modal__reset\" (click)=\"resetDraft()\">\r\n        {{ 'GENERAL.RESET' | translate }}\r\n      </button>\r\n      <button type=\"button\" class=\"filter-modal__apply\" (click)=\"apply()\">\r\n        {{ 'GENERAL.APPLY' | translate }}\r\n      </button>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".filter-modal{min-width:min(63rem,83vw);color:var(--smp-text-primary, #1f1f1f);overflow:visible}::ng-deep .modal-content:has(.filter-modal){max-height:calc(100vh - 4rem);overflow:hidden}::ng-deep .modal-main-content:has(.filter-modal){max-height:calc(100vh - 12rem);overflow-x:hidden;overflow-y:auto;padding-inline-end:.6rem}.filter-modal__header{border-bottom:1px solid var(--smp-line-border-color);padding-bottom:1.5em;margin-bottom:1.5em;margin-top:1.5em}::ng-deep .filter-modal .filter-modal__search{display:block;width:100%;margin-block:.8rem 1.6rem;padding:0;border:none;background:transparent;--cri-height: 4.8rem;--cri-radius: 1.2rem;--cri-font-size: 1.6rem}::ng-deep .filter-modal .filter-modal__search-input{width:100%;font-size:1.6rem;margin-inline:.2em}.filter-modal__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem;overflow:visible;padding-block:.8rem 1.6rem;max-height:none}.filter-modal__field{min-width:0;overflow:visible;width:var(--filter-field-width, 100%)}.filter-modal__field--wide{grid-column:1 / -1;width:100%}.filter-modal__field:last-child:nth-child(odd){grid-column:1 / -1;width:100%}::ng-deep .filter-modal .custom-label{color:var(--smp-color-form-label, #4b4f55);font-size:1.4rem;font-weight:500;margin-block-end:.8rem}::ng-deep .filter-modal .dropdown-container,::ng-deep .filter-modal .custom-calendar-container,::ng-deep .filter-modal .input-container{width:100%}::ng-deep .filter-modal .dropdown-header,::ng-deep .filter-modal .custom-calendar-input,::ng-deep .filter-modal .custom-input{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1)!important;border-radius:1.2rem;color:var(--smp-form-text, #1f1f1f);font-size:1.6rem;height:4.8rem}::ng-deep .filter-modal .dropdown-options:not(.dropdown-options--fixed){min-width:100%!important;width:100%!important;border-radius:1.2rem;z-index:1100}::ng-deep .filter-modal .dropdown-options--fixed{min-width:0!important;width:auto!important;max-width:none!important;border-radius:1.2rem;z-index:999999}::ng-deep .filter-modal .calendar-popup--fixed{z-index:999999}::ng-deep .filter-modal .dropdown-option{min-height:4rem;padding:1rem 1.6rem;font-size:1.6rem}::ng-deep .filter-modal .dropdown-option:hover,::ng-deep .filter-modal .dropdown-option.selected{background:var(--tahakom-colors-brand-primary-light, #efe9ee);color:var(--smp-color-primary, #602650)}::ng-deep .filter-modal .dropdown-icons svg path{fill:currentColor}.filter-modal__empty{color:var(--smp-color-form-placeholder, #777);font-size:1.4rem;padding:2rem 0;text-align:center}.filter-modal__range{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}.filter-modal__actions{align-items:center;background:var(--smp-dialog-bg, #fff);display:flex;gap:1rem;justify-content:flex-end;position:sticky;bottom:0;z-index:5;padding-block-start:1.6rem}.filter-modal__action-group{display:flex;gap:1rem}.filter-modal__apply,.filter-modal__reset{align-items:center;border-radius:1.2rem;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;justify-content:center;min-height:4rem;padding:0 1.6rem}.filter-modal__apply{background-color:var(--smp-color-primary, #602650);color:var(--smp-text-inverse, #fff);border:none}.filter-modal__reset{background-color:var(--smp-form-bg, #fff);border:1px solid var(--smp-color-form-border, #d9dbe1);color:var(--smp-text-primary, #1f1f1f)}.filter-modal__apply:focus-visible,.filter-modal__reset:focus-visible{outline:2px solid var(--smp-color-primary, #602650);outline-offset:2px}@media (max-width: 640px){.filter-modal{min-width:min(100%,82vw)}.filter-modal__grid{grid-template-columns:1fr}.filter-modal__field{width:100%}.filter-modal__actions{align-items:stretch;flex-direction:column}.filter-modal__range{grid-template-columns:1fr}.filter-modal__action-group{width:100%}.filter-modal__apply,.filter-modal__reset{flex:1}}\n"] }]
-        }], propDecorators: { configs: [{
-                type: Input
-            }], draftValues: [{
-                type: Input
-            }], searchText: [{
-                type: Input
-            }], searchInputPlaceholder: [{
-                type: Input
-            }], validateNumber: [{
-                type: Input
-            }] } });
-
-class CustomMainPagesModalFilterContainerComponent {
-    dropdownOptions = input([]);
-    dropdownSelectedValues = input([]);
-    dropdownPlaceholder = input('');
-    searchInputPlaceholder = input('GENERAL.SEARCH');
-    defaultBehaviorFlag = input(true);
-    configs = input([]);
-    moreConfigs = input([]);
-    showMore = input(false);
-    validateNumber = input(false);
-    externalFiltersHasValue = input(false);
-    hasFiltered = input(false);
-    modalTitle = input('');
-    showModalTitleMarker = input(true);
-    modalTitleMarkerColor = input('var(--smp-color-info-light, #b8f3ee)');
-    customTemplates = input({});
-    chipsPlacement = input('default');
-    resultSummary = input(null);
-    filterChange = output();
-    filterReset = output();
-    modalService = inject(CustomModalService);
-    translateService = inject(TranslateService);
-    appliedState = signal({
-        searchText: '',
-        selectedIdsLegacy: [],
-        selectionsMap: {},
-    });
-    initialState = signal({
-        searchText: '',
-        selectedIdsLegacy: [],
-        selectionsMap: {},
-    });
-    normalizedConfigs = computed(() => this.normalizeConfigs());
-    hasAnyFilterValue = computed(() => {
-        const state = this.appliedState();
-        return (state.searchText.trim().length > 0 ||
-            state.selectedIdsLegacy.length > 0 ||
-            Object.values(state.selectionsMap).some((value) => this.hasValue(value)) ||
-            this.externalFiltersHasValue());
-    });
-    hasChangedFromInitial = computed(() => {
-        const current = this.appliedState();
-        const initial = this.initialState();
-        return (current.searchText !== initial.searchText ||
-            !this.arraysEqual(current.selectedIdsLegacy, initial.selectedIdsLegacy) ||
-            !this.selectionsEqual(current.selectionsMap, initial.selectionsMap));
-    });
-    appliedChips = computed(() => {
-        const configs = this.normalizedConfigs();
-        const selections = this.appliedState().selectionsMap;
-        const searchChip = this.appliedState().searchText.trim()
-            ? [
-                {
-                    key: '__search',
-                    value: this.appliedState().searchText,
-                    label: this.appliedState().searchText,
-                    removable: true,
-                },
-            ]
-            : [];
-        return [
-            ...searchChip,
-            ...configs.flatMap((config) => this.buildChipsForConfig(config, selections[config.key])),
-        ];
-    });
-    shouldDisableReset = computed(() => !this.hasFiltered() && !this.hasAnyFilterValue());
-    constructor() {
-        effect(() => {
-            const nextState = this.stateFromExternalInputs();
-            this.appliedState.set(nextState);
-            this.initialState.set(this.cloneState(nextState));
-            this.syncFormBindings(nextState.selectionsMap, false);
-        });
-    }
-    async openFilters() {
-        const applied = this.appliedState();
-        this.syncFormBindings(applied.selectionsMap, true);
-        const modalRef = await this.modalService.openComponentInModal(CustomMainPagesModalFilterDialogComponent, {
-            title: this.modalTitleValue(),
-            showTitleMarker: this.showModalTitleMarker(),
-            titleMarkerColor: this.modalTitleMarkerColor(),
-            overlayClickClose: true,
-            showHeader: true,
-        });
-        modalRef.childComponentRef.setInput('configs', this.normalizedConfigs());
-        modalRef.childComponentRef.setInput('draftValues', this.cloneSelections(applied.selectionsMap));
-        modalRef.childComponentRef.setInput('searchText', applied.searchText);
-        modalRef.childComponentRef.setInput('searchInputPlaceholder', this.searchInputPlaceholder());
-        modalRef.childComponentRef.setInput('validateNumber', this.validateNumber());
-        modalRef.childComponentRef.changeDetectorRef.detectChanges();
-        const result = (await modalRef.afterClosed);
-        if (result?.action === 'apply') {
-            this.applyDraft(result.values, result.searchText);
-            return;
-        }
-        this.syncFormBindings(this.appliedState().selectionsMap, true);
-    }
-    applyDraft(values, searchText = this.appliedState().searchText) {
-        const nextSelections = this.normalizeSelections(values);
-        this.appliedState.update((state) => ({
-            ...state,
-            searchText: searchText || '',
-            selectedIdsLegacy: this.defaultBehaviorFlag()
-                ? this.toArray(nextSelections['legacy'])
-                : state.selectedIdsLegacy,
-            selectionsMap: nextSelections,
-        }));
-        this.syncFormBindings(nextSelections, true);
-        this.emitAppliedChange();
-    }
-    removeChip(chip) {
-        if (chip.key === '__search') {
-            this.appliedState.update((state) => ({ ...state, searchText: '' }));
-            this.emitAppliedChange();
-            return;
-        }
-        const config = this.normalizedConfigs().find((item) => item.key === chip.key);
-        if (!config)
-            return;
-        const selections = this.cloneSelections(this.appliedState().selectionsMap);
-        const currentValue = selections[chip.key];
-        selections[chip.key] = Array.isArray(currentValue)
-            ? currentValue.filter((item) => item !== chip.value)
-            : this.emptyValueFor(config);
-        this.appliedState.update((state) => ({ ...state, selectionsMap: this.normalizeSelections(selections) }));
-        this.syncFormBindings(this.appliedState().selectionsMap, true);
-        this.emitAppliedChange();
-    }
-    resetFilters() {
-        const emptySelections = this.normalizedConfigs().reduce((acc, config) => {
-            acc[config.key] = this.emptyValueFor(config);
-            return acc;
-        }, {});
-        this.appliedState.set({
-            searchText: '',
-            selectedIdsLegacy: [],
-            selectionsMap: emptySelections,
-        });
-        this.initialState.set({
-            searchText: '',
-            selectedIdsLegacy: [],
-            selectionsMap: this.cloneSelections(emptySelections),
-        });
-        this.syncFormBindings(emptySelections, true);
-        this.filterReset.emit(true);
-    }
-    emitAppliedChange() {
-        const state = this.appliedState();
-        const payload = this.defaultBehaviorFlag()
-            ? {
-                searchText: state.searchText,
-                selectedIds: [...state.selectedIdsLegacy],
-            }
-            : {
-                searchText: state.searchText,
-                selectedIds: [],
-                selections: this.toPayloadSelections(state.selectionsMap),
-            };
-        this.filterChange.emit(payload);
-    }
-    modalTitleValue() {
-        return this.resultSummaryTitle() || this.modalTitle();
-    }
-    resultSummaryTitle() {
-        const summary = this.resultSummary();
-        if (!summary)
-            return '';
-        const showing = this.translateService.instant(summary.showingLabel || 'GENERAL.PAGINATION.SHOWING');
-        const of = this.translateService.instant(summary.ofLabel || 'GENERAL.PAGINATION.OF');
-        const itemLabel = summary?.itemLabel ? this.translateService.instant(summary.itemLabel) : '';
-        return `${showing} ${summary.shownCount} ${of} ${summary.totalCount} ${itemLabel}`;
-    }
-    stateFromExternalInputs() {
-        const current = untracked(() => this.appliedState());
-        const selectionsMap = this.normalizedConfigs().reduce((acc, config) => {
-            const hasExplicitInitialValue = this.hasExplicitInitialValue(config);
-            acc[config.key] = hasExplicitInitialValue
-                ? this.cloneValue(config.initialValue)
-                : this.cloneValue(current.selectionsMap[config.key] ?? this.emptyValueFor(config));
-            return acc;
-        }, {});
-        return {
-            searchText: current.searchText,
-            selectedIdsLegacy: [...this.dropdownSelectedValues()],
-            selectionsMap,
-        };
-    }
-    normalizeConfigs() {
-        if (this.defaultBehaviorFlag()) {
-            return [
-                this.normalizeConfig({
-                    key: 'legacy',
-                    type: 'multi-select',
-                    placeholder: this.dropdownPlaceholder(),
-                    options: this.dropdownOptions(),
-                    initialValue: this.dropdownSelectedValues(),
-                    multiSelect: true,
-                }),
-            ];
-        }
-        return [...(this.configs() ?? []), ...(this.moreConfigs() ?? [])]
-            .filter((config) => !!config?.key)
-            .map((config) => this.normalizeConfig(config));
-    }
-    normalizeConfig(config) {
-        const inferredType = config.type ?? (config.multiSelect ? 'multi-select' : 'select');
-        const initialValue = config.initialValue !== undefined
-            ? config.initialValue
-            : config.selected !== undefined
-                ? [...config.selected]
-                : this.emptyValueByType(inferredType);
-        return {
-            ...config,
-            type: inferredType,
-            options: config.options ?? [],
-            initialValue: this.cloneValue(initialValue),
-            searchable: config.searchable ?? config.enableFilter ?? false,
-            clearable: config.clearable ?? config.showClear ?? true,
-            disabled: config.disabled ?? false,
-            required: config.required ?? false,
-            loading: config.loading ?? false,
-            gridSpan: config.gridSpan ?? (inferredType === 'date-range' || inferredType === 'custom' ? 2 : 1),
-            height: config.height ?? '4rem',
-            customTemplate: config.customTemplate ??
-                this.customTemplates()[config.key],
-        };
-    }
-    hasExplicitInitialValue(config) {
-        return config.initialValue !== undefined || config.selected !== undefined;
-    }
-    normalizeSelections(values) {
-        return this.normalizedConfigs().reduce((acc, config) => {
-            const value = values[config.key] ?? this.emptyValueFor(config);
-            acc[config.key] = config.type === 'multi-select' ? this.toArray(value) : this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    toPayloadSelections(selections) {
-        return Object.entries(selections).reduce((acc, [key, value]) => {
-            acc[key] = Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
-            return acc;
-        }, {});
-    }
-    buildChipsForConfig(config, value) {
-        if (!this.hasValue(value))
-            return [];
-        if (Array.isArray(value)) {
-            return value.map((item) => ({
-                key: config.key,
-                value: item,
-                label: this.labelForValue(config, item),
-                removable: true,
-            }));
-        }
-        return [
-            {
-                key: config.key,
-                value,
-                label: this.labelForValue(config, value),
-                removable: true,
-            },
-        ];
-    }
-    labelForValue(config, value) {
-        const option = config.options.find((item) => item.id === value);
-        if (config.chipLabelFormatter)
-            return config.chipLabelFormatter(value, option);
-        if (option)
-            return option.nameEn || option.nameAr || String(option.id);
-        if (value instanceof Date)
-            return value.toLocaleDateString('en-GB');
-        if (config.valueLabelFormatter)
-            return config.valueLabelFormatter(value, option);
-        return String(value);
-    }
-    syncFormBindings(selections, emitCallbacks) {
-        for (const config of this.normalizedConfigs()) {
-            const binding = config.formBinding;
-            if (!binding)
-                continue;
-            const value = selections[config.key] ?? this.emptyValueFor(config);
-            binding.parentForm.get(binding.controlName)?.setValue(value, { emitEvent: false });
-            if (emitCallbacks) {
-                binding.onValueChange?.(value);
-            }
-        }
-    }
-    emptyValueFor(config) {
-        return this.emptyValueByType(config.type);
-    }
-    emptyValueByType(type) {
-        return type === 'multi-select' || type === 'date-range' ? [] : null;
-    }
-    hasValue(value) {
-        if (Array.isArray(value))
-            return value.length > 0;
-        if (typeof value === 'string')
-            return value.trim().length > 0;
-        return value !== null && value !== undefined;
-    }
-    toArray(value) {
-        return Array.isArray(value) ? [...value] : this.hasValue(value) ? [value] : [];
-    }
-    selectionsEqual(a, b) {
-        const keys = Array.from(new Set([...Object.keys(a), ...Object.keys(b)]));
-        return keys.every((key) => this.valuesEqual(a[key], b[key]));
-    }
-    valuesEqual(a, b) {
-        if (Array.isArray(a) && Array.isArray(b))
-            return this.arraysEqual(a, b);
-        if (a instanceof Date && b instanceof Date)
-            return a.getTime() === b.getTime();
-        return a === b;
-    }
-    arraysEqual(a, b) {
-        if (a.length !== b.length)
-            return false;
-        return a.every((value, index) => value === b[index]);
-    }
-    cloneState(state) {
-        return {
-            searchText: state.searchText,
-            selectedIdsLegacy: [...state.selectedIdsLegacy],
-            selectionsMap: this.cloneSelections(state.selectionsMap),
-        };
-    }
-    cloneSelections(values) {
-        return Object.entries(values).reduce((acc, [key, value]) => {
-            acc[key] = this.cloneValue(value);
-            return acc;
-        }, {});
-    }
-    cloneValue(value) {
-        if (Array.isArray(value))
-            return [...value];
-        if (value instanceof Date)
-            return new Date(value.getTime());
-        return value ?? null;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomMainPagesModalFilterContainerComponent, isStandalone: true, selector: "custom-main-pages-modal-filter-container", inputs: { dropdownOptions: { classPropertyName: "dropdownOptions", publicName: "dropdownOptions", isSignal: true, isRequired: false, transformFunction: null }, dropdownSelectedValues: { classPropertyName: "dropdownSelectedValues", publicName: "dropdownSelectedValues", isSignal: true, isRequired: false, transformFunction: null }, dropdownPlaceholder: { classPropertyName: "dropdownPlaceholder", publicName: "dropdownPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, searchInputPlaceholder: { classPropertyName: "searchInputPlaceholder", publicName: "searchInputPlaceholder", isSignal: true, isRequired: false, transformFunction: null }, defaultBehaviorFlag: { classPropertyName: "defaultBehaviorFlag", publicName: "defaultBehaviorFlag", isSignal: true, isRequired: false, transformFunction: null }, configs: { classPropertyName: "configs", publicName: "configs", isSignal: true, isRequired: false, transformFunction: null }, moreConfigs: { classPropertyName: "moreConfigs", publicName: "moreConfigs", isSignal: true, isRequired: false, transformFunction: null }, showMore: { classPropertyName: "showMore", publicName: "showMore", isSignal: true, isRequired: false, transformFunction: null }, validateNumber: { classPropertyName: "validateNumber", publicName: "validateNumber", isSignal: true, isRequired: false, transformFunction: null }, externalFiltersHasValue: { classPropertyName: "externalFiltersHasValue", publicName: "externalFiltersHasValue", isSignal: true, isRequired: false, transformFunction: null }, hasFiltered: { classPropertyName: "hasFiltered", publicName: "hasFiltered", isSignal: true, isRequired: false, transformFunction: null }, modalTitle: { classPropertyName: "modalTitle", publicName: "modalTitle", isSignal: true, isRequired: false, transformFunction: null }, showModalTitleMarker: { classPropertyName: "showModalTitleMarker", publicName: "showModalTitleMarker", isSignal: true, isRequired: false, transformFunction: null }, modalTitleMarkerColor: { classPropertyName: "modalTitleMarkerColor", publicName: "modalTitleMarkerColor", isSignal: true, isRequired: false, transformFunction: null }, customTemplates: { classPropertyName: "customTemplates", publicName: "customTemplates", isSignal: true, isRequired: false, transformFunction: null }, chipsPlacement: { classPropertyName: "chipsPlacement", publicName: "chipsPlacement", isSignal: true, isRequired: false, transformFunction: null }, resultSummary: { classPropertyName: "resultSummary", publicName: "resultSummary", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { filterChange: "filterChange", filterReset: "filterReset" }, ngImport: i0, template: "<section\r\n  class=\"main-filter\"\r\n  [class.main-filter--chips-below-header]=\"chipsPlacement() === 'below-header'\"\r\n  aria-label=\"Page filters\"\r\n>\r\n  <div class=\"main-filter__toolbar\">\r\n    <button\r\n      type=\"button\"\r\n      class=\"smp-btn smp-btn-white main-filter__toggle\"\r\n      (click)=\"openFilters()\"\r\n    >\r\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"auto\"\r\n          viewBox=\"0 0 15 15\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            fill-rule=\"evenodd\"\r\n            clip-rule=\"evenodd\"\r\n            d=\"M2.9491 1.185e-06C2.9621 1.76614e-06 2.97514 2.34729e-06 2.98823 2.34729e-06L11.6759 1.185e-06C12.2538 -2.53689e-05 12.7444 -4.78998e-05 13.1315 0.0527277C13.5412 0.108589 13.933 0.234685 14.2329 0.564823C14.5354 0.897853 14.6182 1.2992 14.6246 1.70946C14.6305 2.0926 14.5693 2.56854 14.4978 3.12346L14.4926 3.16387C14.4674 3.36024 14.4295 3.55017 14.3505 3.74033C14.2703 3.9334 14.1599 4.09783 14.0223 4.26124C13.2875 5.13415 11.9216 6.71168 9.99857 8.14829C9.96747 8.17153 9.92821 8.22661 9.92073 8.30925C9.73389 10.3739 9.56953 11.4663 9.45095 12.0992C9.32273 12.7836 8.8007 13.2573 8.35061 13.5834C8.11507 13.7541 7.86505 13.9078 7.64236 14.0433C7.6245 14.0542 7.60687 14.0649 7.58945 14.0755C7.38143 14.202 7.20458 14.3095 7.05675 14.414C6.65137 14.7007 6.18369 14.6806 5.8262 14.4723C5.48885 14.2758 5.25147 13.9174 5.20347 13.512C5.09813 12.6222 4.90714 10.8802 4.69632 8.30444C4.68956 8.22182 4.67665 8.19784 4.67557 8.19584C4.67484 8.19446 4.67294 8.19097 4.66664 8.18404C4.6596 8.1763 4.64552 8.16259 4.61876 8.14258C2.69964 6.70776 1.33637 5.133 0.60263 4.26121C0.465602 4.0984 0.351907 3.93788 0.270842 3.74267C0.191483 3.55156 0.157644 3.36067 0.13233 3.16387C0.130591 3.15035 0.128857 3.13688 0.127129 3.12345C0.0557165 2.56854 -0.00553308 2.0926 0.000397735 1.70945C0.00674827 1.2992 0.0895642 0.897853 0.392103 0.564823C0.692014 0.234685 1.08377 0.108588 1.49348 0.0527277C1.88056 -4.78998e-05 2.37118 -2.53689e-05 2.9491 1.185e-06ZM1.64546 1.16741C1.35738 1.20669 1.2706 1.27087 1.2248 1.32128C1.18163 1.36881 1.12951 1.45249 1.12526 1.72687C1.12074 2.01909 1.17009 2.41359 1.24814 3.02034C1.26982 3.18895 1.28882 3.26065 1.30982 3.31122C1.32911 3.35768 1.3633 3.41791 1.46335 3.53679C2.18207 4.39073 3.47885 5.88567 5.2924 7.24156C5.43811 7.3505 5.57178 7.48535 5.6685 7.66695C5.76378 7.84587 5.80278 8.03202 5.81757 8.21267C6.02724 10.7744 6.21685 12.5028 6.32067 13.3797C6.32383 13.4065 6.33357 13.4328 6.34856 13.4558C6.36388 13.4793 6.38091 13.4935 6.3925 13.5002C6.39398 13.5011 6.39527 13.5018 6.39639 13.5023C6.39906 13.5009 6.40266 13.4987 6.40724 13.4955C6.58882 13.3671 6.79958 13.239 6.9985 13.1182C7.0183 13.1061 7.03799 13.0942 7.05752 13.0823C7.28162 12.9459 7.49595 12.8134 7.69051 12.6724C8.10062 12.3753 8.30177 12.1238 8.34519 11.8921C8.45506 11.3057 8.61541 10.2511 8.80031 8.20786C8.83419 7.8335 9.01798 7.4766 9.32526 7.24703C11.1425 5.8894 12.4419 4.39178 13.1616 3.53677C13.2489 3.43308 13.2877 3.36623 13.3116 3.3087C13.3367 3.24827 13.3578 3.1683 13.3768 3.02034C13.4549 2.41359 13.5042 2.01909 13.4997 1.72687C13.4955 1.45249 13.4433 1.36881 13.4002 1.32128C13.3544 1.27087 13.2676 1.20669 12.9795 1.16741C12.6775 1.12624 12.2645 1.125 11.6367 1.125H2.98823C2.36045 1.125 1.94745 1.12624 1.64546 1.16741ZM6.39049 13.505C6.39052 13.5049 6.39089 13.5048 6.39158 13.5046L6.39049 13.505Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </span>\r\n      <span>{{ \"GENERAL.FILTER\" | translate }}</span>\r\n      <!-- @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\r\n      } -->\r\n    </button>\r\n  </div>\r\n\r\n  @if (appliedChips().length || hasAnyFilterValue()) {\r\n    <div class=\"main-filter__applied-row\">\r\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\r\n        @for (chip of appliedChips(); track chip.key + \":\" + chip.value) {\r\n          <button\r\n            type=\"button\"\r\n            class=\"main-filter__chip\"\r\n            (click)=\"removeChip(chip)\"\r\n          >\r\n            <span>{{ chip.label }}</span>\r\n            <div class=\"main-filter__chip-remove\" aria-hidden=\"true\">\r\n              <svg\r\n                width=\"auto\"\r\n                height=\"auto\"\r\n                viewBox=\"0 0 9 9\"\r\n                fill=\"none\"\r\n                xmlns=\"http://www.w3.org/2000/svg\"\r\n              >\r\n                <path\r\n                  fill-rule=\"evenodd\"\r\n                  clip-rule=\"evenodd\"\r\n                  d=\"M0.484835 0.484835C0.631282 0.338388 0.868718 0.338388 1.01517 0.484835L4.25 3.71967L7.48484 0.484835C7.63128 0.338388 7.86872 0.338388 8.01516 0.484835C8.16161 0.631282 8.16161 0.868718 8.01516 1.01517L4.78033 4.25L8.01516 7.48484C8.16161 7.63128 8.16161 7.86872 8.01516 8.01516C7.86872 8.16161 7.63128 8.16161 7.48484 8.01516L4.25 4.78033L1.01517 8.01516C0.868718 8.16161 0.631282 8.16161 0.484835 8.01516C0.338388 7.86872 0.338388 7.63128 0.484835 7.48484L3.71967 4.25L0.484835 1.01517C0.338388 0.868718 0.338388 0.631282 0.484835 0.484835Z\"\r\n                  fill=\"currentColor\"\r\n                  stroke=\"currentColor\"\r\n                  stroke-width=\"0.75\"\r\n                  stroke-linecap=\"round\"\r\n                  stroke-linejoin=\"round\"\r\n                />\r\n              </svg>\r\n            </div>\r\n          </button>\r\n        }\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"main-filter__reset-all\"\r\n        [disabled]=\"shouldDisableReset()\"\r\n        (click)=\"resetFilters()\"\r\n      >\r\n        <div class=\"main-filter__reset-all-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 12 12\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M4.55504 2.53995C4.99004 2.40995 5.47004 2.32495 6.00004 2.32495C8.39504 2.32495 10.335 4.26495 10.335 6.65995C10.335 9.05495 8.39504 10.995 6.00004 10.995C3.60504 10.995 1.66504 9.05495 1.66504 6.65995C1.66504 5.76995 1.93504 4.93995 2.39504 4.24995\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.66L5.38006 1\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.65991L5.62006 3.88991\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </div>\r\n     \r\n\r\n          {{ \"GENERAL.RESET\" | translate }}\r\n    \r\n      </button>\r\n    </div>\r\n  }\r\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle{display:inline-flex;align-items:center;justify-content:center;gap:1.2rem;font-size:1.2rem;padding-inline-end:1.5em;padding-inline-start:1.5em}.main-filter__toggle-icon{color:var(--pages-filter-header-filter-icon-color, var(--smp-text-primary));display:inline-flex;width:1.4rem;height:1.4rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:calc(100% - 4rem);border-top:1px solid var(--pages-filter-header-border-color);padding-top:1rem;margin-bottom:2rem}.main-filter__reset-all{align-items:center;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;gap:.8rem;background-color:transparent;color:var(--pages-filter-header-reset-color, var(--tahakom-colors-red-normal));justify-content:center}.main-filter__reset-all-icon{width:1.4rem;height:1.4rem}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:1.2rem}.main-filter__chip{background-color:transparent;color:var(--pages-filter-header-chip-text-color, var(--smp-text-primary));border:1px solid var(--pages-filter-header-chip-border-color, var(--tahakom-colors-neutral-light));max-width:28rem;min-height:2.6rem;padding:0 .8rem;align-items:center;border-radius:var(--pages-filter-header-chip-radius, var(--smp-radius-md));cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem;box-shadow:var(--pages-filter-header-chip-shadow, 0px 1px 3px 0px #1018280D)}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{width:.9em;height:.9em;color:var(--pages-filter-header-chip-remove-color, var(--tahakom-colors-neutral-normal))}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomMainPagesModalFilterContainerComponent, decorators: [{
-            type: Component,
-            args: [{ selector: 'custom-main-pages-modal-filter-container', imports: [TranslateModule], template: "<section\r\n  class=\"main-filter\"\r\n  [class.main-filter--chips-below-header]=\"chipsPlacement() === 'below-header'\"\r\n  aria-label=\"Page filters\"\r\n>\r\n  <div class=\"main-filter__toolbar\">\r\n    <button\r\n      type=\"button\"\r\n      class=\"smp-btn smp-btn-white main-filter__toggle\"\r\n      (click)=\"openFilters()\"\r\n    >\r\n      <span class=\"main-filter__toggle-icon\" aria-hidden=\"true\">\r\n        <svg\r\n          width=\"auto\"\r\n          height=\"auto\"\r\n          viewBox=\"0 0 15 15\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            fill-rule=\"evenodd\"\r\n            clip-rule=\"evenodd\"\r\n            d=\"M2.9491 1.185e-06C2.9621 1.76614e-06 2.97514 2.34729e-06 2.98823 2.34729e-06L11.6759 1.185e-06C12.2538 -2.53689e-05 12.7444 -4.78998e-05 13.1315 0.0527277C13.5412 0.108589 13.933 0.234685 14.2329 0.564823C14.5354 0.897853 14.6182 1.2992 14.6246 1.70946C14.6305 2.0926 14.5693 2.56854 14.4978 3.12346L14.4926 3.16387C14.4674 3.36024 14.4295 3.55017 14.3505 3.74033C14.2703 3.9334 14.1599 4.09783 14.0223 4.26124C13.2875 5.13415 11.9216 6.71168 9.99857 8.14829C9.96747 8.17153 9.92821 8.22661 9.92073 8.30925C9.73389 10.3739 9.56953 11.4663 9.45095 12.0992C9.32273 12.7836 8.8007 13.2573 8.35061 13.5834C8.11507 13.7541 7.86505 13.9078 7.64236 14.0433C7.6245 14.0542 7.60687 14.0649 7.58945 14.0755C7.38143 14.202 7.20458 14.3095 7.05675 14.414C6.65137 14.7007 6.18369 14.6806 5.8262 14.4723C5.48885 14.2758 5.25147 13.9174 5.20347 13.512C5.09813 12.6222 4.90714 10.8802 4.69632 8.30444C4.68956 8.22182 4.67665 8.19784 4.67557 8.19584C4.67484 8.19446 4.67294 8.19097 4.66664 8.18404C4.6596 8.1763 4.64552 8.16259 4.61876 8.14258C2.69964 6.70776 1.33637 5.133 0.60263 4.26121C0.465602 4.0984 0.351907 3.93788 0.270842 3.74267C0.191483 3.55156 0.157644 3.36067 0.13233 3.16387C0.130591 3.15035 0.128857 3.13688 0.127129 3.12345C0.0557165 2.56854 -0.00553308 2.0926 0.000397735 1.70945C0.00674827 1.2992 0.0895642 0.897853 0.392103 0.564823C0.692014 0.234685 1.08377 0.108588 1.49348 0.0527277C1.88056 -4.78998e-05 2.37118 -2.53689e-05 2.9491 1.185e-06ZM1.64546 1.16741C1.35738 1.20669 1.2706 1.27087 1.2248 1.32128C1.18163 1.36881 1.12951 1.45249 1.12526 1.72687C1.12074 2.01909 1.17009 2.41359 1.24814 3.02034C1.26982 3.18895 1.28882 3.26065 1.30982 3.31122C1.32911 3.35768 1.3633 3.41791 1.46335 3.53679C2.18207 4.39073 3.47885 5.88567 5.2924 7.24156C5.43811 7.3505 5.57178 7.48535 5.6685 7.66695C5.76378 7.84587 5.80278 8.03202 5.81757 8.21267C6.02724 10.7744 6.21685 12.5028 6.32067 13.3797C6.32383 13.4065 6.33357 13.4328 6.34856 13.4558C6.36388 13.4793 6.38091 13.4935 6.3925 13.5002C6.39398 13.5011 6.39527 13.5018 6.39639 13.5023C6.39906 13.5009 6.40266 13.4987 6.40724 13.4955C6.58882 13.3671 6.79958 13.239 6.9985 13.1182C7.0183 13.1061 7.03799 13.0942 7.05752 13.0823C7.28162 12.9459 7.49595 12.8134 7.69051 12.6724C8.10062 12.3753 8.30177 12.1238 8.34519 11.8921C8.45506 11.3057 8.61541 10.2511 8.80031 8.20786C8.83419 7.8335 9.01798 7.4766 9.32526 7.24703C11.1425 5.8894 12.4419 4.39178 13.1616 3.53677C13.2489 3.43308 13.2877 3.36623 13.3116 3.3087C13.3367 3.24827 13.3578 3.1683 13.3768 3.02034C13.4549 2.41359 13.5042 2.01909 13.4997 1.72687C13.4955 1.45249 13.4433 1.36881 13.4002 1.32128C13.3544 1.27087 13.2676 1.20669 12.9795 1.16741C12.6775 1.12624 12.2645 1.125 11.6367 1.125H2.98823C2.36045 1.125 1.94745 1.12624 1.64546 1.16741ZM6.39049 13.505C6.39052 13.5049 6.39089 13.5048 6.39158 13.5046L6.39049 13.505Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </span>\r\n      <span>{{ \"GENERAL.FILTER\" | translate }}</span>\r\n      <!-- @if (appliedChips().length) {\r\n        <span class=\"main-filter__count\">{{ appliedChips().length }}</span>\r\n      } -->\r\n    </button>\r\n  </div>\r\n\r\n  @if (appliedChips().length || hasAnyFilterValue()) {\r\n    <div class=\"main-filter__applied-row\">\r\n      <div class=\"main-filter__chips\" aria-live=\"polite\">\r\n        @for (chip of appliedChips(); track chip.key + \":\" + chip.value) {\r\n          <button\r\n            type=\"button\"\r\n            class=\"main-filter__chip\"\r\n            (click)=\"removeChip(chip)\"\r\n          >\r\n            <span>{{ chip.label }}</span>\r\n            <div class=\"main-filter__chip-remove\" aria-hidden=\"true\">\r\n              <svg\r\n                width=\"auto\"\r\n                height=\"auto\"\r\n                viewBox=\"0 0 9 9\"\r\n                fill=\"none\"\r\n                xmlns=\"http://www.w3.org/2000/svg\"\r\n              >\r\n                <path\r\n                  fill-rule=\"evenodd\"\r\n                  clip-rule=\"evenodd\"\r\n                  d=\"M0.484835 0.484835C0.631282 0.338388 0.868718 0.338388 1.01517 0.484835L4.25 3.71967L7.48484 0.484835C7.63128 0.338388 7.86872 0.338388 8.01516 0.484835C8.16161 0.631282 8.16161 0.868718 8.01516 1.01517L4.78033 4.25L8.01516 7.48484C8.16161 7.63128 8.16161 7.86872 8.01516 8.01516C7.86872 8.16161 7.63128 8.16161 7.48484 8.01516L4.25 4.78033L1.01517 8.01516C0.868718 8.16161 0.631282 8.16161 0.484835 8.01516C0.338388 7.86872 0.338388 7.63128 0.484835 7.48484L3.71967 4.25L0.484835 1.01517C0.338388 0.868718 0.338388 0.631282 0.484835 0.484835Z\"\r\n                  fill=\"currentColor\"\r\n                  stroke=\"currentColor\"\r\n                  stroke-width=\"0.75\"\r\n                  stroke-linecap=\"round\"\r\n                  stroke-linejoin=\"round\"\r\n                />\r\n              </svg>\r\n            </div>\r\n          </button>\r\n        }\r\n      </div>\r\n      <button\r\n        type=\"button\"\r\n        class=\"main-filter__reset-all\"\r\n        [disabled]=\"shouldDisableReset()\"\r\n        (click)=\"resetFilters()\"\r\n      >\r\n        <div class=\"main-filter__reset-all-icon\">\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"auto\"\r\n            viewBox=\"0 0 12 12\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M4.55504 2.53995C4.99004 2.40995 5.47004 2.32495 6.00004 2.32495C8.39504 2.32495 10.335 4.26495 10.335 6.65995C10.335 9.05495 8.39504 10.995 6.00004 10.995C3.60504 10.995 1.66504 9.05495 1.66504 6.65995C1.66504 5.76995 1.93504 4.93995 2.39504 4.24995\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.66L5.38006 1\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n            <path\r\n              d=\"M3.93506 2.65991L5.62006 3.88991\"\r\n              stroke=\"currentColor\"\r\n              stroke-width=\"0.75\"\r\n              stroke-linecap=\"round\"\r\n              stroke-linejoin=\"round\"\r\n            />\r\n          </svg>\r\n        </div>\r\n     \r\n\r\n          {{ \"GENERAL.RESET\" | translate }}\r\n    \r\n      </button>\r\n    </div>\r\n  }\r\n\r\n  <ng-content select=\"[extraFilters]\"></ng-content>\r\n  <ng-content select=\"[extraFiltersMore]\"></ng-content>\r\n</section>\r\n", styles: [".main-filter{display:flex;flex-direction:column;font-size:1rem;gap:.8rem;width:100%}.main-filter__toolbar{align-items:center;display:flex;justify-content:flex-end}.main-filter__toggle{display:inline-flex;align-items:center;justify-content:center;gap:1.2rem;font-size:1.2rem;padding-inline-end:1.5em;padding-inline-start:1.5em}.main-filter__toggle-icon{color:var(--pages-filter-header-filter-icon-color, var(--smp-text-primary));display:inline-flex;width:1.4rem;height:1.4rem}.main-filter__applied-row{align-items:center;display:flex;gap:1rem;justify-content:space-between;width:calc(100% - 4rem);border-top:1px solid var(--pages-filter-header-border-color);padding-top:1rem;margin-bottom:2rem}.main-filter__reset-all{align-items:center;cursor:pointer;display:inline-flex;font-size:1.4rem;font-weight:500;gap:.8rem;background-color:transparent;color:var(--pages-filter-header-reset-color, var(--tahakom-colors-red-normal));justify-content:center}.main-filter__reset-all-icon{width:1.4rem;height:1.4rem}.main-filter__reset-all:disabled{cursor:not-allowed;opacity:.45}.main-filter__chips{display:flex;flex:1;flex-wrap:wrap;gap:1.2rem}.main-filter__chip{background-color:transparent;color:var(--pages-filter-header-chip-text-color, var(--smp-text-primary));border:1px solid var(--pages-filter-header-chip-border-color, var(--tahakom-colors-neutral-light));max-width:28rem;min-height:2.6rem;padding:0 .8rem;align-items:center;border-radius:var(--pages-filter-header-chip-radius, var(--smp-radius-md));cursor:pointer;display:inline-flex;font-size:1.2rem;font-weight:500;gap:.8rem;box-shadow:var(--pages-filter-header-chip-shadow, 0px 1px 3px 0px #1018280D)}.main-filter__chip span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main-filter__chip-remove{width:.9em;height:.9em;color:var(--pages-filter-header-chip-remove-color, var(--tahakom-colors-neutral-normal))}\n"] }]
-        }], ctorParameters: () => [] });
 
 class CustomPagesHeaderWithDialogFilterComponent {
     authService;
@@ -7379,29 +7421,57 @@ class CustomSmDynamicTableComponent {
         return (String(val).toLowerCase() === 'deleted' ||
             String(val).toLowerCase() === 'default');
     }
-    showOverflowTip(ev) {
+    showOverflowTip(ev, col) {
+        if (col?.tooltip === false)
+            return;
         const el = ev.currentTarget;
-        const overflow = [el, ...Array.from(el.querySelectorAll('*'))]
-            .some((n) => n.scrollWidth - n.clientWidth > 1);
+        const nodes = [el, ...Array.from(el.querySelectorAll('*'))];
+        const overflowing = nodes.filter((n) => n.scrollWidth - n.clientWidth > 1);
         const text = el.innerText?.trim();
-        if (!overflow || !text)
+        if (!overflowing.length || !text)
             return;
         this.hideOverflowTip();
         if (!document.getElementById('sm-ov-tip-style')) {
             const s = document.createElement('style');
             s.id = 'sm-ov-tip-style';
             s.textContent =
-                '.sm-ov-tip{position:fixed;z-index:10000;pointer-events:none;padding:.8rem 1.2rem;border-radius:.8rem;background:var(--tahakom-colors-neutral-normal-hover,#4b4f55);color:var(--tahakom-colors-base-white,#fff);font-size:1.4rem;max-width:24rem;white-space:pre-wrap;box-shadow:0 .2rem .8rem rgba(0,0,0,.18)}';
+                '.sm-ov-tip{position:fixed;z-index:10000;pointer-events:none;padding:.8rem 1.2rem;border-radius:.8rem;background:var(--tahakom-colors-neutral-normal-hover,#4b4f55);color:var(--tahakom-colors-base-white,#fff);font-size:1.4rem;line-height:1.4;width:max-content;max-width:min(48rem,calc(100vw - 2.4rem));overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;overflow:visible;box-shadow:0 .2rem .8rem rgba(0,0,0,.18)}';
             document.head.appendChild(s);
         }
         const tip = document.createElement('div');
         tip.className = 'sm-ov-tip';
+        const direction = this.tooltipDirection(el, overflowing, text, col);
+        tip.dir = direction;
+        tip.style.direction = direction;
+        tip.style.unicodeBidi = 'isolate';
         tip.textContent = text;
         document.body.appendChild(tip);
         const r = el.getBoundingClientRect();
         tip.style.top = `${r.bottom + 8}px`;
         tip.style.left = `${Math.max(8, r.left)}px`;
         this.overflowTip = tip;
+    }
+    cellDir(col) {
+        if (col.dir)
+            return col.dir;
+        return this.isPhoneColumn(col) ? 'ltr' : null;
+    }
+    tooltipDirection(el, overflowing, text, col) {
+        if (col && this.cellDir(col) === 'ltr')
+            return 'ltr';
+        if (this.isPhoneText(text))
+            return 'ltr';
+        if (overflowing.some((n) => getComputedStyle(n).direction === 'ltr')) {
+            return 'ltr';
+        }
+        return getComputedStyle(el).direction;
+    }
+    isPhoneColumn(col) {
+        return (col.key ?? '').toLowerCase().includes('phone');
+    }
+    isPhoneText(text) {
+        const compact = text.replace(/[\s-]/g, '');
+        return /^\+\d{6,}$/.test(compact);
     }
     hideOverflowTip() {
         this.overflowTip?.remove();
@@ -7423,7 +7493,7 @@ class CustomSmDynamicTableComponent {
         this.hideOverflowTip();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomSmDynamicTableComponent, deps: [{ token: i1$4.DomSanitizer }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomSmDynamicTableComponent, isStandalone: true, selector: "custom-sm-dynamic-table", inputs: { config: { classPropertyName: "config", publicName: "config", isSignal: true, isRequired: false, transformFunction: null }, actionsList: { classPropertyName: "actionsList", publicName: "actionsList", isSignal: false, isRequired: false, transformFunction: null }, hasCheckBox: { classPropertyName: "hasCheckBox", publicName: "hasCheckBox", isSignal: false, isRequired: false, transformFunction: null }, tableMaxHeight: { classPropertyName: "tableMaxHeight", publicName: "tableMaxHeight", isSignal: false, isRequired: false, transformFunction: null }, colTemplates: { classPropertyName: "colTemplates", publicName: "colTemplates", isSignal: false, isRequired: false, transformFunction: null }, emptyStateMsg: { classPropertyName: "emptyStateMsg", publicName: "emptyStateMsg", isSignal: false, isRequired: false, transformFunction: null }, actionTemplate: { classPropertyName: "actionTemplate", publicName: "actionTemplate", isSignal: false, isRequired: false, transformFunction: null }, hasActionTemplate: { classPropertyName: "hasActionTemplate", publicName: "hasActionTemplate", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { sortColumn: "sortColumn", nameClick: "nameClick" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"custom-sm-dynamic-table-tokens-container\">\r\n  @if (config().data.length == 0 && config().dataStatus == \"EMPTY\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\">\r\n      <span class=\"icon-container\">\r\n        <svg\r\n          width=\"155\"\r\n          height=\"135\"\r\n          viewBox=\"0 0 155 135\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M76.7262 113.986C106.95 113.986 131.452 89.4831 131.452 59.1516C131.452 28.8202 106.842 4.3175 76.7262 4.3175C46.5026 4.3175 22 28.8202 22 59.1516C22 89.4831 46.5026 113.986 76.7262 113.986Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M127.459 23.315C129.903 23.315 131.884 21.3336 131.884 18.8895C131.884 16.4453 129.903 14.4639 127.459 14.4639C125.015 14.4639 123.033 16.4453 123.033 18.8895C123.033 21.3336 125.015 23.315 127.459 23.315Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M133.935 6.0447C135.605 6.0447 136.958 4.69155 136.958 3.02235C136.958 1.35315 135.605 0 133.935 0C132.266 0 130.913 1.35315 130.913 3.02235C130.913 4.69155 132.266 6.0447 133.935 6.0447Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M24.4833 23.2072C26.1525 23.2072 27.5056 21.854 27.5056 20.1848C27.5056 18.5156 26.1525 17.1625 24.4833 17.1625C22.8141 17.1625 21.4609 18.5156 21.4609 20.1848C21.4609 21.854 22.8141 23.2072 24.4833 23.2072Z\"\r\n            fill=\"#F1F3F9\"\r\n          />\r\n          <path\r\n            d=\"M6.02505 81.4957C9.12499 81.4957 11.638 78.9827 11.638 75.8827C11.638 72.7828 9.12499 70.2698 6.02505 70.2698C2.92511 70.2698 0.412109 72.7828 0.412109 75.8827C0.412109 78.9827 2.92511 81.4957 6.02505 81.4957Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <g filter=\"url(#filter0_d_736_29025)\">\r\n            <path\r\n              d=\"M41.8973 101.465H127.059C129.839 101.465 132.1 99.2092 132.1 96.4351V22.3001C132.1 19.5259 129.839 17.2705 127.059 17.2705H41.3819C29.5264 27.3211 22 42.3412 22 59.1518C22 76.2047 29.745 91.4151 41.8973 101.465Z\"\r\n              fill=\"url(#paint0_linear_736_29025)\"\r\n            />\r\n          </g>\r\n          <path\r\n            d=\"M119.268 33.2856H51.0771V45.7681H119.268V33.2856Z\"\r\n            fill=\"#D6DCE8\"\r\n          />\r\n          <path\r\n            d=\"M50.7379 45.7451H33.583V85.4497H50.7379V45.7451Z\"\r\n            fill=\"white\"\r\n          />\r\n          <path\r\n            d=\"M119.245 33.2856H50.7383V85.4727H119.245V33.2856Z\"\r\n            fill=\"#F1F3F9\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.361 85.4497H33.583V45.7451H119.267\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 59.3563H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 72.4036H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M68.0283 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M85.1387 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.248 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <defs>\r\n            <filter\r\n              id=\"filter0_d_736_29025\"\r\n              x=\"0\"\r\n              y=\"6.27051\"\r\n              width=\"154.1\"\r\n              height=\"128.194\"\r\n              filterUnits=\"userSpaceOnUse\"\r\n              color-interpolation-filters=\"sRGB\"\r\n            >\r\n              <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\" />\r\n              <feColorMatrix\r\n                in=\"SourceAlpha\"\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\"\r\n                result=\"hardAlpha\"\r\n              />\r\n              <feOffset dy=\"11\" />\r\n              <feGaussianBlur stdDeviation=\"11\" />\r\n              <feColorMatrix\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0.397708 0 0 0 0 0.47749 0 0 0 0 0.575 0 0 0 0.27 0\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in2=\"BackgroundImageFix\"\r\n                result=\"effect1_dropShadow_736_29025\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in=\"SourceGraphic\"\r\n                in2=\"effect1_dropShadow_736_29025\"\r\n                result=\"shape\"\r\n              />\r\n            </filter>\r\n            <linearGradient\r\n              id=\"paint0_linear_736_29025\"\r\n              x1=\"77.0141\"\r\n              y1=\"15.323\"\r\n              x2=\"77.0141\"\r\n              y2=\"102.372\"\r\n              gradientUnits=\"userSpaceOnUse\"\r\n            >\r\n              <stop stop-color=\"#FDFEFF\" />\r\n              <stop offset=\"0.9964\" stop-color=\"#ECF0F5\" />\r\n            </linearGradient>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n\r\n      <div class=\"no-data-msg-container\">\r\n        <h3 class=\"no-data-msg\">{{ \"GENERAL.NO_DATA\" | translate }}</h3>\r\n        @if (emptyStateMsg) {\r\n          <h4 class=\"no-data-sub-msg\">{{ emptyStateMsg | translate }}</h4>\r\n        }\r\n      </div>\r\n    </div>\r\n  } @else if (config().dataStatus == \"LOADING\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\"></div>\r\n  } @else {\r\n    <div class=\"table-container\" [style.max-height]=\"dynamicHeight()\">\r\n      <table class=\"striped-table\">\r\n        <thead>\r\n          <tr>\r\n            @for (column of config().columns; track $index) {\r\n              <th>\r\n                <div class=\"table-header-cell\">\r\n                  {{ column.label | translate }}\r\n                  @if (column.sort) {\r\n                    <div\r\n                      [innerHTML]=\"checkedSortIcon\"\r\n                      class=\"sort-icon\"\r\n                      (click)=\"sortColumn.emit(column.key)\"\r\n                    ></div>\r\n                  }\r\n                </div>\r\n              </th>\r\n            }\r\n\r\n            <th class=\"actions-width\">\r\n              <div class=\"table-header-cell\">\r\n                <!-- {{ \"Actions\" | translate }} -->\r\n              </div>\r\n            </th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          @for (row of config().data; track $index) {\r\n            <tr>\r\n              @for (col of config().columns; track $index) {\r\n                <td>\r\n                  @if (colTemplates[col.key]) {\r\n                    <span\r\n                      [class.disabled-text]=\"isRowInactive(row)\"\r\n                      (mouseenter)=\"showOverflowTip($event)\"\r\n                      (mouseleave)=\"hideOverflowTip()\"\r\n                    >\r\n                      <ng-template\r\n                        *ngTemplateOutlet=\"\r\n                          colTemplates[col.key];\r\n                          context: { $implicit: row }\r\n                        \"\r\n                      >\r\n                      </ng-template>\r\n                    </span>\r\n                  } @else {\r\n                    @if (col.key.toLowerCase().includes(\"status\")) {\r\n                      <custom-status-label\r\n                        [status]=\"getNestedValue(row, col.key)\"\r\n                      ></custom-status-label>\r\n                    } @else {\r\n                      <span\r\n                        [class.disabled-text]=\"isRowInactive(row)\"\r\n                        [ngClass]=\"{\r\n                          'no-wrap': col.key.toLowerCase().includes('date'),\r\n                        }\"\r\n                        (mouseenter)=\"showOverflowTip($event)\"\r\n                        (mouseleave)=\"hideOverflowTip()\"\r\n                      >\r\n                        {{ getNestedValue(row, col.key) }}\r\n                      </span>\r\n                    }\r\n                  }\r\n                </td>\r\n              }\r\n              @if (actionTemplate) {\r\n                @if (hasActionTemplate) {\r\n                  <td>\r\n                    @if (!disableActions(row)) {\r\n                      <div class=\"action-buttons\">\r\n                        <custom-actions-dropdown\r\n                          [expandSide]=\"'RIGHT'\"\r\n                          [context]=\"row\"\r\n                          [horizontalDots]=\"true\"\r\n                          [hasActionTemplate]=\"hasActionTemplate\"\r\n                        >\r\n                          <ng-template\r\n                            *ngTemplateOutlet=\"\r\n                              actionTemplate;\r\n                              context: { $implicit: row }\r\n                            \"\r\n                          >\r\n                          </ng-template\r\n                        ></custom-actions-dropdown>\r\n                      </div>\r\n                    }\r\n                  </td>\r\n                } @else {\r\n                  <td>\r\n                    <div class=\"action-buttons\">\r\n                      <custom-actions-dropdown\r\n                        [expandSide]=\"'RIGHT'\"\r\n                        [actions]=\"actionsList\"\r\n                        [context]=\"row\"\r\n                        [horizontalDots]=\"false\"\r\n                      ></custom-actions-dropdown>\r\n                    </div>\r\n                  </td>\r\n                }\r\n              }\r\n            </tr>\r\n          }\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".custom-sm-dynamic-table-tokens-container{--header-text-color: var(--smp-text-muted, #6c737f);--header-background-color: var(--tahakom-colors-neutral-lightest, #ffffff);--row-separator-color: var(--tahakom-colors-neutral-lightest-active, #f3f4f6);--row-background-color: var(--smp-bg-surface, #ffffff);--row-text-color: var(--smp-text-primary, #121214);--header-font-size: 1.2em;--header-font-weight: 500;--row-font-size: 1.4em;--row-font-weight: 500;--main-text-font-size: 2.4em;--main-text-font-weight: 600;--main-text-color: var(--smp-text-primary, #121214);--sub-text-font-size: 1.4em;--sub-text-font-weight: 400;--sub-text-color: var(--smp-text-primary, #121214);--sub-text-opacity: var(--smp-opacity-disabled, .4);--icon-width: 13.65em;--icon-height: 11.4em}.table-container{overflow-x:auto;width:100%;max-width:100%;overflow-y:auto;position:relative}.striped-table{width:100%;min-width:1000px;background-color:var(--row-background-color)}.striped-table thead{text-align:start;position:sticky;top:0;z-index:2}.striped-table thead tr{height:4.5em}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:var(--header-text-color);text-wrap:nowrap}.striped-table th{padding:.67em 1em;color:var(--header-text-color);background-color:var(--header-background-color);font-size:var(--header-font-size);font-weight:var(--header-font-weight)}.striped-table th:first-child{border-start-start-radius:.33em;border-end-start-radius:.33em}.striped-table th:last-child{border-start-end-radius:.33em;border-end-end-radius:.33em}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.striped-table tbody tr{border-bottom:1px solid var(--row-separator-color);min-height:6em}.striped-table td{padding:.928em .857em;color:var(--row-text-color);font-size:var(--row-font-size);font-weight:var(--row-font-weight)}.striped-table td>span,:host ::ng-deep .striped-table td>span p{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}:host ::ng-deep .striped-table td:has(custom-status-label)>span,:host ::ng-deep .striped-table td:has(.slot-icon-container)>span{overflow:visible;white-space:normal}th:first-child,td:first-child{width:2%}th:last-child,td:last-child{width:2%}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1em}.no-wrap{white-space:nowrap}.disabled-text{opacity:var(--smp-opacity-disabled, .4)}.placeholder-page{min-height:56vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3.3em}.placeholder-page .icon-container{width:var(--icon-width);height:var(--icon-height)}.no-data-msg-container{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.2em}.no-data-msg{font-size:var(--main-text-font-size);font-weight:var(--main-text-font-weight);color:var(--main-text-color);text-align:center}.no-data-sub-msg{font-size:var(--sub-text-font-size);font-weight:var(--sub-text-font-weight);color:var(--sub-text-color);opacity:var(--sub-text-opacity);text-align:center}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: CustomActionsDropdownComponent, selector: "custom-actions-dropdown", inputs: ["actions", "context", "horizontalDots", "hasActionTemplate", "injectedTrigger", "expandSide", "expandDirection"] }, { kind: "component", type: CustomStatusLabelComponent, selector: "custom-status-label", inputs: ["status", "uppercase", "extraText"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomSmDynamicTableComponent, isStandalone: true, selector: "custom-sm-dynamic-table", inputs: { config: { classPropertyName: "config", publicName: "config", isSignal: true, isRequired: false, transformFunction: null }, actionsList: { classPropertyName: "actionsList", publicName: "actionsList", isSignal: false, isRequired: false, transformFunction: null }, hasCheckBox: { classPropertyName: "hasCheckBox", publicName: "hasCheckBox", isSignal: false, isRequired: false, transformFunction: null }, tableMaxHeight: { classPropertyName: "tableMaxHeight", publicName: "tableMaxHeight", isSignal: false, isRequired: false, transformFunction: null }, colTemplates: { classPropertyName: "colTemplates", publicName: "colTemplates", isSignal: false, isRequired: false, transformFunction: null }, emptyStateMsg: { classPropertyName: "emptyStateMsg", publicName: "emptyStateMsg", isSignal: false, isRequired: false, transformFunction: null }, actionTemplate: { classPropertyName: "actionTemplate", publicName: "actionTemplate", isSignal: false, isRequired: false, transformFunction: null }, hasActionTemplate: { classPropertyName: "hasActionTemplate", publicName: "hasActionTemplate", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { sortColumn: "sortColumn", nameClick: "nameClick" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"custom-sm-dynamic-table-tokens-container\">\r\n  @if (config().data.length == 0 && config().dataStatus == \"EMPTY\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\">\r\n      <span class=\"icon-container\">\r\n        <svg\r\n          width=\"155\"\r\n          height=\"135\"\r\n          viewBox=\"0 0 155 135\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M76.7262 113.986C106.95 113.986 131.452 89.4831 131.452 59.1516C131.452 28.8202 106.842 4.3175 76.7262 4.3175C46.5026 4.3175 22 28.8202 22 59.1516C22 89.4831 46.5026 113.986 76.7262 113.986Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M127.459 23.315C129.903 23.315 131.884 21.3336 131.884 18.8895C131.884 16.4453 129.903 14.4639 127.459 14.4639C125.015 14.4639 123.033 16.4453 123.033 18.8895C123.033 21.3336 125.015 23.315 127.459 23.315Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M133.935 6.0447C135.605 6.0447 136.958 4.69155 136.958 3.02235C136.958 1.35315 135.605 0 133.935 0C132.266 0 130.913 1.35315 130.913 3.02235C130.913 4.69155 132.266 6.0447 133.935 6.0447Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M24.4833 23.2072C26.1525 23.2072 27.5056 21.854 27.5056 20.1848C27.5056 18.5156 26.1525 17.1625 24.4833 17.1625C22.8141 17.1625 21.4609 18.5156 21.4609 20.1848C21.4609 21.854 22.8141 23.2072 24.4833 23.2072Z\"\r\n            fill=\"#F1F3F9\"\r\n          />\r\n          <path\r\n            d=\"M6.02505 81.4957C9.12499 81.4957 11.638 78.9827 11.638 75.8827C11.638 72.7828 9.12499 70.2698 6.02505 70.2698C2.92511 70.2698 0.412109 72.7828 0.412109 75.8827C0.412109 78.9827 2.92511 81.4957 6.02505 81.4957Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <g filter=\"url(#filter0_d_736_29025)\">\r\n            <path\r\n              d=\"M41.8973 101.465H127.059C129.839 101.465 132.1 99.2092 132.1 96.4351V22.3001C132.1 19.5259 129.839 17.2705 127.059 17.2705H41.3819C29.5264 27.3211 22 42.3412 22 59.1518C22 76.2047 29.745 91.4151 41.8973 101.465Z\"\r\n              fill=\"url(#paint0_linear_736_29025)\"\r\n            />\r\n          </g>\r\n          <path\r\n            d=\"M119.268 33.2856H51.0771V45.7681H119.268V33.2856Z\"\r\n            fill=\"#D6DCE8\"\r\n          />\r\n          <path\r\n            d=\"M50.7379 45.7451H33.583V85.4497H50.7379V45.7451Z\"\r\n            fill=\"white\"\r\n          />\r\n          <path\r\n            d=\"M119.245 33.2856H50.7383V85.4727H119.245V33.2856Z\"\r\n            fill=\"#F1F3F9\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.361 85.4497H33.583V45.7451H119.267\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 59.3563H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 72.4036H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M68.0283 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M85.1387 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.248 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <defs>\r\n            <filter\r\n              id=\"filter0_d_736_29025\"\r\n              x=\"0\"\r\n              y=\"6.27051\"\r\n              width=\"154.1\"\r\n              height=\"128.194\"\r\n              filterUnits=\"userSpaceOnUse\"\r\n              color-interpolation-filters=\"sRGB\"\r\n            >\r\n              <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\" />\r\n              <feColorMatrix\r\n                in=\"SourceAlpha\"\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\"\r\n                result=\"hardAlpha\"\r\n              />\r\n              <feOffset dy=\"11\" />\r\n              <feGaussianBlur stdDeviation=\"11\" />\r\n              <feColorMatrix\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0.397708 0 0 0 0 0.47749 0 0 0 0 0.575 0 0 0 0.27 0\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in2=\"BackgroundImageFix\"\r\n                result=\"effect1_dropShadow_736_29025\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in=\"SourceGraphic\"\r\n                in2=\"effect1_dropShadow_736_29025\"\r\n                result=\"shape\"\r\n              />\r\n            </filter>\r\n            <linearGradient\r\n              id=\"paint0_linear_736_29025\"\r\n              x1=\"77.0141\"\r\n              y1=\"15.323\"\r\n              x2=\"77.0141\"\r\n              y2=\"102.372\"\r\n              gradientUnits=\"userSpaceOnUse\"\r\n            >\r\n              <stop stop-color=\"#FDFEFF\" />\r\n              <stop offset=\"0.9964\" stop-color=\"#ECF0F5\" />\r\n            </linearGradient>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n\r\n      <div class=\"no-data-msg-container\">\r\n        <h3 class=\"no-data-msg\">{{ \"GENERAL.NO_DATA\" | translate }}</h3>\r\n        @if (emptyStateMsg) {\r\n          <h4 class=\"no-data-sub-msg\">{{ emptyStateMsg | translate }}</h4>\r\n        }\r\n      </div>\r\n    </div>\r\n  } @else if (config().dataStatus == \"LOADING\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\"></div>\r\n  } @else {\r\n    <div class=\"table-container\" [style.max-height]=\"dynamicHeight()\">\r\n      <table class=\"striped-table\">\r\n        <thead>\r\n          <tr>\r\n            @for (column of config().columns; track $index) {\r\n              <th>\r\n                <div class=\"table-header-cell\">\r\n                  {{ column.label | translate }}\r\n                  @if (column.sort) {\r\n                    <div\r\n                      [innerHTML]=\"checkedSortIcon\"\r\n                      class=\"sort-icon\"\r\n                      (click)=\"sortColumn.emit(column.key)\"\r\n                    ></div>\r\n                  }\r\n                </div>\r\n              </th>\r\n            }\r\n\r\n            <th class=\"actions-width\">\r\n              <div class=\"table-header-cell\">\r\n                <!-- {{ \"Actions\" | translate }} -->\r\n              </div>\r\n            </th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          @for (row of config().data; track $index) {\r\n            <tr>\r\n              @for (col of config().columns; track $index) {\r\n                <td>\r\n                  @if (colTemplates[col.key]) {\r\n                    <span\r\n                      [class.disabled-text]=\"isRowInactive(row)\"\r\n                      [attr.dir]=\"cellDir(col)\"\r\n                      (mouseenter)=\"showOverflowTip($event, col)\"\r\n                      (mouseleave)=\"hideOverflowTip()\"\r\n                    >\r\n                      <ng-template\r\n                        *ngTemplateOutlet=\"\r\n                          colTemplates[col.key];\r\n                          context: { $implicit: row }\r\n                        \"\r\n                      >\r\n                      </ng-template>\r\n                    </span>\r\n                  } @else {\r\n                    @if (col.key.toLowerCase().includes(\"status\")) {\r\n                      <custom-status-label\r\n                        [status]=\"getNestedValue(row, col.key)\"\r\n                      ></custom-status-label>\r\n                    } @else {\r\n                      <span\r\n                        [class.disabled-text]=\"isRowInactive(row)\"\r\n                        [attr.dir]=\"cellDir(col)\"\r\n                        [ngClass]=\"{\r\n                          'no-wrap': col.key.toLowerCase().includes('date'),\r\n                        }\"\r\n                        (mouseenter)=\"showOverflowTip($event, col)\"\r\n                        (mouseleave)=\"hideOverflowTip()\"\r\n                      >\r\n                        {{ getNestedValue(row, col.key) }}\r\n                      </span>\r\n                    }\r\n                  }\r\n                </td>\r\n              }\r\n              @if (actionTemplate) {\r\n                @if (hasActionTemplate) {\r\n                  <td>\r\n                    @if (!disableActions(row)) {\r\n                      <div class=\"action-buttons\">\r\n                        <custom-actions-dropdown\r\n                          [expandSide]=\"'RIGHT'\"\r\n                          [context]=\"row\"\r\n                          [horizontalDots]=\"true\"\r\n                          [hasActionTemplate]=\"hasActionTemplate\"\r\n                        >\r\n                          <ng-template\r\n                            *ngTemplateOutlet=\"\r\n                              actionTemplate;\r\n                              context: { $implicit: row }\r\n                            \"\r\n                          >\r\n                          </ng-template\r\n                        ></custom-actions-dropdown>\r\n                      </div>\r\n                    }\r\n                  </td>\r\n                } @else {\r\n                  <td>\r\n                    <div class=\"action-buttons\">\r\n                      <custom-actions-dropdown\r\n                        [expandSide]=\"'RIGHT'\"\r\n                        [actions]=\"actionsList\"\r\n                        [context]=\"row\"\r\n                        [horizontalDots]=\"false\"\r\n                      ></custom-actions-dropdown>\r\n                    </div>\r\n                  </td>\r\n                }\r\n              }\r\n            </tr>\r\n          }\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".custom-sm-dynamic-table-tokens-container{--header-text-color: var(--smp-text-muted, #6c737f);--header-background-color: var(--tahakom-colors-neutral-lightest, #ffffff);--row-separator-color: var(--tahakom-colors-neutral-lightest-active, #f3f4f6);--row-background-color: var(--smp-bg-surface, #ffffff);--row-text-color: var(--smp-text-primary, #121214);--header-font-size: 1.2em;--header-font-weight: 500;--row-font-size: 1.4em;--row-font-weight: 500;--main-text-font-size: 2.4em;--main-text-font-weight: 600;--main-text-color: var(--smp-text-primary, #121214);--sub-text-font-size: 1.4em;--sub-text-font-weight: 400;--sub-text-color: var(--smp-text-primary, #121214);--sub-text-opacity: var(--smp-opacity-disabled, .4);--icon-width: 13.65em;--icon-height: 11.4em}.table-container{overflow-x:auto;width:100%;max-width:100%;overflow-y:auto;position:relative}.striped-table{width:100%;min-width:1000px;background-color:var(--row-background-color)}.striped-table thead{text-align:start;position:sticky;top:0;z-index:2}.striped-table thead tr{height:4.5em}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:var(--header-text-color);text-wrap:nowrap}.striped-table th{padding:.67em 1em;color:var(--header-text-color);background-color:var(--header-background-color);font-size:var(--header-font-size);font-weight:var(--header-font-weight)}.striped-table th:first-child{border-start-start-radius:.33em;border-end-start-radius:.33em}.striped-table th:last-child{border-start-end-radius:.33em;border-end-end-radius:.33em}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.striped-table tbody tr{border-bottom:1px solid var(--row-separator-color);min-height:6em}.striped-table td{padding:.928em .857em;color:var(--row-text-color);font-size:var(--row-font-size);font-weight:var(--row-font-weight)}.striped-table td>span,:host ::ng-deep .striped-table td>span p{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.striped-table td>span[dir=ltr],:host ::ng-deep .striped-table td>span[dir=ltr] p{direction:ltr;unicode-bidi:isolate;text-align:start}:host ::ng-deep .striped-table td:has(custom-status-label)>span,:host ::ng-deep .striped-table td:has(.slot-icon-container)>span{overflow:visible;white-space:normal}th:first-child,td:first-child{width:2%}th:last-child,td:last-child{width:2%}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1em}.no-wrap{white-space:nowrap}.disabled-text{opacity:var(--smp-opacity-disabled, .4)}.placeholder-page{min-height:56vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3.3em}.placeholder-page .icon-container{width:var(--icon-width);height:var(--icon-height)}.no-data-msg-container{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.2em}.no-data-msg{font-size:var(--main-text-font-size);font-weight:var(--main-text-font-weight);color:var(--main-text-color);text-align:center}.no-data-sub-msg{font-size:var(--sub-text-font-size);font-weight:var(--sub-text-font-weight);color:var(--sub-text-color);opacity:var(--sub-text-opacity);text-align:center}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }, { kind: "directive", type: NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: CustomActionsDropdownComponent, selector: "custom-actions-dropdown", inputs: ["actions", "context", "horizontalDots", "hasActionTemplate", "injectedTrigger", "expandSide", "expandDirection"] }, { kind: "component", type: CustomStatusLabelComponent, selector: "custom-status-label", inputs: ["status", "uppercase", "extraText"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomSmDynamicTableComponent, decorators: [{
             type: Component,
@@ -7433,7 +7503,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                         NgTemplateOutlet,
                         CustomActionsDropdownComponent,
                         CustomStatusLabelComponent,
-                    ], template: "<div class=\"custom-sm-dynamic-table-tokens-container\">\r\n  @if (config().data.length == 0 && config().dataStatus == \"EMPTY\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\">\r\n      <span class=\"icon-container\">\r\n        <svg\r\n          width=\"155\"\r\n          height=\"135\"\r\n          viewBox=\"0 0 155 135\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M76.7262 113.986C106.95 113.986 131.452 89.4831 131.452 59.1516C131.452 28.8202 106.842 4.3175 76.7262 4.3175C46.5026 4.3175 22 28.8202 22 59.1516C22 89.4831 46.5026 113.986 76.7262 113.986Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M127.459 23.315C129.903 23.315 131.884 21.3336 131.884 18.8895C131.884 16.4453 129.903 14.4639 127.459 14.4639C125.015 14.4639 123.033 16.4453 123.033 18.8895C123.033 21.3336 125.015 23.315 127.459 23.315Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M133.935 6.0447C135.605 6.0447 136.958 4.69155 136.958 3.02235C136.958 1.35315 135.605 0 133.935 0C132.266 0 130.913 1.35315 130.913 3.02235C130.913 4.69155 132.266 6.0447 133.935 6.0447Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M24.4833 23.2072C26.1525 23.2072 27.5056 21.854 27.5056 20.1848C27.5056 18.5156 26.1525 17.1625 24.4833 17.1625C22.8141 17.1625 21.4609 18.5156 21.4609 20.1848C21.4609 21.854 22.8141 23.2072 24.4833 23.2072Z\"\r\n            fill=\"#F1F3F9\"\r\n          />\r\n          <path\r\n            d=\"M6.02505 81.4957C9.12499 81.4957 11.638 78.9827 11.638 75.8827C11.638 72.7828 9.12499 70.2698 6.02505 70.2698C2.92511 70.2698 0.412109 72.7828 0.412109 75.8827C0.412109 78.9827 2.92511 81.4957 6.02505 81.4957Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <g filter=\"url(#filter0_d_736_29025)\">\r\n            <path\r\n              d=\"M41.8973 101.465H127.059C129.839 101.465 132.1 99.2092 132.1 96.4351V22.3001C132.1 19.5259 129.839 17.2705 127.059 17.2705H41.3819C29.5264 27.3211 22 42.3412 22 59.1518C22 76.2047 29.745 91.4151 41.8973 101.465Z\"\r\n              fill=\"url(#paint0_linear_736_29025)\"\r\n            />\r\n          </g>\r\n          <path\r\n            d=\"M119.268 33.2856H51.0771V45.7681H119.268V33.2856Z\"\r\n            fill=\"#D6DCE8\"\r\n          />\r\n          <path\r\n            d=\"M50.7379 45.7451H33.583V85.4497H50.7379V45.7451Z\"\r\n            fill=\"white\"\r\n          />\r\n          <path\r\n            d=\"M119.245 33.2856H50.7383V85.4727H119.245V33.2856Z\"\r\n            fill=\"#F1F3F9\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.361 85.4497H33.583V45.7451H119.267\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 59.3563H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 72.4036H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M68.0283 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M85.1387 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.248 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <defs>\r\n            <filter\r\n              id=\"filter0_d_736_29025\"\r\n              x=\"0\"\r\n              y=\"6.27051\"\r\n              width=\"154.1\"\r\n              height=\"128.194\"\r\n              filterUnits=\"userSpaceOnUse\"\r\n              color-interpolation-filters=\"sRGB\"\r\n            >\r\n              <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\" />\r\n              <feColorMatrix\r\n                in=\"SourceAlpha\"\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\"\r\n                result=\"hardAlpha\"\r\n              />\r\n              <feOffset dy=\"11\" />\r\n              <feGaussianBlur stdDeviation=\"11\" />\r\n              <feColorMatrix\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0.397708 0 0 0 0 0.47749 0 0 0 0 0.575 0 0 0 0.27 0\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in2=\"BackgroundImageFix\"\r\n                result=\"effect1_dropShadow_736_29025\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in=\"SourceGraphic\"\r\n                in2=\"effect1_dropShadow_736_29025\"\r\n                result=\"shape\"\r\n              />\r\n            </filter>\r\n            <linearGradient\r\n              id=\"paint0_linear_736_29025\"\r\n              x1=\"77.0141\"\r\n              y1=\"15.323\"\r\n              x2=\"77.0141\"\r\n              y2=\"102.372\"\r\n              gradientUnits=\"userSpaceOnUse\"\r\n            >\r\n              <stop stop-color=\"#FDFEFF\" />\r\n              <stop offset=\"0.9964\" stop-color=\"#ECF0F5\" />\r\n            </linearGradient>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n\r\n      <div class=\"no-data-msg-container\">\r\n        <h3 class=\"no-data-msg\">{{ \"GENERAL.NO_DATA\" | translate }}</h3>\r\n        @if (emptyStateMsg) {\r\n          <h4 class=\"no-data-sub-msg\">{{ emptyStateMsg | translate }}</h4>\r\n        }\r\n      </div>\r\n    </div>\r\n  } @else if (config().dataStatus == \"LOADING\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\"></div>\r\n  } @else {\r\n    <div class=\"table-container\" [style.max-height]=\"dynamicHeight()\">\r\n      <table class=\"striped-table\">\r\n        <thead>\r\n          <tr>\r\n            @for (column of config().columns; track $index) {\r\n              <th>\r\n                <div class=\"table-header-cell\">\r\n                  {{ column.label | translate }}\r\n                  @if (column.sort) {\r\n                    <div\r\n                      [innerHTML]=\"checkedSortIcon\"\r\n                      class=\"sort-icon\"\r\n                      (click)=\"sortColumn.emit(column.key)\"\r\n                    ></div>\r\n                  }\r\n                </div>\r\n              </th>\r\n            }\r\n\r\n            <th class=\"actions-width\">\r\n              <div class=\"table-header-cell\">\r\n                <!-- {{ \"Actions\" | translate }} -->\r\n              </div>\r\n            </th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          @for (row of config().data; track $index) {\r\n            <tr>\r\n              @for (col of config().columns; track $index) {\r\n                <td>\r\n                  @if (colTemplates[col.key]) {\r\n                    <span\r\n                      [class.disabled-text]=\"isRowInactive(row)\"\r\n                      (mouseenter)=\"showOverflowTip($event)\"\r\n                      (mouseleave)=\"hideOverflowTip()\"\r\n                    >\r\n                      <ng-template\r\n                        *ngTemplateOutlet=\"\r\n                          colTemplates[col.key];\r\n                          context: { $implicit: row }\r\n                        \"\r\n                      >\r\n                      </ng-template>\r\n                    </span>\r\n                  } @else {\r\n                    @if (col.key.toLowerCase().includes(\"status\")) {\r\n                      <custom-status-label\r\n                        [status]=\"getNestedValue(row, col.key)\"\r\n                      ></custom-status-label>\r\n                    } @else {\r\n                      <span\r\n                        [class.disabled-text]=\"isRowInactive(row)\"\r\n                        [ngClass]=\"{\r\n                          'no-wrap': col.key.toLowerCase().includes('date'),\r\n                        }\"\r\n                        (mouseenter)=\"showOverflowTip($event)\"\r\n                        (mouseleave)=\"hideOverflowTip()\"\r\n                      >\r\n                        {{ getNestedValue(row, col.key) }}\r\n                      </span>\r\n                    }\r\n                  }\r\n                </td>\r\n              }\r\n              @if (actionTemplate) {\r\n                @if (hasActionTemplate) {\r\n                  <td>\r\n                    @if (!disableActions(row)) {\r\n                      <div class=\"action-buttons\">\r\n                        <custom-actions-dropdown\r\n                          [expandSide]=\"'RIGHT'\"\r\n                          [context]=\"row\"\r\n                          [horizontalDots]=\"true\"\r\n                          [hasActionTemplate]=\"hasActionTemplate\"\r\n                        >\r\n                          <ng-template\r\n                            *ngTemplateOutlet=\"\r\n                              actionTemplate;\r\n                              context: { $implicit: row }\r\n                            \"\r\n                          >\r\n                          </ng-template\r\n                        ></custom-actions-dropdown>\r\n                      </div>\r\n                    }\r\n                  </td>\r\n                } @else {\r\n                  <td>\r\n                    <div class=\"action-buttons\">\r\n                      <custom-actions-dropdown\r\n                        [expandSide]=\"'RIGHT'\"\r\n                        [actions]=\"actionsList\"\r\n                        [context]=\"row\"\r\n                        [horizontalDots]=\"false\"\r\n                      ></custom-actions-dropdown>\r\n                    </div>\r\n                  </td>\r\n                }\r\n              }\r\n            </tr>\r\n          }\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".custom-sm-dynamic-table-tokens-container{--header-text-color: var(--smp-text-muted, #6c737f);--header-background-color: var(--tahakom-colors-neutral-lightest, #ffffff);--row-separator-color: var(--tahakom-colors-neutral-lightest-active, #f3f4f6);--row-background-color: var(--smp-bg-surface, #ffffff);--row-text-color: var(--smp-text-primary, #121214);--header-font-size: 1.2em;--header-font-weight: 500;--row-font-size: 1.4em;--row-font-weight: 500;--main-text-font-size: 2.4em;--main-text-font-weight: 600;--main-text-color: var(--smp-text-primary, #121214);--sub-text-font-size: 1.4em;--sub-text-font-weight: 400;--sub-text-color: var(--smp-text-primary, #121214);--sub-text-opacity: var(--smp-opacity-disabled, .4);--icon-width: 13.65em;--icon-height: 11.4em}.table-container{overflow-x:auto;width:100%;max-width:100%;overflow-y:auto;position:relative}.striped-table{width:100%;min-width:1000px;background-color:var(--row-background-color)}.striped-table thead{text-align:start;position:sticky;top:0;z-index:2}.striped-table thead tr{height:4.5em}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:var(--header-text-color);text-wrap:nowrap}.striped-table th{padding:.67em 1em;color:var(--header-text-color);background-color:var(--header-background-color);font-size:var(--header-font-size);font-weight:var(--header-font-weight)}.striped-table th:first-child{border-start-start-radius:.33em;border-end-start-radius:.33em}.striped-table th:last-child{border-start-end-radius:.33em;border-end-end-radius:.33em}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.striped-table tbody tr{border-bottom:1px solid var(--row-separator-color);min-height:6em}.striped-table td{padding:.928em .857em;color:var(--row-text-color);font-size:var(--row-font-size);font-weight:var(--row-font-weight)}.striped-table td>span,:host ::ng-deep .striped-table td>span p{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}:host ::ng-deep .striped-table td:has(custom-status-label)>span,:host ::ng-deep .striped-table td:has(.slot-icon-container)>span{overflow:visible;white-space:normal}th:first-child,td:first-child{width:2%}th:last-child,td:last-child{width:2%}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1em}.no-wrap{white-space:nowrap}.disabled-text{opacity:var(--smp-opacity-disabled, .4)}.placeholder-page{min-height:56vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3.3em}.placeholder-page .icon-container{width:var(--icon-width);height:var(--icon-height)}.no-data-msg-container{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.2em}.no-data-msg{font-size:var(--main-text-font-size);font-weight:var(--main-text-font-weight);color:var(--main-text-color);text-align:center}.no-data-sub-msg{font-size:var(--sub-text-font-size);font-weight:var(--sub-text-font-weight);color:var(--sub-text-color);opacity:var(--sub-text-opacity);text-align:center}\n"] }]
+                    ], template: "<div class=\"custom-sm-dynamic-table-tokens-container\">\r\n  @if (config().data.length == 0 && config().dataStatus == \"EMPTY\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\">\r\n      <span class=\"icon-container\">\r\n        <svg\r\n          width=\"155\"\r\n          height=\"135\"\r\n          viewBox=\"0 0 155 135\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M76.7262 113.986C106.95 113.986 131.452 89.4831 131.452 59.1516C131.452 28.8202 106.842 4.3175 76.7262 4.3175C46.5026 4.3175 22 28.8202 22 59.1516C22 89.4831 46.5026 113.986 76.7262 113.986Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M127.459 23.315C129.903 23.315 131.884 21.3336 131.884 18.8895C131.884 16.4453 129.903 14.4639 127.459 14.4639C125.015 14.4639 123.033 16.4453 123.033 18.8895C123.033 21.3336 125.015 23.315 127.459 23.315Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M133.935 6.0447C135.605 6.0447 136.958 4.69155 136.958 3.02235C136.958 1.35315 135.605 0 133.935 0C132.266 0 130.913 1.35315 130.913 3.02235C130.913 4.69155 132.266 6.0447 133.935 6.0447Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <path\r\n            d=\"M24.4833 23.2072C26.1525 23.2072 27.5056 21.854 27.5056 20.1848C27.5056 18.5156 26.1525 17.1625 24.4833 17.1625C22.8141 17.1625 21.4609 18.5156 21.4609 20.1848C21.4609 21.854 22.8141 23.2072 24.4833 23.2072Z\"\r\n            fill=\"#F1F3F9\"\r\n          />\r\n          <path\r\n            d=\"M6.02505 81.4957C9.12499 81.4957 11.638 78.9827 11.638 75.8827C11.638 72.7828 9.12499 70.2698 6.02505 70.2698C2.92511 70.2698 0.412109 72.7828 0.412109 75.8827C0.412109 78.9827 2.92511 81.4957 6.02505 81.4957Z\"\r\n            fill=\"#EAEEF9\"\r\n          />\r\n          <g filter=\"url(#filter0_d_736_29025)\">\r\n            <path\r\n              d=\"M41.8973 101.465H127.059C129.839 101.465 132.1 99.2092 132.1 96.4351V22.3001C132.1 19.5259 129.839 17.2705 127.059 17.2705H41.3819C29.5264 27.3211 22 42.3412 22 59.1518C22 76.2047 29.745 91.4151 41.8973 101.465Z\"\r\n              fill=\"url(#paint0_linear_736_29025)\"\r\n            />\r\n          </g>\r\n          <path\r\n            d=\"M119.268 33.2856H51.0771V45.7681H119.268V33.2856Z\"\r\n            fill=\"#D6DCE8\"\r\n          />\r\n          <path\r\n            d=\"M50.7379 45.7451H33.583V85.4497H50.7379V45.7451Z\"\r\n            fill=\"white\"\r\n          />\r\n          <path\r\n            d=\"M119.245 33.2856H50.7383V85.4727H119.245V33.2856Z\"\r\n            fill=\"#F1F3F9\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.361 85.4497H33.583V45.7451H119.267\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 59.3563H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M119.267 72.4036H33.583\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M68.0283 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M85.1387 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M102.248 33.2856V85.4502\"\r\n            stroke=\"#D5DDEA\"\r\n            stroke-width=\"2\"\r\n            stroke-miterlimit=\"10\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <defs>\r\n            <filter\r\n              id=\"filter0_d_736_29025\"\r\n              x=\"0\"\r\n              y=\"6.27051\"\r\n              width=\"154.1\"\r\n              height=\"128.194\"\r\n              filterUnits=\"userSpaceOnUse\"\r\n              color-interpolation-filters=\"sRGB\"\r\n            >\r\n              <feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\" />\r\n              <feColorMatrix\r\n                in=\"SourceAlpha\"\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\"\r\n                result=\"hardAlpha\"\r\n              />\r\n              <feOffset dy=\"11\" />\r\n              <feGaussianBlur stdDeviation=\"11\" />\r\n              <feColorMatrix\r\n                type=\"matrix\"\r\n                values=\"0 0 0 0 0.397708 0 0 0 0 0.47749 0 0 0 0 0.575 0 0 0 0.27 0\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in2=\"BackgroundImageFix\"\r\n                result=\"effect1_dropShadow_736_29025\"\r\n              />\r\n              <feBlend\r\n                mode=\"normal\"\r\n                in=\"SourceGraphic\"\r\n                in2=\"effect1_dropShadow_736_29025\"\r\n                result=\"shape\"\r\n              />\r\n            </filter>\r\n            <linearGradient\r\n              id=\"paint0_linear_736_29025\"\r\n              x1=\"77.0141\"\r\n              y1=\"15.323\"\r\n              x2=\"77.0141\"\r\n              y2=\"102.372\"\r\n              gradientUnits=\"userSpaceOnUse\"\r\n            >\r\n              <stop stop-color=\"#FDFEFF\" />\r\n              <stop offset=\"0.9964\" stop-color=\"#ECF0F5\" />\r\n            </linearGradient>\r\n          </defs>\r\n        </svg>\r\n      </span>\r\n\r\n      <div class=\"no-data-msg-container\">\r\n        <h3 class=\"no-data-msg\">{{ \"GENERAL.NO_DATA\" | translate }}</h3>\r\n        @if (emptyStateMsg) {\r\n          <h4 class=\"no-data-sub-msg\">{{ emptyStateMsg | translate }}</h4>\r\n        }\r\n      </div>\r\n    </div>\r\n  } @else if (config().dataStatus == \"LOADING\") {\r\n    <div class=\"placeholder-page\" [style.max-height]=\"dynamicHeight()\"></div>\r\n  } @else {\r\n    <div class=\"table-container\" [style.max-height]=\"dynamicHeight()\">\r\n      <table class=\"striped-table\">\r\n        <thead>\r\n          <tr>\r\n            @for (column of config().columns; track $index) {\r\n              <th>\r\n                <div class=\"table-header-cell\">\r\n                  {{ column.label | translate }}\r\n                  @if (column.sort) {\r\n                    <div\r\n                      [innerHTML]=\"checkedSortIcon\"\r\n                      class=\"sort-icon\"\r\n                      (click)=\"sortColumn.emit(column.key)\"\r\n                    ></div>\r\n                  }\r\n                </div>\r\n              </th>\r\n            }\r\n\r\n            <th class=\"actions-width\">\r\n              <div class=\"table-header-cell\">\r\n                <!-- {{ \"Actions\" | translate }} -->\r\n              </div>\r\n            </th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          @for (row of config().data; track $index) {\r\n            <tr>\r\n              @for (col of config().columns; track $index) {\r\n                <td>\r\n                  @if (colTemplates[col.key]) {\r\n                    <span\r\n                      [class.disabled-text]=\"isRowInactive(row)\"\r\n                      [attr.dir]=\"cellDir(col)\"\r\n                      (mouseenter)=\"showOverflowTip($event, col)\"\r\n                      (mouseleave)=\"hideOverflowTip()\"\r\n                    >\r\n                      <ng-template\r\n                        *ngTemplateOutlet=\"\r\n                          colTemplates[col.key];\r\n                          context: { $implicit: row }\r\n                        \"\r\n                      >\r\n                      </ng-template>\r\n                    </span>\r\n                  } @else {\r\n                    @if (col.key.toLowerCase().includes(\"status\")) {\r\n                      <custom-status-label\r\n                        [status]=\"getNestedValue(row, col.key)\"\r\n                      ></custom-status-label>\r\n                    } @else {\r\n                      <span\r\n                        [class.disabled-text]=\"isRowInactive(row)\"\r\n                        [attr.dir]=\"cellDir(col)\"\r\n                        [ngClass]=\"{\r\n                          'no-wrap': col.key.toLowerCase().includes('date'),\r\n                        }\"\r\n                        (mouseenter)=\"showOverflowTip($event, col)\"\r\n                        (mouseleave)=\"hideOverflowTip()\"\r\n                      >\r\n                        {{ getNestedValue(row, col.key) }}\r\n                      </span>\r\n                    }\r\n                  }\r\n                </td>\r\n              }\r\n              @if (actionTemplate) {\r\n                @if (hasActionTemplate) {\r\n                  <td>\r\n                    @if (!disableActions(row)) {\r\n                      <div class=\"action-buttons\">\r\n                        <custom-actions-dropdown\r\n                          [expandSide]=\"'RIGHT'\"\r\n                          [context]=\"row\"\r\n                          [horizontalDots]=\"true\"\r\n                          [hasActionTemplate]=\"hasActionTemplate\"\r\n                        >\r\n                          <ng-template\r\n                            *ngTemplateOutlet=\"\r\n                              actionTemplate;\r\n                              context: { $implicit: row }\r\n                            \"\r\n                          >\r\n                          </ng-template\r\n                        ></custom-actions-dropdown>\r\n                      </div>\r\n                    }\r\n                  </td>\r\n                } @else {\r\n                  <td>\r\n                    <div class=\"action-buttons\">\r\n                      <custom-actions-dropdown\r\n                        [expandSide]=\"'RIGHT'\"\r\n                        [actions]=\"actionsList\"\r\n                        [context]=\"row\"\r\n                        [horizontalDots]=\"false\"\r\n                      ></custom-actions-dropdown>\r\n                    </div>\r\n                  </td>\r\n                }\r\n              }\r\n            </tr>\r\n          }\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".custom-sm-dynamic-table-tokens-container{--header-text-color: var(--smp-text-muted, #6c737f);--header-background-color: var(--tahakom-colors-neutral-lightest, #ffffff);--row-separator-color: var(--tahakom-colors-neutral-lightest-active, #f3f4f6);--row-background-color: var(--smp-bg-surface, #ffffff);--row-text-color: var(--smp-text-primary, #121214);--header-font-size: 1.2em;--header-font-weight: 500;--row-font-size: 1.4em;--row-font-weight: 500;--main-text-font-size: 2.4em;--main-text-font-weight: 600;--main-text-color: var(--smp-text-primary, #121214);--sub-text-font-size: 1.4em;--sub-text-font-weight: 400;--sub-text-color: var(--smp-text-primary, #121214);--sub-text-opacity: var(--smp-opacity-disabled, .4);--icon-width: 13.65em;--icon-height: 11.4em}.table-container{overflow-x:auto;width:100%;max-width:100%;overflow-y:auto;position:relative}.striped-table{width:100%;min-width:1000px;background-color:var(--row-background-color)}.striped-table thead{text-align:start;position:sticky;top:0;z-index:2}.striped-table thead tr{height:4.5em}.table-header-cell{display:flex;flex-direction:row;justify-content:flex-start;gap:.5em;align-items:center;color:var(--header-text-color);text-wrap:nowrap}.striped-table th{padding:.67em 1em;color:var(--header-text-color);background-color:var(--header-background-color);font-size:var(--header-font-size);font-weight:var(--header-font-weight)}.striped-table th:first-child{border-start-start-radius:.33em;border-end-start-radius:.33em}.striped-table th:last-child{border-start-end-radius:.33em;border-end-end-radius:.33em}.sort-icon{width:1em;height:auto}.sort-icon svg{width:100%!important;height:auto;display:block}.striped-table tbody tr{border-bottom:1px solid var(--row-separator-color);min-height:6em}.striped-table td{padding:.928em .857em;color:var(--row-text-color);font-size:var(--row-font-size);font-weight:var(--row-font-weight)}.striped-table td>span,:host ::ng-deep .striped-table td>span p{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.striped-table td>span[dir=ltr],:host ::ng-deep .striped-table td>span[dir=ltr] p{direction:ltr;unicode-bidi:isolate;text-align:start}:host ::ng-deep .striped-table td:has(custom-status-label)>span,:host ::ng-deep .striped-table td:has(.slot-icon-container)>span{overflow:visible;white-space:normal}th:first-child,td:first-child{width:2%}th:last-child,td:last-child{width:2%}.action-buttons{display:flex;justify-content:space-around;align-items:center;margin-inline-end:1em}.no-wrap{white-space:nowrap}.disabled-text{opacity:var(--smp-opacity-disabled, .4)}.placeholder-page{min-height:56vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3.3em}.placeholder-page .icon-container{width:var(--icon-width);height:var(--icon-height)}.no-data-msg-container{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.2em}.no-data-msg{font-size:var(--main-text-font-size);font-weight:var(--main-text-font-weight);color:var(--main-text-color);text-align:center}.no-data-sub-msg{font-size:var(--sub-text-font-size);font-weight:var(--sub-text-font-weight);color:var(--sub-text-color);opacity:var(--sub-text-opacity);text-align:center}\n"] }]
         }], ctorParameters: () => [{ type: i1$4.DomSanitizer }], propDecorators: { actionsList: [{
                 type: Input
             }], hasCheckBox: [{
@@ -10290,5 +10360,5 @@ const getSaudiTime = () => {
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, someFieldsContainData, tenantAuthGuard, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, someFieldsContainData, tenantAuthGuard, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

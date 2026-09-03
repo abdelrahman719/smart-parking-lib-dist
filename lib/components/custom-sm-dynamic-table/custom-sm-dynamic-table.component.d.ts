@@ -7,6 +7,11 @@ export interface ISmTableColumn {
     label: string;
     sort?: boolean;
     disabled?: boolean;
+    /** Auto-tooltip on clipped text for this column. Defaults to true.
+     *  Set false where the column's own template renders its tooltip. */
+    tooltip?: boolean;
+    /** Force cell and overflow-tooltip direction. Phone columns default to ltr. */
+    dir?: 'ltr' | 'rtl';
 }
 export interface ISmDynmaicTableConfig {
     columns: ISmTableColumn[];
@@ -46,7 +51,11 @@ export declare class CustomSmDynamicTableComponent {
     private findStatusKey;
     isRowInactive(row: any): boolean;
     disableActions(row: any): boolean;
-    showOverflowTip(ev: Event): void;
+    showOverflowTip(ev: Event, col?: ISmTableColumn): void;
+    cellDir(col: ISmTableColumn): 'ltr' | 'rtl' | null;
+    private tooltipDirection;
+    private isPhoneColumn;
+    private isPhoneText;
     hideOverflowTip(): void;
     private updateFactor;
     ngOnDestroy(): void;

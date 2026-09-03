@@ -4,7 +4,7 @@ import type { IDropdownOption, IUserLookup } from '../../../../interfaces/compon
 import type { FilterCustomTemplateContext, FilterSelections, FilterValue, NormalizedFilterConfigItem } from '../custom-main-pages-modal-filter.models';
 import * as i0 from "@angular/core";
 export interface FilterModalCloseResult {
-    action: 'apply';
+    action: 'apply' | 'reset';
     searchText: string;
     values: FilterSelections;
 }

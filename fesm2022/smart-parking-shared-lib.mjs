@@ -6176,84 +6176,321 @@ class CustomColorComponent {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomColorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomColorComponent, isStandalone: true, selector: "custom-color", inputs: { positionClass: "positionClass", title: "title", name: "name", hideNameInput: "hideNameInput", color: "color", enableColors: "enableColors" }, outputs: { onSaveColor: "onSaveColor" }, ngImport: i0, template: "<div style=\"position: relative\">\r\n  <div (click)=\"isOpen = !isOpen\">\r\n    <ng-content></ng-content>\r\n  </div>\r\n\r\n  @if (isOpen) {\r\n  <div [class]=\"'color-container ' + positionClass\">\r\n    <h1 class=\"title\">{{title}}</h1>\r\n    @if(!hideNameInput){\r\n\r\n      <input class=\"color-input\" placeholder=\"Name\" [(ngModel)]=\"name\" />\r\n    }\r\n\r\n\r\n    @if(enableColors){\r\n    <div\r\n      style=\"\r\n        display: flex;\r\n        justify-content: start;\r\n        align-items: center;\r\n        flex-wrap: wrap;\r\n        gap: 2px;\r\n      \"\r\n    >\r\n      @for (item of colorsArray; track $index) {\r\n      <div\r\n        class=\"color-box-wrapper\"\r\n        (click)=\"onColorSelected(item)\"\r\n        [class.selected]=\"color === item\"\r\n      >\r\n        <div class=\"color-box\" [ngStyle]=\"{ 'background-color': item }\"></div>\r\n      </div>\r\n\r\n      }\r\n    </div>\r\n\r\n    }\r\n\r\n    <div\r\n      style=\"\r\n        width: 100%;\r\n        display: flex;\r\n        justify-content: space-between;\r\n        align-items: center;\r\n        gap: 4px;\r\n      \"\r\n    >\r\n      <button class=\"save-button\" (click)=\"onSave()\">Save</button>\r\n\r\n      <button class=\"cancel-button\" (click)=\"onCancel()\">Cancel</button>\r\n    </div>\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".color-container{display:flex;flex-direction:column;align-items:center;justify-content:center;width:230px;min-height:50px;background-color:#fff;border-radius:12px;padding:16px 12px;gap:12px;position:absolute;z-index:999}.title{width:100%;font-size:16px;font-weight:500;color:#000;text-align:start}.color-box{max-width:20px;max-height:20px;min-width:20px;min-height:20px;border-radius:50%;cursor:pointer}.color-box-wrapper{max-width:25px;max-height:25px;min-width:25px;min-height:25px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;border-radius:4px}.color-box-wrapper:hover,.color-box-wrapper.selected{border:1px solid #25c7bc}.save-button{width:100px;height:36px;border-radius:12px;text-align:center;background-color:#25c7bc;color:#fff;font-size:15px;font-weight:500;cursor:pointer}.cancel-button{width:100px;height:36px;border-radius:12px;text-align:center;background-color:#fff;color:#000;font-size:15px;font-weight:500;border:1px solid #d0d0d0;cursor:pointer}.color-input{background-color:#fff;border:1px solid #d0d0d0;height:36px;width:100%;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:500;color:#000}.color-input:focus{outline:none;border-color:#25c7bc}.color-input::placeholder{color:#d0d0d0}.color-input:focus::placeholder{color:#25c7bc}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i1$3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i1$3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }] });
 }
-class CustomModalService {
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomColorComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-color', imports: [NgStyle, FormsModule], template: "<div style=\"position: relative\">\r\n  <div (click)=\"isOpen = !isOpen\">\r\n    <ng-content></ng-content>\r\n  </div>\r\n\r\n  @if (isOpen) {\r\n  <div [class]=\"'color-container ' + positionClass\">\r\n    <h1 class=\"title\">{{title}}</h1>\r\n    @if(!hideNameInput){\r\n\r\n      <input class=\"color-input\" placeholder=\"Name\" [(ngModel)]=\"name\" />\r\n    }\r\n\r\n\r\n    @if(enableColors){\r\n    <div\r\n      style=\"\r\n        display: flex;\r\n        justify-content: start;\r\n        align-items: center;\r\n        flex-wrap: wrap;\r\n        gap: 2px;\r\n      \"\r\n    >\r\n      @for (item of colorsArray; track $index) {\r\n      <div\r\n        class=\"color-box-wrapper\"\r\n        (click)=\"onColorSelected(item)\"\r\n        [class.selected]=\"color === item\"\r\n      >\r\n        <div class=\"color-box\" [ngStyle]=\"{ 'background-color': item }\"></div>\r\n      </div>\r\n\r\n      }\r\n    </div>\r\n\r\n    }\r\n\r\n    <div\r\n      style=\"\r\n        width: 100%;\r\n        display: flex;\r\n        justify-content: space-between;\r\n        align-items: center;\r\n        gap: 4px;\r\n      \"\r\n    >\r\n      <button class=\"save-button\" (click)=\"onSave()\">Save</button>\r\n\r\n      <button class=\"cancel-button\" (click)=\"onCancel()\">Cancel</button>\r\n    </div>\r\n  </div>\r\n  }\r\n</div>\r\n", styles: [".color-container{display:flex;flex-direction:column;align-items:center;justify-content:center;width:230px;min-height:50px;background-color:#fff;border-radius:12px;padding:16px 12px;gap:12px;position:absolute;z-index:999}.title{width:100%;font-size:16px;font-weight:500;color:#000;text-align:start}.color-box{max-width:20px;max-height:20px;min-width:20px;min-height:20px;border-radius:50%;cursor:pointer}.color-box-wrapper{max-width:25px;max-height:25px;min-width:25px;min-height:25px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;border-radius:4px}.color-box-wrapper:hover,.color-box-wrapper.selected{border:1px solid #25c7bc}.save-button{width:100px;height:36px;border-radius:12px;text-align:center;background-color:#25c7bc;color:#fff;font-size:15px;font-weight:500;cursor:pointer}.cancel-button{width:100px;height:36px;border-radius:12px;text-align:center;background-color:#fff;color:#000;font-size:15px;font-weight:500;border:1px solid #d0d0d0;cursor:pointer}.color-input{background-color:#fff;border:1px solid #d0d0d0;height:36px;width:100%;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:500;color:#000}.color-input:focus{outline:none;border-color:#25c7bc}.color-input::placeholder{color:#d0d0d0}.color-input:focus::placeholder{color:#25c7bc}\n"] }]
+        }], propDecorators: { positionClass: [{
+                type: Input,
+                args: [{ required: true }]
+            }], title: [{
+                type: Input,
+                args: [{ required: true }]
+            }], name: [{
+                type: Input
+            }], hideNameInput: [{
+                type: Input
+            }], color: [{
+                type: Input
+            }], enableColors: [{
+                type: Input
+            }], onSaveColor: [{
+                type: Output
+            }] } });
+
+class CustomTooltipComponent {
+    customClass = '';
+    text = '';
+    title = '';
+    delay = 100;
+    position = 'top';
+    template;
+    templateContext;
+    visible = false;
+    timeoutId;
+    show() {
+        this.timeoutId = setTimeout(() => (this.visible = true), this.delay);
+    }
+    hide() {
+        clearTimeout(this.timeoutId);
+        this.visible = false;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTooltipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTooltipComponent, isStandalone: true, selector: "custom-tooltip", inputs: { customClass: "customClass", text: "text", title: "title", delay: "delay", position: "position", template: "template", templateContext: "templateContext" }, host: { listeners: { "mouseenter": "show()", "mouseleave": "hide()" }, properties: { "class.tooltip-host": "true" } }, ngImport: i0, template: "<div class=\"tooltip-wrapper\">\r\n  <ng-content></ng-content>\r\n\r\n  @if (visible) {\r\n    <div class=\"tooltip tooltip-{{position}} {{customClass}}\">\r\n      @if (template) {\r\n        <ng-container *ngTemplateOutlet=\"template; context: templateContext\"></ng-container>\r\n\r\n\r\n\r\n\r\n      } @else {\r\n        <p class=\"tooltipe-title\">\r\n          {{ title }}\r\n\r\n        </p>\r\n        <p class=\"tooltipe-text\">\r\n\r\n          {{ text }}\r\n        </p>\r\n      }\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [":host.tooltip-host{position:relative;display:inline-flex;vertical-align:middle;overflow:visible}.tooltip-wrapper{position:relative;display:inline-block}.tooltip{position:absolute;z-index:9999;padding:.8rem 1.2rem;border-radius:.8rem;background:#4b4f55;color:#fff;font-size:14px;line-height:1.4;width:max-content;max-width:24rem;white-space:normal;pointer-events:none;box-shadow:0 2px 8px #0000002e}.tooltip-top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:8px}.tooltip-top:after{content:\"\";position:absolute;top:100%;left:50%;transform:translate(-50%);border-width:5px;border-style:solid;border-color:#333 transparent transparent transparent;backdrop-filter:blur(4px)}.tooltip-right{left:100%;top:50%;transform:translateY(-50%);margin-left:8px}.tooltip-right:after{content:\"\";position:absolute;right:100%;top:50%;transform:translateY(-50%);border-width:5px;border-style:solid;border-color:transparent #333 transparent transparent}.tooltip-bottom{top:100%;left:50%;transform:translate(-50%);margin-top:8px}.tooltip-bottom-end{top:100%;inset-inline-start:100%}.tooltip-bottom:after{content:\"\";position:absolute;bottom:100%;left:50%;transform:translate(-50%);border-width:5px;border-style:solid;border-color:transparent transparent #333 transparent}.tooltip-left{right:100%;top:50%;transform:translateY(-50%);margin-right:8px}.tooltip-left:after{content:\"\";position:absolute;left:100%;top:50%;transform:translateY(-50%);border-width:5px;border-style:solid;border-color:transparent transparent transparent #333}@keyframes fadeIn{0%{opacity:0;transform:translateY(0)}to{opacity:1;transform:translateY(0)}}.tooltipe-title{font-weight:600;font-size:1.5rem;padding:.3em 0}.tooltipe-text{font-weight:400;font-size:1rem;max-width:23.7rem}\n"], dependencies: [{ kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTooltipComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-tooltip', imports: [NgTemplateOutlet], host: {
+                        '(mouseenter)': 'show()',
+                        '(mouseleave)': 'hide()',
+                        '[class.tooltip-host]': 'true',
+                    }, template: "<div class=\"tooltip-wrapper\">\r\n  <ng-content></ng-content>\r\n\r\n  @if (visible) {\r\n    <div class=\"tooltip tooltip-{{position}} {{customClass}}\">\r\n      @if (template) {\r\n        <ng-container *ngTemplateOutlet=\"template; context: templateContext\"></ng-container>\r\n\r\n\r\n\r\n\r\n      } @else {\r\n        <p class=\"tooltipe-title\">\r\n          {{ title }}\r\n\r\n        </p>\r\n        <p class=\"tooltipe-text\">\r\n\r\n          {{ text }}\r\n        </p>\r\n      }\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [":host.tooltip-host{position:relative;display:inline-flex;vertical-align:middle;overflow:visible}.tooltip-wrapper{position:relative;display:inline-block}.tooltip{position:absolute;z-index:9999;padding:.8rem 1.2rem;border-radius:.8rem;background:#4b4f55;color:#fff;font-size:14px;line-height:1.4;width:max-content;max-width:24rem;white-space:normal;pointer-events:none;box-shadow:0 2px 8px #0000002e}.tooltip-top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:8px}.tooltip-top:after{content:\"\";position:absolute;top:100%;left:50%;transform:translate(-50%);border-width:5px;border-style:solid;border-color:#333 transparent transparent transparent;backdrop-filter:blur(4px)}.tooltip-right{left:100%;top:50%;transform:translateY(-50%);margin-left:8px}.tooltip-right:after{content:\"\";position:absolute;right:100%;top:50%;transform:translateY(-50%);border-width:5px;border-style:solid;border-color:transparent #333 transparent transparent}.tooltip-bottom{top:100%;left:50%;transform:translate(-50%);margin-top:8px}.tooltip-bottom-end{top:100%;inset-inline-start:100%}.tooltip-bottom:after{content:\"\";position:absolute;bottom:100%;left:50%;transform:translate(-50%);border-width:5px;border-style:solid;border-color:transparent transparent #333 transparent}.tooltip-left{right:100%;top:50%;transform:translateY(-50%);margin-right:8px}.tooltip-left:after{content:\"\";position:absolute;left:100%;top:50%;transform:translateY(-50%);border-width:5px;border-style:solid;border-color:transparent transparent transparent #333}@keyframes fadeIn{0%{opacity:0;transform:translateY(0)}to{opacity:1;transform:translateY(0)}}.tooltipe-title{font-weight:600;font-size:1.5rem;padding:.3em 0}.tooltipe-text{font-weight:400;font-size:1rem;max-width:23.7rem}\n"] }]
+        }], propDecorators: { customClass: [{
+                type: Input
+            }], text: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], delay: [{
+                type: Input
+            }], position: [{
+                type: Input
+            }], template: [{
+                type: Input
+            }], templateContext: [{
+                type: Input
+            }] } });
+
+class CustomRadioComponentComponent {
+    radioClass = '';
+    name = '';
+    value;
+    label = '';
+    disabled = false;
+    // Changed from checked to model
+    model;
+    modelChange = new EventEmitter();
+    get isChecked() {
+        return this.model === this.value;
+    }
+    onInputChange() {
+        if (this.disabled)
+            return;
+        this.modelChange.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomRadioComponentComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomRadioComponentComponent, isStandalone: true, selector: "custom-radio-component", inputs: { radioClass: "radioClass", name: "name", value: "value", label: "label", disabled: "disabled", model: "model" }, outputs: { modelChange: "modelChange" }, ngImport: i0, template: "<label class=\"custom-radio-container\">\r\n  <input\r\n    type=\"radio\"\r\n    [name]=\"name\"\r\n    [value]=\"value\"\r\n    [class]=\"'custom-radio ' + radioClass\"\r\n    [checked]=\"isChecked\"\r\n    [disabled]=\"disabled\"\r\n    (change)=\"onInputChange()\"\r\n  />\r\n  @if (label) {\r\n    <span class=\"radio-label\">{{ label }}</span>\r\n  }\r\n</label>\r\n", styles: [".custom-radio{appearance:none;width:20px;height:20px;border:2px solid #d0d0d0;border-radius:50%;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease}.custom-radio-container{display:flex;align-items:center;gap:4px;cursor:pointer}.custom-radio:checked{border-color:#25c7bc}.custom-radio:checked:after{content:\"\";position:absolute;top:50%;left:50%;width:8px;height:8px;background:#25c7bc;border-radius:50%;transform:translate(-50%,-50%)}.custom-radio:focus{box-shadow:0 0 0 2px #25c7bc33}.custom-radio:disabled{border-color:#d0d0d0;cursor:not-allowed}.custom-radio:disabled:after{background:#d0d0d0}.custom-radio:disabled+.radio-label{color:#fff;font-weight:400;font-size:14px;cursor:not-allowed}.radio-label{color:#fff;font-weight:400;font-size:14px;cursor:pointer;-webkit-user-select:none;user-select:none}\n"], dependencies: [{ kind: "ngmodule", type: FormsModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomRadioComponentComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-radio-component', imports: [FormsModule], template: "<label class=\"custom-radio-container\">\r\n  <input\r\n    type=\"radio\"\r\n    [name]=\"name\"\r\n    [value]=\"value\"\r\n    [class]=\"'custom-radio ' + radioClass\"\r\n    [checked]=\"isChecked\"\r\n    [disabled]=\"disabled\"\r\n    (change)=\"onInputChange()\"\r\n  />\r\n  @if (label) {\r\n    <span class=\"radio-label\">{{ label }}</span>\r\n  }\r\n</label>\r\n", styles: [".custom-radio{appearance:none;width:20px;height:20px;border:2px solid #d0d0d0;border-radius:50%;position:relative;outline:none;cursor:pointer;transition:border-color .3s ease}.custom-radio-container{display:flex;align-items:center;gap:4px;cursor:pointer}.custom-radio:checked{border-color:#25c7bc}.custom-radio:checked:after{content:\"\";position:absolute;top:50%;left:50%;width:8px;height:8px;background:#25c7bc;border-radius:50%;transform:translate(-50%,-50%)}.custom-radio:focus{box-shadow:0 0 0 2px #25c7bc33}.custom-radio:disabled{border-color:#d0d0d0;cursor:not-allowed}.custom-radio:disabled:after{background:#d0d0d0}.custom-radio:disabled+.radio-label{color:#fff;font-weight:400;font-size:14px;cursor:not-allowed}.radio-label{color:#fff;font-weight:400;font-size:14px;cursor:pointer;-webkit-user-select:none;user-select:none}\n"] }]
+        }], propDecorators: { radioClass: [{
+                type: Input
+            }], name: [{
+                type: Input,
+                args: [{ required: true }]
+            }], value: [{
+                type: Input,
+                args: [{ required: true }]
+            }], label: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], model: [{
+                type: Input
+            }], modelChange: [{
+                type: Output
+            }] } });
+
+class CustomActionsDropdownComponent {
+    sanitizer;
+    renderer;
+    elRef;
     translate;
-    applicationRef = inject(ApplicationRef);
-    environmentInjector = inject(EnvironmentInjector);
-    /** Open any component inside the modal (child must be standalone or resolvable). */
-    constructor(translate) {
+    actions = [];
+    context;
+    horizontalDots = false;
+    hasActionTemplate = false;
+    injectedTrigger = false;
+    expandSide = 'RIGHT';
+    expandDirection = 'BOTTOM';
+    actionsPopup;
+    triggerWrapper;
+    actionDropdownContainer;
+    triggerTemplate = null;
+    isAppendedToBody = false;
+    removeGlobalPositionListeners = [];
+    positionFrameId = null;
+    isOpen = signal(false);
+    showAnimation = signal(false);
+    constructor(sanitizer, renderer, elRef, translate) {
+        this.sanitizer = sanitizer;
+        this.renderer = renderer;
+        this.elRef = elRef;
         this.translate = translate;
-    }
-    async openComponentInModal(childComponent, options = {}) {
-        const hostElement = this.createHostElement();
-        const modalRef = this.createModal(hostElement);
-        this.applyModalInputs(modalRef.instance, options);
-        // Render the *ngIf branch so the anchor exists
-        modalRef.instance.open();
-        modalRef.changeDetectorRef.detectChanges();
-        // Wait until the ViewChild anchor is resolved
-        await firstValueFrom(modalRef.instance.contentReady$);
-        // Attach the child
-        const modalRefApi = { close: (result) => modalRef.instance.close(result) };
-        const childInjector = Injector.create({
-            providers: [{ provide: MODAL_REF, useValue: modalRefApi }],
-            parent: modalRef.instance.contentInjector,
+        this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => {
+            // If dropdown is open, reposition
+            if (this.isOpen()) {
+                this.updatePosition();
+            }
         });
-        const childRef = modalRef.instance.attachContent(childComponent, childInjector);
-        // Resolve when closed, then cleanup
-        const afterClosed = this.waitForClose(modalRef).finally(() => this.destroyModal(modalRef, hostElement));
-        return {
-            modalComponentRef: modalRef,
-            childComponentRef: childRef,
-            close: (result) => modalRef.instance.close(result),
-            afterClosed,
-        };
     }
-    // ——— helpers ———
-    createHostElement() {
-        const host = document.createElement('div');
-        host.classList.add('modal-host'); // styling hook (z-index, fixed pos, etc.)
-        document.body.appendChild(host);
-        return host;
+    sanitizeSvg(svg) {
+        return this.sanitizer.bypassSecurityTrustHtml(svg);
     }
-    createModal(host) {
-        const ref = createComponent(CustomModalComponent, {
-            environmentInjector: this.environmentInjector,
-            hostElement: host,
+    openDropdown() {
+        this.isOpen.set(true);
+        this.showAnimation.set(false);
+        setTimeout(() => this.portalToBody(), 0);
+    }
+    closeDropdown() {
+        this.showAnimation.set(false);
+        setTimeout(() => {
+            this.isOpen.set(false);
+            this.detachFromBody();
+        }, 150); // Match CSS transition duration
+    }
+    portalToBody() {
+        if (!this.actionsPopup || this.isAppendedToBody)
+            return;
+        const dropdownEl = this.actionsPopup.nativeElement;
+        this.renderer.setStyle(dropdownEl, 'position', 'fixed');
+        this.renderer.setStyle(dropdownEl, 'top', '-9999px');
+        this.renderer.setStyle(dropdownEl, 'left', '-9999px');
+        this.renderer.setStyle(dropdownEl, 'visibility', 'hidden');
+        this.renderer.appendChild(document.body, dropdownEl);
+        this.isAppendedToBody = true;
+        this.bindGlobalPositionListeners();
+        requestAnimationFrame(() => {
+            this.updatePosition();
+            requestAnimationFrame(() => {
+                this.renderer.removeStyle(dropdownEl, 'visibility');
+                this.showAnimation.set(true);
+            });
         });
-        this.applicationRef.attachView(ref.hostView);
-        return ref;
     }
-    destroyModal(ref, host) {
-        this.applicationRef.detachView(ref.hostView);
-        ref.destroy();
-        host.remove();
-    }
-    applyModalInputs(modal, o) {
-        if (o.title) {
-            modal.modalTitle = this.translate.instant(o.title);
+    updatePosition() {
+        if (!this.actionsPopup || !this.triggerWrapper || !this.actionDropdownContainer)
+            return;
+        const dropdownEl = this.actionsPopup.nativeElement;
+        const triggerEl = this.triggerWrapper.nativeElement;
+        const containerEl = this.actionDropdownContainer.nativeElement;
+        const triggerRect = triggerEl.getBoundingClientRect();
+        const containerRect = containerEl.getBoundingClientRect();
+        const dropdownHeight = dropdownEl.offsetHeight;
+        const viewportHeight = window.innerHeight;
+        // Detect document direction
+        const isRTL = document.dir === 'rtl' || document.documentElement.dir === 'rtl';
+        let top;
+        let left;
+        let transformOrigin;
+        let actualDirection = this.expandDirection;
+        /** ------------------------
+         *  Vertical positioning
+         * ------------------------ */
+        if (this.expandDirection === 'BOTTOM') {
+            const spaceBelow = viewportHeight - containerRect.bottom;
+            if (spaceBelow >= dropdownHeight + 16) {
+                top = containerRect.bottom + 8;
+                transformOrigin = 'top';
+            }
+            else {
+                top = containerRect.top - dropdownHeight - 8;
+                transformOrigin = 'bottom';
+                actualDirection = 'TOP';
+            }
         }
         else {
-            modal.modalTitle;
+            const spaceAbove = containerRect.top;
+            if (spaceAbove >= dropdownHeight + 16) {
+                top = containerRect.top - dropdownHeight - 8;
+                transformOrigin = 'bottom';
+            }
+            else {
+                top = containerRect.bottom + 8;
+                transformOrigin = 'top';
+                actualDirection = 'BOTTOM';
+            }
         }
-        modal.modalIcon = o.iconSrc ?? modal.modalIcon;
-        modal.modalIconBackground = o.iconBackground ?? modal.modalIconBackground;
-        modal.modalIconColor = o.iconColor ?? modal.modalIconColor;
-        modal.showTitleMarker = o.showTitleMarker ?? modal.showTitleMarker;
-        modal.modalTitleMarkerColor = o.titleMarkerColor ?? modal.modalTitleMarkerColor;
-        modal.showHeader = o.showHeader ?? true;
-        modal.overlayClickClose = o.overlayClickClose ?? modal.overlayClickClose;
+        /** ------------------------
+         *  Horizontal positioning (RTL-aware)
+         * ------------------------ */
+        const expandToRight = (this.expandSide === 'RIGHT' && !isRTL) || (this.expandSide === 'LEFT' && isRTL);
+        if (expandToRight) {
+            left = triggerRect.right;
+            transformOrigin += ' right';
+            this.renderer.setStyle(dropdownEl, 'translate', '-100% 0');
+        }
+        else {
+            left = triggerRect.left;
+            transformOrigin += ' left';
+            this.renderer.removeStyle(dropdownEl, 'translate');
+        }
+        /** ------------------------
+         *  Apply computed styles
+         * ------------------------ */
+        this.renderer.setStyle(dropdownEl, 'position', 'fixed');
+        this.renderer.setStyle(dropdownEl, 'top', `${top}px`);
+        this.renderer.setStyle(dropdownEl, 'left', `${left}px`);
+        this.renderer.setStyle(dropdownEl, 'z-index', '9999999');
+        this.renderer.setStyle(dropdownEl, 'transform-origin', transformOrigin);
+        // console.log('Direction:', this.expandDirection, '→ Actual:', actualDirection, '| RTL:', isRTL);
     }
-    async waitForClose(ref) {
-        return firstValueFrom(ref.instance.closed);
+    detachFromBody() {
+        this.unbindGlobalPositionListeners();
+        if (!this.actionsPopup || !this.isAppendedToBody)
+            return;
+        const dropdownEl = this.actionsPopup.nativeElement;
+        this.renderer.removeChild(document.body, dropdownEl);
+        this.isAppendedToBody = false;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, providedIn: 'root' });
+    bindGlobalPositionListeners() {
+        this.unbindGlobalPositionListeners();
+        const requestPositionUpdate = () => {
+            if (!this.isOpen())
+                return;
+            if (this.positionFrameId !== null)
+                return;
+            this.positionFrameId = requestAnimationFrame(() => {
+                this.positionFrameId = null;
+                this.updatePosition();
+            });
+        };
+        window.addEventListener('scroll', requestPositionUpdate, true);
+        window.addEventListener('resize', requestPositionUpdate);
+        this.removeGlobalPositionListeners = [
+            () => window.removeEventListener('scroll', requestPositionUpdate, true),
+            () => window.removeEventListener('resize', requestPositionUpdate),
+        ];
+    }
+    unbindGlobalPositionListeners() {
+        this.removeGlobalPositionListeners.forEach((removeListener) => removeListener());
+        this.removeGlobalPositionListeners = [];
+        if (this.positionFrameId !== null) {
+            cancelAnimationFrame(this.positionFrameId);
+            this.positionFrameId = null;
+        }
+    }
+    onClickAction(action, event) {
+        event.stopPropagation();
+        action.callback(this.context);
+        this.closeDropdown();
+    }
+    ngOnDestroy() {
+        this.detachFromBody();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomActionsDropdownComponent, deps: [{ token: i1$4.DomSanitizer }, { token: i0.Renderer2 }, { token: i0.ElementRef }, { token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomActionsDropdownComponent, isStandalone: true, selector: "custom-actions-dropdown", inputs: { actions: "actions", context: "context", horizontalDots: "horizontalDots", hasActionTemplate: "hasActionTemplate", injectedTrigger: "injectedTrigger", expandSide: "expandSide", expandDirection: "expandDirection" }, queries: [{ propertyName: "triggerTemplate", first: true, predicate: ["customTrigger"], descendants: true }], viewQueries: [{ propertyName: "actionsPopup", first: true, predicate: ["actionsPopup"], descendants: true }, { propertyName: "triggerWrapper", first: true, predicate: ["triggerWrapper"], descendants: true }, { propertyName: "actionDropdownContainer", first: true, predicate: ["actionDropdownContainer"], descendants: true, read: ElementRef }], ngImport: i0, template: "<div class=\"custom-action-dropdown-token-container\">\r\n  <div class=\"action-dropdown\" #actionDropdownContainer>\r\n    @if (horizontalDots) {\r\n      <div class=\"horizontal-dots\" (click)=\"openDropdown()\" #triggerWrapper>\r\n        <svg\r\n          width=\"20\"\r\n          height=\"5\"\r\n          viewBox=\"0 0 20 5\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    } @else {\r\n      <div\r\n        class=\"mutlti-action-icon icon-wrapper\"\r\n        (click)=\"openDropdown()\"\r\n        #triggerWrapper\r\n      >\r\n        @if (injectedTrigger) {\r\n          <div>\r\n            <ng-container [ngTemplateOutlet]=\"triggerTemplate\"></ng-container>\r\n          </div>\r\n        } @else {\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"16\"\r\n            viewBox=\"0 0 4 16\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M1.99292 12.75C2.68328 12.75 3.24292 13.3096 3.24292 14C3.24292 14.6904 2.68328 15.25 1.99292 15.25H1.98413C1.29377 15.25 0.734131 14.6904 0.734131 14C0.734131 13.3096 1.29377 12.75 1.98413 12.75H1.99292ZM2.00073 6.75C2.69109 6.75 3.25073 7.30964 3.25073 8C3.25073 8.69036 2.69109 9.25 2.00073 9.25H1.99194C1.30159 9.25 0.741943 8.69036 0.741943 8C0.741943 7.30964 1.30159 6.75 1.99194 6.75H2.00073ZM2.00854 0.75C2.6989 0.75 3.25854 1.30964 3.25854 2C3.25854 2.69036 2.6989 3.25 2.00854 3.25H1.99976C1.3094 3.25 0.749756 2.69036 0.749756 2C0.749756 1.30964 1.3094 0.75 1.99976 0.75H2.00854Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        }\r\n      </div>\r\n    }\r\n    @if (isOpen() && actions.length > 0) {\r\n      <div\r\n        #actionsPopup\r\n        [clickOutside]=\"actionsPopup\"\r\n        (clickOutsideEmitter)=\"closeDropdown()\"\r\n        class=\"dropdown-menu\"\r\n        [class.show]=\"showAnimation()\"\r\n      >\r\n        <ul>\r\n          @for (action of actions; track $index) {\r\n            <li class=\"dropdown-item\" (click)=\"onClickAction(action, $event)\">\r\n              @if (action.icon) {\r\n                <span\r\n                  class=\"action-icon-inline\"\r\n                  [innerHTML]=\"sanitizeSvg(action.icon)\"\r\n                ></span>\r\n              }\r\n              <p class=\"action-label\">{{ action.label }}</p>\r\n            </li>\r\n          }\r\n        </ul>\r\n      </div>\r\n    }\r\n    @if (isOpen() && hasActionTemplate) {\r\n      <div\r\n        #actionsPopup\r\n        [clickOutside]=\"actionsPopup\"\r\n        (clickOutsideEmitter)=\"closeDropdown()\"\r\n        class=\"dropdown-menu\"\r\n        (click)=\"closeDropdown()\"\r\n        [class.show]=\"showAnimation()\"\r\n      >\r\n        <ng-content />\r\n      </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".custom-action-dropdown-token-container{--dots-color: var(--tahakom-colors-neutral-normal-hover, #4d5761)}.action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%;cursor:pointer;color:var(--dots-color)}.icon-wrapper{width:.3em;height:auto;color:var(--dots-color)}.icon-wrapper svg{width:100%!important;height:auto;display:block}.dropdown-menu{--container-shadow: 4px 0px 14px 0px #1f1f1f1f;--container-border-radius: .8em;--container-padding: .8em;--container-background-color: var(--smp-bg-surface, #ffffff);--container-text-color: var(--tahakom-colors-base-black, #121214);--item-hover-background-color: var( --tahakom-colors-neutral-lightest-active, #f3f4f6 );background-color:var(--container-background-color, #ffffff);border-radius:var(--container-border-radius, .8em);z-index:9999999;padding:.25em 0;box-shadow:var(--container-shadow, 4px 0px 14px 0px #1f1f1f1f);opacity:0;visibility:hidden;scale:.95 .3;transition:opacity .18s ease,scale .18s cubic-bezier(.16,1,.3,1),visibility 0s .18s;pointer-events:none;position:fixed;top:-9999px;left:-9999px}.dropdown-menu.show{opacity:1;visibility:visible;scale:1 1;transition:opacity .18s ease,scale .18s cubic-bezier(.16,1,.3,1),visibility 0s 0s;pointer-events:auto}.dropdown-item{display:flex;align-items:center;padding:.5em var(--container-padding, .8em);font-size:.8em;cursor:pointer;transition:background-color .2s ease;color:var(--container-text-color, #121214);background-color:var(--container-background-color, #ffffff);gap:.3em}.dropdown-item:hover{background-color:var(--item-hover-background-color, #f3f4f6)}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.action-label{text-wrap:nowrap}\n"], dependencies: [{ kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }, { kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomModalService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomActionsDropdownComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-actions-dropdown', imports: [ClickOutsideDirective, NgTemplateOutlet], template: "<div class=\"custom-action-dropdown-token-container\">\r\n  <div class=\"action-dropdown\" #actionDropdownContainer>\r\n    @if (horizontalDots) {\r\n      <div class=\"horizontal-dots\" (click)=\"openDropdown()\" #triggerWrapper>\r\n        <svg\r\n          width=\"20\"\r\n          height=\"5\"\r\n          viewBox=\"0 0 20 5\"\r\n          fill=\"none\"\r\n          xmlns=\"http://www.w3.org/2000/svg\"\r\n        >\r\n          <path\r\n            d=\"M19.1616 2.70166C19.1616 1.60166 18.2455 0.70166 17.1257 0.70166C16.0059 0.70166 15.0898 1.60166 15.0898 2.70166C15.0898 3.80166 16.0059 4.70166 17.1257 4.70166C18.2455 4.70166 19.1616 3.80166 19.1616 2.70166ZM4.91012 2.70166C4.91012 1.60166 3.99396 0.701661 2.8742 0.701661C1.75444 0.701661 0.838268 1.60166 0.838268 2.70166C0.838268 3.80166 1.75444 4.70166 2.8742 4.70166C3.99396 4.70166 4.91012 3.80166 4.91012 2.70166ZM12.0359 2.70166C12.0359 1.60166 11.1197 0.701661 9.99994 0.701661C8.88018 0.701661 7.96402 1.60166 7.96402 2.70166C7.96402 3.80166 8.88018 4.70166 9.99994 4.70166C11.1197 4.70166 12.0359 3.80166 12.0359 2.70166Z\"\r\n            fill=\"currentColor\"\r\n          />\r\n        </svg>\r\n      </div>\r\n    } @else {\r\n      <div\r\n        class=\"mutlti-action-icon icon-wrapper\"\r\n        (click)=\"openDropdown()\"\r\n        #triggerWrapper\r\n      >\r\n        @if (injectedTrigger) {\r\n          <div>\r\n            <ng-container [ngTemplateOutlet]=\"triggerTemplate\"></ng-container>\r\n          </div>\r\n        } @else {\r\n          <svg\r\n            width=\"auto\"\r\n            height=\"16\"\r\n            viewBox=\"0 0 4 16\"\r\n            fill=\"none\"\r\n            xmlns=\"http://www.w3.org/2000/svg\"\r\n          >\r\n            <path\r\n              d=\"M1.99292 12.75C2.68328 12.75 3.24292 13.3096 3.24292 14C3.24292 14.6904 2.68328 15.25 1.99292 15.25H1.98413C1.29377 15.25 0.734131 14.6904 0.734131 14C0.734131 13.3096 1.29377 12.75 1.98413 12.75H1.99292ZM2.00073 6.75C2.69109 6.75 3.25073 7.30964 3.25073 8C3.25073 8.69036 2.69109 9.25 2.00073 9.25H1.99194C1.30159 9.25 0.741943 8.69036 0.741943 8C0.741943 7.30964 1.30159 6.75 1.99194 6.75H2.00073ZM2.00854 0.75C2.6989 0.75 3.25854 1.30964 3.25854 2C3.25854 2.69036 2.6989 3.25 2.00854 3.25H1.99976C1.3094 3.25 0.749756 2.69036 0.749756 2C0.749756 1.30964 1.3094 0.75 1.99976 0.75H2.00854Z\"\r\n              fill=\"currentColor\"\r\n            />\r\n          </svg>\r\n        }\r\n      </div>\r\n    }\r\n    @if (isOpen() && actions.length > 0) {\r\n      <div\r\n        #actionsPopup\r\n        [clickOutside]=\"actionsPopup\"\r\n        (clickOutsideEmitter)=\"closeDropdown()\"\r\n        class=\"dropdown-menu\"\r\n        [class.show]=\"showAnimation()\"\r\n      >\r\n        <ul>\r\n          @for (action of actions; track $index) {\r\n            <li class=\"dropdown-item\" (click)=\"onClickAction(action, $event)\">\r\n              @if (action.icon) {\r\n                <span\r\n                  class=\"action-icon-inline\"\r\n                  [innerHTML]=\"sanitizeSvg(action.icon)\"\r\n                ></span>\r\n              }\r\n              <p class=\"action-label\">{{ action.label }}</p>\r\n            </li>\r\n          }\r\n        </ul>\r\n      </div>\r\n    }\r\n    @if (isOpen() && hasActionTemplate) {\r\n      <div\r\n        #actionsPopup\r\n        [clickOutside]=\"actionsPopup\"\r\n        (clickOutsideEmitter)=\"closeDropdown()\"\r\n        class=\"dropdown-menu\"\r\n        (click)=\"closeDropdown()\"\r\n        [class.show]=\"showAnimation()\"\r\n      >\r\n        <ng-content />\r\n      </div>\r\n    }\r\n  </div>\r\n</div>\r\n", styles: [".custom-action-dropdown-token-container{--dots-color: var(--tahakom-colors-neutral-normal-hover, #4d5761)}.action-dropdown{position:relative}.mutlti-action-icon{width:1.25em;height:1.25em;cursor:pointer}.horizontal-dots{width:1.25em;height:.9375em;opacity:70%;cursor:pointer;color:var(--dots-color)}.icon-wrapper{width:.3em;height:auto;color:var(--dots-color)}.icon-wrapper svg{width:100%!important;height:auto;display:block}.dropdown-menu{--container-shadow: 4px 0px 14px 0px #1f1f1f1f;--container-border-radius: .8em;--container-padding: .8em;--container-background-color: var(--smp-bg-surface, #ffffff);--container-text-color: var(--tahakom-colors-base-black, #121214);--item-hover-background-color: var( --tahakom-colors-neutral-lightest-active, #f3f4f6 );background-color:var(--container-background-color, #ffffff);border-radius:var(--container-border-radius, .8em);z-index:9999999;padding:.25em 0;box-shadow:var(--container-shadow, 4px 0px 14px 0px #1f1f1f1f);opacity:0;visibility:hidden;scale:.95 .3;transition:opacity .18s ease,scale .18s cubic-bezier(.16,1,.3,1),visibility 0s .18s;pointer-events:none;position:fixed;top:-9999px;left:-9999px}.dropdown-menu.show{opacity:1;visibility:visible;scale:1 1;transition:opacity .18s ease,scale .18s cubic-bezier(.16,1,.3,1),visibility 0s 0s;pointer-events:auto}.dropdown-item{display:flex;align-items:center;padding:.5em var(--container-padding, .8em);font-size:.8em;cursor:pointer;transition:background-color .2s ease;color:var(--container-text-color, #121214);background-color:var(--container-background-color, #ffffff);gap:.3em}.dropdown-item:hover{background-color:var(--item-hover-background-color, #f3f4f6)}.action-icon-inline{display:inline-flex;align-items:center;justify-content:center;margin-inline-end:.5em;width:1.2em;height:1.2em}.action-icon-inline svg{width:100%;height:100%;fill:currentColor}.action-label{text-wrap:nowrap}\n"] }]
+        }], ctorParameters: () => [{ type: i1$4.DomSanitizer }, { type: i0.Renderer2 }, { type: i0.ElementRef }, { type: i1$1.TranslateService }], propDecorators: { actions: [{
+                type: Input
+            }], context: [{
+                type: Input
+            }], horizontalDots: [{
+                type: Input
+            }], hasActionTemplate: [{
+                type: Input
+            }], injectedTrigger: [{
+                type: Input
+            }], expandSide: [{
+                type: Input
+            }], expandDirection: [{
+                type: Input
+            }], actionsPopup: [{
+                type: ViewChild,
+                args: ['actionsPopup']
+            }], triggerWrapper: [{
+                type: ViewChild,
+                args: ['triggerWrapper']
+            }], actionDropdownContainer: [{
+                type: ViewChild,
+                args: ['actionDropdownContainer', { read: ElementRef }]
+            }], triggerTemplate: [{
+                type: ContentChild,
+                args: ['customTrigger']
+            }] } });
 
 class CustomFilterDropdownComponent {
     fb;

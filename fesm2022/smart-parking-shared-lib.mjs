@@ -7256,28 +7256,35 @@ const STYLES = {
         border: '#e9e9e9',
         label: 'Default',
     },
+    /* The four violation statuses below come from Figma node 2167-64825.
+       Their exact colours have no --smp-* semantic equivalent, so they name a
+       --tahakom-colors-* primitive directly -- the documented escape hatch
+       (tokens README rule 1). Still theme-aware: .dark-mode redefines the
+       primitives under the same names. */
     new: {
-        color: '#27AE60',
-        bg: '#eaf7f0',
-        border: '#eaf7f0',
+        color: 'var(--tahakom-colors-neutral-dark, #1F2A37)',
+        bg: 'var(--smp-bg-surface-active, #F3F4F6)',
+        border: 'var(--smp-bg-surface-active, #F3F4F6)',
+        dot: 'var(--smp-text-sub-title, #4D5761)',
         label: 'New',
     },
     resolved: {
-        color: '#175cd3',
-        bg: '#eaf7f0',
-        border: '#eaf7f0',
+        color: 'var(--tahakom-colors-primary-s-a-flag-normal-active, #166A45)',
+        bg: 'var(--tahakom-colors-primary-s-a-flag-lightest-hover, #F3FCF6)',
+        border: 'var(--tahakom-colors-primary-s-a-flag-lightest-hover, #F3FCF6)',
+        dot: 'var(--tahakom-colors-primary-s-a-flag-dark, #14573A)',
         label: 'Resolved',
     },
     acknowledged: {
-        color: '#f7cb15',
-        bg: '#fffae8',
-        border: '#fffae8',
+        color: 'var(--tahakom-colors-yellow-dark, #93370C)',
+        bg: 'var(--smp-warning-bg, #FEF0C7)',
+        border: 'var(--smp-warning-bg, #FEF0C7)',
         label: 'Acknowledged',
     },
     falsepositive: {
-        color: '#c32b43',
-        bg: '#f9eaed',
-        border: '#f9eaed',
+        color: 'var(--tahakom-colors-red-dark, #912018)',
+        bg: 'var(--smp-error-bg, #FEE4E2)',
+        border: 'var(--smp-error-bg, #FEE4E2)',
         label: 'False Positive',
     },
     under_maintenance: {
@@ -7331,11 +7338,11 @@ class CustomStatusLabelComponent {
         return STYLES[this.key];
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomStatusLabelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomStatusLabelComponent, isStandalone: true, selector: "custom-status-label", inputs: { status: "status", uppercase: "uppercase", extraText: "extraText" }, ngImport: i0, template: "<div\r\n  class=\"badge\"\r\n  [style.--color]=\"s.color\"\r\n  [style.--background]=\"s.bg\"\r\n  [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n  [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n  [attr.aria-label]=\"s.label\"\r\n>\r\n  <span class=\"circle-icon\"></span>\r\n  <span>\r\n    {{ \"GENERAL.STATUS_LABELS.\" + s.label.toUpperCase() | translate }}\r\n  </span>\r\n  @if (extraText) {\r\n    <span>\r\n      {{ extraText | translate }}\r\n    </span>\r\n  }\r\n</div>\r\n", styles: [".badge{display:inline-flex;align-items:center;justify-content:center;gap:.8rem;font-weight:500;border-radius:99999px;border:.7px solid transparent;padding:.5rem 1.6rem;font-size:1.6rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background)}.circle-icon{width:1rem;height:1rem;background-color:var(--color);border-radius:50%}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomStatusLabelComponent, isStandalone: true, selector: "custom-status-label", inputs: { status: "status", uppercase: "uppercase", extraText: "extraText" }, ngImport: i0, template: "<div\r\n  class=\"badge\"\r\n  [style.--color]=\"s.color\"\r\n  [style.--background]=\"s.bg\"\r\n  [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n  [style.--dot]=\"s.dot ?? s.color\"\r\n  [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n  [attr.aria-label]=\"s.label\"\r\n>\r\n  <span class=\"circle-icon\"></span>\r\n  <span>\r\n    {{ \"GENERAL.STATUS_LABELS.\" + s.label.toUpperCase() | translate }}\r\n  </span>\r\n  @if (extraText) {\r\n    <span>\r\n      {{ extraText | translate }}\r\n    </span>\r\n  }\r\n</div>\r\n", styles: [".badge{display:inline-flex;align-items:center;justify-content:center;gap:.8rem;font-weight:500;border-radius:99999px;border:.7px solid transparent;padding:.5rem 1.6rem;font-size:1.6rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background)}.circle-icon{width:1rem;height:1rem;background-color:var(--color);border-radius:50%}\n"], dependencies: [{ kind: "ngmodule", type: TranslateModule }, { kind: "pipe", type: i1$1.TranslatePipe, name: "translate" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomStatusLabelComponent, decorators: [{
             type: Component,
-            args: [{ selector: 'custom-status-label', imports: [TranslateModule], template: "<div\r\n  class=\"badge\"\r\n  [style.--color]=\"s.color\"\r\n  [style.--background]=\"s.bg\"\r\n  [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n  [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n  [attr.aria-label]=\"s.label\"\r\n>\r\n  <span class=\"circle-icon\"></span>\r\n  <span>\r\n    {{ \"GENERAL.STATUS_LABELS.\" + s.label.toUpperCase() | translate }}\r\n  </span>\r\n  @if (extraText) {\r\n    <span>\r\n      {{ extraText | translate }}\r\n    </span>\r\n  }\r\n</div>\r\n", styles: [".badge{display:inline-flex;align-items:center;justify-content:center;gap:.8rem;font-weight:500;border-radius:99999px;border:.7px solid transparent;padding:.5rem 1.6rem;font-size:1.6rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background)}.circle-icon{width:1rem;height:1rem;background-color:var(--color);border-radius:50%}\n"] }]
+            args: [{ selector: 'custom-status-label', imports: [TranslateModule], template: "<div\r\n  class=\"badge\"\r\n  [style.--color]=\"s.color\"\r\n  [style.--background]=\"s.bg\"\r\n  [style.--borderColor]=\"s.border ?? 'transparent'\"\r\n  [style.--dot]=\"s.dot ?? s.color\"\r\n  [style.--uppercaseStatus]=\"uppercase ? 'uppercase' : 'none'\"\r\n  [attr.aria-label]=\"s.label\"\r\n>\r\n  <span class=\"circle-icon\"></span>\r\n  <span>\r\n    {{ \"GENERAL.STATUS_LABELS.\" + s.label.toUpperCase() | translate }}\r\n  </span>\r\n  @if (extraText) {\r\n    <span>\r\n      {{ extraText | translate }}\r\n    </span>\r\n  }\r\n</div>\r\n", styles: [".badge{display:inline-flex;align-items:center;justify-content:center;gap:.8rem;font-weight:500;border-radius:99999px;border:.7px solid transparent;padding:.5rem 1.6rem;font-size:1.6rem;text-transform:var(--uppercaseStatus, uppercase);white-space:nowrap;-webkit-user-select:none;user-select:none;color:var(--color);background:var(--background)}.circle-icon{width:1rem;height:1rem;background-color:var(--color);border-radius:50%}\n"] }]
         }], propDecorators: { status: [{
                 type: Input,
                 args: [{ required: true }]

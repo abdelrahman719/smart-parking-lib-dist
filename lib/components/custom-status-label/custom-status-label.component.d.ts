@@ -4,6 +4,8 @@ interface StyleDef {
     color: string;
     bg?: string;
     border?: string;
+    /** Dot colour, when the design wants it darker than the label. Falls back to `color`. */
+    dot?: string;
     label: string;
 }
 export declare class CustomStatusLabelComponent {

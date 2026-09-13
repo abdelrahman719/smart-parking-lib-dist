@@ -4,7 +4,7 @@ import * as i0 from "@angular/core";
 export declare class ActivityTimePipe implements PipeTransform {
     private translate;
     constructor(translate: TranslateService);
-    transform(value: string | Date, lang?: string): string;
+    transform(value: string | Date, lang?: string, showTime?: boolean): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ActivityTimePipe, never>;
     static ɵpipe: i0.ɵɵPipeDeclaration<ActivityTimePipe, "activityTime", true>;
 }

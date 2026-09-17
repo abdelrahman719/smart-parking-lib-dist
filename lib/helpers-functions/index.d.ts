@@ -1,4 +1,5 @@
 export * from './api-base-url.token';
+export * from './overflow-tooltip';
 /**
  * Checks if any fields in an object contain data (not empty string or undefined)
  * @param {any} obj - The object to check

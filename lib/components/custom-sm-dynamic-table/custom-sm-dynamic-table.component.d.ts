@@ -40,7 +40,6 @@ export declare class CustomSmDynamicTableComponent {
     checkedActionDeleteSvg: SafeHtml;
     expandSvg: SafeHtml;
     private statusKey;
-    private overflowTip?;
     heightFactor: import("@angular/core").WritableSignal<number>;
     dynamicHeight: import("@angular/core").Signal<string>;
     constructor(sanitizer: DomSanitizer);
@@ -53,9 +52,7 @@ export declare class CustomSmDynamicTableComponent {
     disableActions(row: any): boolean;
     showOverflowTip(ev: Event, col?: ISmTableColumn): void;
     cellDir(col: ISmTableColumn): 'ltr' | 'rtl' | null;
-    private tooltipDirection;
     private isPhoneColumn;
-    private isPhoneText;
     hideOverflowTip(): void;
     private updateFactor;
     ngOnDestroy(): void;

@@ -7374,6 +7374,86 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 type: Input
             }] } });
 
+/**
+ * Hover tooltip for clipped (ellipsised) text. Shows the element's full text
+ * only when it or one of its descendants actually overflows.
+ *
+ * Colours match the zones app `app-tooltip-panel` (#4b4f55 / #fff) and stay
+ * the same in dark mode, like that panel does.
+ */
+const STYLE_ID = 'sm-ov-tip-style';
+const TIP_CLASS = 'sm-ov-tip';
+const TIP_GAP = 8;
+/** Only one overflow tooltip is open at a time. */
+let activeTip;
+/**
+ * Shows a tooltip under `host` with its full text, if the text is clipped.
+ * @param host - The element being hovered (usually `event.currentTarget`)
+ * @param options - Optional direction override
+ */
+function showOverflowTooltip(host, options = {}) {
+    const nodes = [host, ...Array.from(host.querySelectorAll('*'))];
+    const overflowing = nodes.filter((n) => n.scrollWidth - n.clientWidth > 1);
+    const text = host.innerText?.trim();
+    if (!overflowing.length || !text)
+        return;
+    hideOverflowTooltip();
+    ensureTooltipStyle();
+    const tip = document.createElement('div');
+    tip.className = TIP_CLASS;
+    const direction = tooltipDirection(host, overflowing, text, options.dir);
+    tip.dir = direction;
+    tip.style.direction = direction;
+    tip.style.unicodeBidi = 'isolate';
+    tip.textContent = text;
+    document.body.appendChild(tip);
+    const r = host.getBoundingClientRect();
+    tip.style.left = `${Math.max(TIP_GAP, r.left)}px`;
+    tip.style.top = `${tooltipTop(r, tip.offsetHeight)}px`;
+    activeTip = tip;
+}
+/**
+ * Places the tip below the host, or above it when it would run past the
+ * bottom of the viewport and there is more room above.
+ */
+function tooltipTop(hostRect, tipHeight) {
+    const below = hostRect.bottom + TIP_GAP;
+    const fitsBelow = below + tipHeight <= window.innerHeight - TIP_GAP;
+    const spaceAbove = hostRect.top;
+    const spaceBelow = window.innerHeight - hostRect.bottom;
+    if (fitsBelow || spaceBelow >= spaceAbove)
+        return below;
+    return Math.max(TIP_GAP, hostRect.top - TIP_GAP - tipHeight);
+}
+/** Removes the open overflow tooltip, if any. */
+function hideOverflowTooltip() {
+    activeTip?.remove();
+    activeTip = undefined;
+}
+function ensureTooltipStyle() {
+    if (document.getElementById(STYLE_ID))
+        return;
+    const s = document.createElement('style');
+    s.id = STYLE_ID;
+    s.textContent =
+        `.${TIP_CLASS}{position:fixed;z-index:10000;pointer-events:none;padding:.8rem 1.2rem;border-radius:.8rem;background:#4b4f55;color:#fff;font-size:1.4rem;font-weight:400;line-height:1.4;width:max-content;max-width:min(48rem,calc(100vw - 2.4rem));overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;overflow:visible;box-shadow:0 .2rem .8rem rgba(0,0,0,.18)}`;
+    document.head.appendChild(s);
+}
+function tooltipDirection(host, overflowing, text, forced) {
+    if (forced === 'ltr')
+        return 'ltr';
+    if (isPhoneText(text))
+        return 'ltr';
+    if (overflowing.some((n) => getComputedStyle(n).direction === 'ltr')) {
+        return 'ltr';
+    }
+    return getComputedStyle(host).direction;
+}
+function isPhoneText(text) {
+    const compact = text.replace(/[\s-]/g, '');
+    return /^\+\d{6,}$/.test(compact);
+}
+
 class CustomSmDynamicTableComponent {
     sanitizer;
     config = input({});
@@ -7392,7 +7472,6 @@ class CustomSmDynamicTableComponent {
     checkedActionDeleteSvg;
     expandSvg;
     statusKey = null;
-    overflowTip;
     heightFactor = signal(1);
     dynamicHeight = computed(() => {
         const base = parseFloat(this.tableMaxHeight);
@@ -7451,58 +7530,20 @@ class CustomSmDynamicTableComponent {
             String(val).toLowerCase() === 'default');
     }
     showOverflowTip(ev, col) {
-        const el = ev.currentTarget;
-        const nodes = [el, ...Array.from(el.querySelectorAll('*'))];
-        const overflowing = nodes.filter((n) => n.scrollWidth - n.clientWidth > 1);
-        const text = el.innerText?.trim();
-        if (!overflowing.length || !text)
-            return;
-        this.hideOverflowTip();
-        if (!document.getElementById('sm-ov-tip-style')) {
-            const s = document.createElement('style');
-            s.id = 'sm-ov-tip-style';
-            s.textContent =
-                '.sm-ov-tip{position:fixed;z-index:10000;pointer-events:none;padding:.8rem 1.2rem;border-radius:.8rem;background:var(--tahakom-colors-neutral-normal-hover,#4b4f55);color:var(--tahakom-colors-base-white,#fff);font-size:1.4rem;line-height:1.4;width:max-content;max-width:min(48rem,calc(100vw - 2.4rem));overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap;overflow:visible;box-shadow:0 .2rem .8rem rgba(0,0,0,.18)}';
-            document.head.appendChild(s);
-        }
-        const tip = document.createElement('div');
-        tip.className = 'sm-ov-tip';
-        const direction = this.tooltipDirection(el, overflowing, text, col);
-        tip.dir = direction;
-        tip.style.direction = direction;
-        tip.style.unicodeBidi = 'isolate';
-        tip.textContent = text;
-        document.body.appendChild(tip);
-        const r = el.getBoundingClientRect();
-        tip.style.top = `${r.bottom + 8}px`;
-        tip.style.left = `${Math.max(8, r.left)}px`;
-        this.overflowTip = tip;
+        showOverflowTooltip(ev.currentTarget, {
+            dir: col && this.cellDir(col) === 'ltr' ? 'ltr' : undefined,
+        });
     }
     cellDir(col) {
         if (col.dir)
             return col.dir;
         return this.isPhoneColumn(col) ? 'ltr' : null;
     }
-    tooltipDirection(el, overflowing, text, col) {
-        if (col && this.cellDir(col) === 'ltr')
-            return 'ltr';
-        if (this.isPhoneText(text))
-            return 'ltr';
-        if (overflowing.some((n) => getComputedStyle(n).direction === 'ltr')) {
-            return 'ltr';
-        }
-        return getComputedStyle(el).direction;
-    }
     isPhoneColumn(col) {
         return (col.key ?? '').toLowerCase().includes('phone');
     }
-    isPhoneText(text) {
-        const compact = text.replace(/[\s-]/g, '');
-        return /^\+\d{6,}$/.test(compact);
-    }
     hideOverflowTip() {
-        this.overflowTip?.remove();
-        this.overflowTip = undefined;
+        hideOverflowTooltip();
     }
     updateFactor = () => {
         const screenH = window.innerHeight;
@@ -10387,5 +10428,5 @@ const getSaudiTime = () => {
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, someFieldsContainData, tenantAuthGuard, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, hideOverflowTooltip, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, showOverflowTooltip, someFieldsContainData, tenantAuthGuard, timeAgo };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

@@ -7310,9 +7310,10 @@ const STYLES = {
         label: 'False Positive',
     },
     under_maintenance: {
-        color: '#F79009',
-        bg: '#fffaeb',
-        border: '#F79009',
+        color: 'var(--tahakom-colors-yellow-dark, #93370C)',
+        bg: 'var(--tahakom-colors-yellow-lightest-hover, #fffaeb)',
+        border: 'var(--tahakom-colors-yellow-lightest-hover, #fffaeb)',
+        dot: 'var(--tahakom-colors-yellow-normal, #F79009)',
         label: 'Under Maintenance',
     },
 };

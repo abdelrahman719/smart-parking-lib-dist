@@ -45,6 +45,7 @@ export * from './custom-tabs/custom-tabs.component';
 export * from './custom-tabs-with-dialog-filter/custom-tabs-with-dialog-filter.component';
 export * from './custom-color/custom-color.component';
 export * from './custom-tooltip/custom-tooltip.component';
+export * from './custom-cdk-tooltip-panel/custom-cdk-tooltip-panel.component';
 export * from './custom-radio-component/custom-radio-component.component';
 export * from './custom-actions-dropdown/custom-actions-dropdown.component';
 export * from './custom-reactive-search-input/custom-reactive-search-input.component';

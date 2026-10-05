@@ -1,0 +1,35 @@
+import { ElementRef, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+import { CustomCdkOverlayService, CustomCdkTooltipPosition } from '../services/custom-cdk-overlay.service';
+import * as i0 from "@angular/core";
+export declare class CustomCdkTooltipDirective implements OnDestroy {
+    private readonly elementRef;
+    private readonly overlayService;
+    private readonly viewContainerRef;
+    text: string;
+    tooltipTitle: string;
+    tooltipClass: string;
+    tooltipDelay: number;
+    tooltipPosition: CustomCdkTooltipPosition;
+    tooltipTemplate?: TemplateRef<unknown>;
+    tooltipContext?: unknown;
+    set customCdkTooltip(value: string | null | undefined);
+    set appCdkTooltip(value: string | null | undefined);
+    private showTimer?;
+    private hideTimer?;
+    private isOverTooltip;
+    private tooltipRef?;
+    private panelSubs?;
+    constructor(elementRef: ElementRef<HTMLElement>, overlayService: CustomCdkOverlayService, viewContainerRef: ViewContainerRef);
+    ngOnDestroy(): void;
+    onEnter(): void;
+    onFocus(): void;
+    onLeave(): void;
+    onBlur(): void;
+    private scheduleShow;
+    private scheduleHide;
+    private show;
+    private hide;
+    private clearTimers;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CustomCdkTooltipDirective, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<CustomCdkTooltipDirective, "[customCdkTooltip], [appCdkTooltip]", never, { "tooltipTitle": { "alias": "tooltipTitle"; "required": false; }; "tooltipClass": { "alias": "tooltipClass"; "required": false; }; "tooltipDelay": { "alias": "tooltipDelay"; "required": false; }; "tooltipPosition": { "alias": "tooltipPosition"; "required": false; }; "tooltipTemplate": { "alias": "tooltipTemplate"; "required": false; }; "tooltipContext": { "alias": "tooltipContext"; "required": false; }; "customCdkTooltip": { "alias": "customCdkTooltip"; "required": false; }; "appCdkTooltip": { "alias": "appCdkTooltip"; "required": false; }; }, {}, never, never, true, never>;
+}

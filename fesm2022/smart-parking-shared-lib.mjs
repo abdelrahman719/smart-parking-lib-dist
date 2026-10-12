@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ViewChild, Pipe, inject, ContentChild, HostBinding, ViewContainerRef, DestroyRef, ViewEncapsulation, ApplicationRef, EnvironmentInjector, Injector, createComponent, output, untracked, ElementRef, model, ViewChildren } from '@angular/core';
+import { Injectable, signal, InjectionToken, Inject, computed, Optional, input, Input, Component, EventEmitter, Output, HostListener, Directive, PLATFORM_ID, effect, ViewChild, inject, Pipe, ContentChild, HostBinding, ViewContainerRef, DestroyRef, ViewEncapsulation, ApplicationRef, EnvironmentInjector, Injector, createComponent, output, untracked, ElementRef, model, ViewChildren } from '@angular/core';
 import { retry, catchError, BehaviorSubject, Subscription, fromEvent, filter, Subject, takeUntil, ReplaySubject, firstValueFrom, debounceTime, distinctUntilChanged, take, Observable, map, throwError, finalize, tap } from 'rxjs';
 import * as i1 from '@angular/common/http';
 import { HttpContextToken, HttpContext, HttpResponse } from '@angular/common/http';
@@ -2028,6 +2028,7 @@ const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const MONTH = 30 * DAY;
+const ISO_DATE_TIME_PARTS = /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?)?/;
 const ACTIVITY_DICT = {
     en: {
         ACTIVE_NOW: 'now',
@@ -2056,6 +2057,68 @@ function toDate(input) {
     const date = new Date(input);
     return isNaN(date.getTime()) ? null : date;
 }
+function toDateTimeParts(input, timezoneMode = 'local') {
+    if (input === null || input === undefined || input === '')
+        return null;
+    if (input instanceof Date || typeof input === 'number') {
+        const date = input instanceof Date ? input : new Date(input);
+        if (isNaN(date.getTime()))
+            return null;
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate(),
+            hours: date.getHours(),
+            minutes: date.getMinutes(),
+            seconds: date.getSeconds(),
+        };
+    }
+    const match = timezoneMode === 'keepUtcClock' ? input.match(ISO_DATE_TIME_PARTS) : null;
+    if (match) {
+        return {
+            year: Number(match[1]),
+            month: Number(match[2]),
+            day: Number(match[3]),
+            hours: Number(match[4] ?? 0),
+            minutes: Number(match[5] ?? 0),
+            seconds: Number(match[6] ?? 0),
+        };
+    }
+    const date = new Date(input);
+    if (isNaN(date.getTime()))
+        return null;
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+        hours: date.getHours(),
+        minutes: date.getMinutes(),
+        seconds: date.getSeconds(),
+    };
+}
+function formatDateTimeParts(parts, locale = 'en', format = 'dateTime') {
+    const day = String(parts.day).padStart(2, '0');
+    const month = new Intl.DateTimeFormat(locale, {
+        month: 'short',
+    })
+        .format(new Date(parts.year, parts.month - 1, parts.day))
+        .replace(/\.$/, '');
+    const year = parts.year;
+    const hours = String(parts.hours).padStart(2, '0');
+    const minutes = String(parts.minutes).padStart(2, '0');
+    const seconds = String(parts.seconds).padStart(2, '0');
+    switch (format) {
+        case 'dateOnly':
+            return `${day} ${month} ${year}`;
+        case 'shortDateTime':
+            return `${day} ${month} ${year} ${hours}:${minutes}`;
+        case 'timeOnly':
+            return `${hours}:${minutes}:${seconds}`;
+        case 'dateTime':
+        default:
+            return `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
+    }
+}
 function formatAbsolute(date, locale = 'en', showTime = false) {
     const day = String(date.getDate()).padStart(2, '0');
     const month = new Intl.DateTimeFormat(locale, {
@@ -2071,9 +2134,21 @@ function formatAbsolute(date, locale = 'en', showTime = false) {
     return `${day} ${month} ${year}, ${hours}:${minutes}`;
 }
 /**
- * show "ago" for < 1 month, otherwise absolute
+ * Absolute app date display. Defaults to browser-local timezone conversion,
+ * matching Angular formatDate/appDate behavior.
  */
 function formatActivityTime(input, lang, opts) {
+    const picked = pickLang(lang);
+    const parts = toDateTimeParts(input, opts?.timezoneMode ?? 'local');
+    if (!parts) {
+        return '-';
+    }
+    return formatDateTimeParts(parts, opts?.locale ?? picked, opts?.format ?? 'dateTime');
+}
+/**
+ * Relative "ago" formatter kept for the cases that need live activity wording.
+ */
+function formatRelativeActivityTime(input, lang, opts) {
     const date = toDate(input);
     if (!date) {
         return '-';
@@ -2108,24 +2183,97 @@ function formatActivityTime(input, lang, opts) {
     return formatAbsolute(date, opts?.locale ?? picked, opts?.showTime);
 }
 
+// shared-lib/translation.service.ts
+var Lang;
+(function (Lang) {
+    Lang["ar"] = "ar";
+    Lang["en"] = "en";
+})(Lang || (Lang = {}));
+class TranslationService {
+    rtl = true;
+    currentLang = signal('en');
+    translate = inject(TranslateService);
+    constructor() { }
+    setDefaultLang(defaultLang = Lang.en) {
+        const lang = this.localStorageLang
+            ? this.localStorageLang
+            : defaultLang;
+        this.onChangeLang(lang);
+        this.currentLang.set(lang);
+    }
+    changeLang(lang) {
+        if (!lang)
+            return;
+        this.translate.use(lang);
+        this.setDirection(lang);
+        this.currentLang.set(lang);
+        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
+        this.localStorageLang = lang;
+    }
+    switchLanguage() {
+        if (this.translate.currentLang === Lang.ar)
+            this.onChangeLang(Lang.en);
+        else
+            this.onChangeLang(Lang.ar);
+    }
+    get localStorageLang() {
+        return localStorage.getItem('lang') || '';
+    }
+    set localStorageLang(lang) {
+        localStorage.setItem('lang', lang);
+    }
+    onChangeLang(lang) {
+        if (!lang)
+            return;
+        this.translate.use(lang);
+        this.setDirection(lang);
+        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
+        this.localStorageLang = lang;
+    }
+    setDirection(lang) {
+        if (lang === Lang.en)
+            this.rtl = false;
+        else
+            this.rtl = true;
+        document
+            .getElementsByTagName('html')[0]
+            .setAttribute('dir', lang === Lang.en ? 'ltr' : 'rtl');
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }], ctorParameters: () => [] });
+
 class ActivityTimePipe {
-    translate;
-    constructor(translate) {
-        this.translate = translate;
+    translation;
+    constructor(translation) {
+        this.translation = translation;
     }
-    transform(value, lang = this.translate.currentLang, showTime = false) {
-        return formatActivityTime(value, lang, { locale: lang, showTime });
+    transform(value, lang = this.translation.currentLang(), mode = 'absolute', format = 'dateTime') {
+        if (mode === 'relative') {
+            return formatRelativeActivityTime(value instanceof Date || typeof value === 'string' ? value : null, lang, {
+                locale: lang,
+                showTime: format !== 'dateOnly',
+            });
+        }
+        return formatActivityTime(value, lang, {
+            locale: lang,
+            format,
+        });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, deps: [{ token: i1$1.TranslateService }], target: i0.ɵɵFactoryTarget.Pipe });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, deps: [{ token: TranslationService }], target: i0.ɵɵFactoryTarget.Pipe });
     static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, isStandalone: true, name: "activityTime" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, decorators: [{
             type: Pipe,
             args: [{
                     name: 'activityTime',
-                    standalone: true
+                    standalone: true,
                 }]
-        }], ctorParameters: () => [{ type: i1$1.TranslateService }] });
+        }], ctorParameters: () => [{ type: TranslationService }] });
 
 class LocalizePipe {
     translate;
@@ -9704,70 +9852,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             args: [{ providedIn: 'root' }]
         }] });
 
-// shared-lib/translation.service.ts
-var Lang;
-(function (Lang) {
-    Lang["ar"] = "ar";
-    Lang["en"] = "en";
-})(Lang || (Lang = {}));
-class TranslationService {
-    rtl = true;
-    currentLang = signal('en');
-    translate = inject(TranslateService);
-    constructor() { }
-    setDefaultLang(defaultLang = Lang.en) {
-        const lang = this.localStorageLang
-            ? this.localStorageLang
-            : defaultLang;
-        this.onChangeLang(lang);
-        this.currentLang.set(lang);
-    }
-    changeLang(lang) {
-        if (!lang)
-            return;
-        this.translate.use(lang);
-        this.setDirection(lang);
-        this.currentLang.set(lang);
-        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
-        this.localStorageLang = lang;
-    }
-    switchLanguage() {
-        if (this.translate.currentLang === Lang.ar)
-            this.onChangeLang(Lang.en);
-        else
-            this.onChangeLang(Lang.ar);
-    }
-    get localStorageLang() {
-        return localStorage.getItem('lang') || '';
-    }
-    set localStorageLang(lang) {
-        localStorage.setItem('lang', lang);
-    }
-    onChangeLang(lang) {
-        if (!lang)
-            return;
-        this.translate.use(lang);
-        this.setDirection(lang);
-        document.getElementsByTagName('html')[0].setAttribute('lang', lang);
-        this.localStorageLang = lang;
-    }
-    setDirection(lang) {
-        if (lang === Lang.en)
-            this.rtl = false;
-        else
-            this.rtl = true;
-        document
-            .getElementsByTagName('html')[0]
-            .setAttribute('dir', lang === Lang.en ? 'ltr' : 'rtl');
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: TranslationService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }], ctorParameters: () => [] });
-
 class SidenavService {
     _isCollapsed = signal(false);
     constructor() {
@@ -10713,5 +10797,5 @@ const getSaudiTime = () => {
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCdkOverlayService, CustomCdkTooltipDirective, CustomCdkTooltipPanelComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatDate, formatDateWithTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, hideOverflowTooltip, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, showOverflowTooltip, someFieldsContainData, tenantAuthGuard, timeAgo };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCdkOverlayService, CustomCdkTooltipDirective, CustomCdkTooltipPanelComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatAbsolute, formatActivityTime, formatDate, formatDateWithTime, formatRelativeActivityTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, hideOverflowTooltip, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, showOverflowTooltip, someFieldsContainData, tenantAuthGuard, timeAgo, toDate };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

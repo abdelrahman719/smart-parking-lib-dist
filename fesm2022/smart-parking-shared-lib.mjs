@@ -2097,26 +2097,66 @@ function toDateTimeParts(input, timezoneMode = 'local') {
     };
 }
 function formatDateTimeParts(parts, locale = 'en', format = 'dateTime') {
+    const date = new Date(parts.year, parts.month - 1, parts.day, parts.hours, parts.minutes, parts.seconds);
     const day = String(parts.day).padStart(2, '0');
-    const month = new Intl.DateTimeFormat(locale, {
-        month: 'short',
-    })
-        .format(new Date(parts.year, parts.month - 1, parts.day))
+    const dayNumber = String(parts.day);
+    const shortMonth = new Intl.DateTimeFormat(locale, { month: 'short' })
+        .format(date)
         .replace(/\.$/, '');
+    const longMonth = new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
+    const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
     const year = parts.year;
     const hours = String(parts.hours).padStart(2, '0');
     const minutes = String(parts.minutes).padStart(2, '0');
     const seconds = String(parts.seconds).padStart(2, '0');
+    const hour12 = parts.hours % 12 || 12;
+    const shortHour12 = String(hour12);
+    const paddedHour12 = String(hour12).padStart(2, '0');
+    const dayPeriod = new Intl.DateTimeFormat(locale, { hour: 'numeric', hour12: true })
+        .formatToParts(date)
+        .find((part) => part.type === 'dayPeriod')?.value ?? '';
     switch (format) {
         case 'dateOnly':
-            return `${day} ${month} ${year}`;
+            return `${day} ${shortMonth} ${year}`;
+        case 'dayMonthYear':
+            return `${dayNumber} ${shortMonth} ${year}`;
+        case 'dayMonthYearDashTime':
+            return `${dayNumber} ${shortMonth} ${year} - ${hours}:${minutes}:${seconds}`;
+        case 'dayMonthYearTime':
+            return `${dayNumber} ${shortMonth} ${year} ${hours}:${minutes}`;
+        case 'fullDateTime':
+            return `${day} ${longMonth} ${year} ${hours}:${minutes}:${seconds}`;
+        case 'historyDateTime':
+            return `${shortMonth} ${dayNumber}, ${year} ${hours}:${minutes}`;
+        case 'longMonthYear':
+            return `${dayNumber} ${longMonth} ${year}`;
+        case 'mediumDateTime':
+            return `${day} ${shortMonth} ${year} ${hours}:${minutes}`;
+        case 'minuteSecond':
+            return `${minutes}:${seconds}`;
+        case 'monthDayYear':
+            return `${longMonth} ${dayNumber}, ${year}`;
+        case 'monthDayYearAtTime':
+            return `${longMonth} ${dayNumber}, ${year} ${locale.startsWith('ar') ? 'في' : 'at'} ${hours}:${minutes}:${seconds}`;
+        case 'notificationTimestamp':
+            return `${shortMonth} ${dayNumber}, ${year}, ${shortHour12}:${minutes}${dayPeriod}`;
+        case 'requestDetails':
+            return `${day}/${String(parts.month).padStart(2, '0')}/${year} - ${hours}:${minutes} ${dayPeriod}`;
         case 'shortDateTime':
-            return `${day} ${month} ${year} ${hours}:${minutes}`;
+            return `${shortMonth} ${dayNumber}, ${shortHour12}:${minutes} ${dayPeriod}`;
+        case 'shortTime':
+            return `${shortHour12}:${minutes} ${dayPeriod}`;
+        case 'spacedTime':
+            return `${hours} : ${minutes} : ${seconds}`;
         case 'timeOnly':
             return `${hours}:${minutes}:${seconds}`;
+        case 'timeWithMeridiem':
+            return `${paddedHour12}:${minutes} ${dayPeriod}`;
+        case 'weekdayLongDate':
+            return `${weekday}${locale.startsWith('ar') ? '،' : ','} ${dayNumber} ${longMonth} ${year}`;
         case 'dateTime':
         default:
-            return `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
+            return `${day} ${shortMonth} ${year} ${hours}:${minutes}:${seconds}`;
     }
 }
 function formatAbsolute(date, locale = 'en', showTime = false) {
@@ -2252,16 +2292,18 @@ class ActivityTimePipe {
     constructor(translation) {
         this.translation = translation;
     }
-    transform(value, lang = this.translation.currentLang(), mode = 'absolute', format = 'dateTime') {
+    transform(value, lang = this.translation.currentLang(), mode = 'absolute', format = 'dateTime', timezoneMode = 'local') {
+        const resolvedLang = lang ?? this.translation.currentLang();
         if (mode === 'relative') {
-            return formatRelativeActivityTime(value instanceof Date || typeof value === 'string' ? value : null, lang, {
-                locale: lang,
+            return formatRelativeActivityTime(value instanceof Date || typeof value === 'string' ? value : null, resolvedLang, {
+                locale: resolvedLang,
                 showTime: format !== 'dateOnly',
             });
         }
-        return formatActivityTime(value, lang, {
-            locale: lang,
+        return formatActivityTime(value, resolvedLang, {
+            locale: resolvedLang,
             format,
+            timezoneMode,
         });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, deps: [{ token: TranslationService }], target: i0.ɵɵFactoryTarget.Pipe });

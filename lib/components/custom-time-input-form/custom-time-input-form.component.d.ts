@@ -10,11 +10,15 @@ export interface ITimeObject {
 }
 /** "HH:mm:ss" — e.g. "17:30:00" */
 export type TimeString = string;
+export type TimeHourFormat = '12' | '24';
+type TimePart = 'hour' | 'minute';
+type Meridiem = 'AM' | 'PM';
 export declare class CustomTimeInputFormComponent implements OnInit, OnChanges {
     parentForm: FormGroup;
     name: string;
     controlName: string;
     label: string;
+    placeholder: string;
     labelClass: string;
     inputClass: string;
     validation: IComponentFormError[];
@@ -34,6 +38,8 @@ export declare class CustomTimeInputFormComponent implements OnInit, OnChanges {
      * Minimum allowed time. Accepts ITimeObject or "HH:mm:ss" string.
      */
     minTime: ITimeObject | TimeString | null;
+    hourFormat: TimeHourFormat;
+    minuteStep: number;
     /**
      * Optional direct value binding — mirrors the range calendar pattern.
      * Accepts ITimeObject or "HH:mm:ss" string, patches the form control
@@ -44,19 +50,29 @@ export declare class CustomTimeInputFormComponent implements OnInit, OnChanges {
     timeChange: EventEmitter<string | ITimeObject>;
     showErrors: import("@angular/core").WritableSignal<boolean>;
     dropdownOpen: import("@angular/core").WritableSignal<boolean>;
-    hours: number[];
-    minutes: number[];
     selectedHour: number | null;
     selectedMinute: number | null;
+    selectedMeridiem: Meridiem;
     private readonly destroyRef;
     ngOnChanges(changes: SimpleChanges): void;
     ngOnInit(): void;
     toggleDropdown(): void;
+    closeDropdown(): void;
+    commitTime(): void;
     confirmTime(): void;
+    increment(part: TimePart): void;
+    decrement(part: TimePart): void;
+    toggleMeridiem(): void;
+    onManualHourInput(event: Event): void;
+    onManualMinuteInput(event: Event): void;
+    onManualInputBlur(part: TimePart): void;
+    selectManualValue(event: Event): void;
     isHourDisabled(h: number): boolean;
     isMinuteDisabled(m: number): boolean;
     onHourChange(): void;
     displayTime(): string | null;
+    displayHour(): string;
+    displayMinute(): string;
     private applyValueInput;
     /**
      * Writes the value into the form control in the correct shape.
@@ -73,6 +89,19 @@ export declare class CustomTimeInputFormComponent implements OnInit, OnChanges {
      * Formats hour + minute (+ optional second) → "HH:mm:ss"
      */
     private toTimeString;
+    private setSelectedTime;
+    private normalizeSelectedHour;
+    private nextHour;
+    private nextMinute;
+    private normalizeManualNumber;
+    private clampHour;
+    private clamp12Hour;
+    private clampMinute;
+    private getMinuteStep;
+    private toDisplayHour;
+    private pad;
+    private applyMinTime;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomTimeInputFormComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomTimeInputFormComponent, "custom-time-input-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "name": { "alias": "name"; "required": true; }; "controlName": { "alias": "controlName"; "required": false; }; "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "inputClass": { "alias": "inputClass"; "required": false; }; "validation": { "alias": "validation"; "required": false; }; "height": { "alias": "height"; "required": false; }; "stringMode": { "alias": "stringMode"; "required": false; }; "defaultTime": { "alias": "defaultTime"; "required": false; }; "minTime": { "alias": "minTime"; "required": false; }; "value": { "alias": "value"; "required": false; }; }, { "timeChange": "timeChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomTimeInputFormComponent, "custom-time-input-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "name": { "alias": "name"; "required": true; }; "controlName": { "alias": "controlName"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "inputClass": { "alias": "inputClass"; "required": false; }; "validation": { "alias": "validation"; "required": false; }; "height": { "alias": "height"; "required": false; }; "stringMode": { "alias": "stringMode"; "required": false; }; "defaultTime": { "alias": "defaultTime"; "required": false; }; "minTime": { "alias": "minTime"; "required": false; }; "hourFormat": { "alias": "hourFormat"; "required": false; }; "minuteStep": { "alias": "minuteStep"; "required": false; }; "value": { "alias": "value"; "required": false; }; }, { "timeChange": "timeChange"; }, never, never, true, never>;
 }
+export {};

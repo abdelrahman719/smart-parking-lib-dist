@@ -4927,14 +4927,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                 type: Output
             }] } });
 
-const minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-const hours = Array.from({ length: 24 }, (_, i) => i);
-
 class CustomTimeInputFormComponent {
     parentForm;
     name = '';
     controlName = '';
     label = '';
+    placeholder = '00:00';
     labelClass = '';
     inputClass = '';
     validation = [];
@@ -4954,6 +4952,8 @@ class CustomTimeInputFormComponent {
      * Minimum allowed time. Accepts ITimeObject or "HH:mm:ss" string.
      */
     minTime = null;
+    hourFormat = '24';
+    minuteStep = 1;
     /**
      * Optional direct value binding — mirrors the range calendar pattern.
      * Accepts ITimeObject or "HH:mm:ss" string, patches the form control
@@ -4964,10 +4964,9 @@ class CustomTimeInputFormComponent {
     timeChange = new EventEmitter();
     showErrors = signal(false);
     dropdownOpen = signal(false);
-    hours = hours;
-    minutes = minutes;
     selectedHour = null;
     selectedMinute = null;
+    selectedMeridiem = 'AM';
     destroyRef = inject(DestroyRef);
     ngOnChanges(changes) {
         if (changes['value'] && !changes['value'].firstChange) {
@@ -4982,8 +4981,7 @@ class CustomTimeInputFormComponent {
             if (seed !== null && seed !== undefined) {
                 const obj = this.coerceToTimeObject(seed);
                 if (obj) {
-                    this.selectedHour = obj.hour;
-                    this.selectedMinute = obj.minute;
+                    this.setSelectedTime(obj);
                     this.patchControl(seed);
                 }
             }
@@ -4993,8 +4991,7 @@ class CustomTimeInputFormComponent {
                 if (val) {
                     const obj = this.coerceToTimeObject(val);
                     if (obj) {
-                        this.selectedHour = obj.hour;
-                        this.selectedMinute = obj.minute;
+                        this.setSelectedTime(obj);
                     }
                 }
                 else {
@@ -5006,27 +5003,37 @@ class CustomTimeInputFormComponent {
     }
     // ── Dropdown ──────────────────────────────────────────────────────────────
     toggleDropdown() {
-        this.dropdownOpen.set(!this.dropdownOpen());
+        if (this.dropdownOpen()) {
+            this.closeDropdown();
+            return;
+        }
+        this.dropdownOpen.set(true);
         // Refresh internal state from form when opening
         const control = this.parentForm.get(this.controlName);
-        if (this.dropdownOpen() && control?.value) {
+        if (control?.value) {
             const obj = this.coerceToTimeObject(control.value);
             if (obj) {
-                this.selectedHour = obj.hour;
-                this.selectedMinute = obj.minute;
+                this.setSelectedTime(obj);
             }
         }
+    }
+    closeDropdown() {
+        const control = this.parentForm.get(this.controlName);
+        this.commitTime();
+        this.dropdownOpen.set(false);
         // Validation trigger on close
-        if (!this.dropdownOpen() && control?.invalid) {
+        if (control?.invalid) {
             this.showErrors.set(true);
             control.markAsTouched();
         }
     }
-    confirmTime() {
+    commitTime() {
         if (this.selectedHour !== null && this.selectedMinute !== null) {
             const control = this.parentForm.get(this.controlName);
+            const normalizedTime = this.applyMinTime(this.normalizeSelectedHour(), this.selectedMinute);
+            this.setSelectedTime(normalizedTime);
             if (this.stringMode) {
-                const str = this.toTimeString(this.selectedHour, this.selectedMinute);
+                const str = this.toTimeString(normalizedTime.hour, normalizedTime.minute);
                 control?.setValue(str);
                 control?.markAsDirty();
                 control?.updateValueAndValidity();
@@ -5034,8 +5041,8 @@ class CustomTimeInputFormComponent {
             }
             else {
                 const obj = {
-                    hour: Number(this.selectedHour),
-                    minute: Number(this.selectedMinute),
+                    hour: Number(normalizedTime.hour),
+                    minute: Number(normalizedTime.minute),
                     second: 0,
                     nano: 0,
                 };
@@ -5045,7 +5052,43 @@ class CustomTimeInputFormComponent {
                 this.timeChange.emit(obj);
             }
         }
-        this.dropdownOpen.set(false);
+    }
+    confirmTime() {
+        this.closeDropdown();
+    }
+    increment(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.nextHour(1);
+            return;
+        }
+        this.selectedMinute = this.nextMinute(this.getMinuteStep());
+    }
+    decrement(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.nextHour(-1);
+            return;
+        }
+        this.selectedMinute = this.nextMinute(-this.getMinuteStep());
+    }
+    toggleMeridiem() {
+        this.selectedMeridiem = this.selectedMeridiem === 'AM' ? 'PM' : 'AM';
+    }
+    onManualHourInput(event) {
+        this.selectedHour = this.normalizeManualNumber(event, 'hour');
+    }
+    onManualMinuteInput(event) {
+        this.selectedMinute = this.normalizeManualNumber(event, 'minute');
+    }
+    onManualInputBlur(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.clampHour(this.selectedHour);
+            return;
+        }
+        this.selectedMinute = this.clampMinute(this.selectedMinute);
+    }
+    selectManualValue(event) {
+        const input = event.target;
+        input?.select();
     }
     // ── Disabled checks ───────────────────────────────────────────────────────
     isHourDisabled(h) {
@@ -5076,14 +5119,26 @@ class CustomTimeInputFormComponent {
             this.selectedMinute === null || this.selectedMinute === undefined) {
             return null;
         }
-        return this.toTimeString(this.selectedHour, this.selectedMinute);
+        return this.toTimeString(this.normalizeSelectedHour(), this.selectedMinute);
+    }
+    displayHour() {
+        if (this.selectedHour === null || this.selectedHour === undefined)
+            return '--';
+        const hour = this.hourFormat === '12'
+            ? this.toDisplayHour(this.selectedHour)
+            : this.selectedHour;
+        return this.pad(hour);
+    }
+    displayMinute() {
+        if (this.selectedMinute === null || this.selectedMinute === undefined)
+            return '--';
+        return this.pad(this.selectedMinute);
     }
     // ── Private helpers ───────────────────────────────────────────────────────
     applyValueInput(val) {
         const obj = this.coerceToTimeObject(val ?? null);
         if (obj) {
-            this.selectedHour = obj.hour;
-            this.selectedMinute = obj.minute;
+            this.setSelectedTime(obj);
         }
         else {
             this.selectedHour = null;
@@ -5142,11 +5197,97 @@ class CustomTimeInputFormComponent {
      * Formats hour + minute (+ optional second) → "HH:mm:ss"
      */
     toTimeString(hour, minute, second = 0) {
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(hour)}:${pad(minute)}:${pad(second)}`;
+        return `${this.pad(hour)}:${this.pad(minute)}:${this.pad(second)}`;
+    }
+    setSelectedTime(value) {
+        this.selectedHour = this.hourFormat === '12'
+            ? this.toDisplayHour(value.hour)
+            : this.clampHour(value.hour);
+        this.selectedMinute = this.clampMinute(value.minute);
+        this.selectedMeridiem = value.hour >= 12 ? 'PM' : 'AM';
+    }
+    normalizeSelectedHour() {
+        const hour = this.selectedHour ?? 0;
+        if (this.hourFormat !== '12')
+            return this.clampHour(hour) ?? 0;
+        const displayHour = this.clamp12Hour(hour);
+        if (this.selectedMeridiem === 'AM')
+            return displayHour === 12 ? 0 : displayHour;
+        return displayHour === 12 ? 12 : displayHour + 12;
+    }
+    nextHour(direction) {
+        const maxHour = this.hourFormat === '12' ? 12 : 23;
+        const minHour = this.hourFormat === '12' ? 1 : 0;
+        const current = this.hourFormat === '12'
+            ? this.clamp12Hour(this.selectedHour ?? minHour)
+            : this.clampHour(this.selectedHour ?? 0) ?? 0;
+        const next = current + direction;
+        if (next > maxHour)
+            return minHour;
+        if (next < minHour)
+            return maxHour;
+        return next;
+    }
+    nextMinute(step) {
+        const current = this.clampMinute(this.selectedMinute ?? 0) ?? 0;
+        const next = current + step;
+        if (next > 59)
+            return 0;
+        if (next < 0)
+            return 59;
+        return next;
+    }
+    normalizeManualNumber(event, part) {
+        const input = event.target;
+        const digits = (input?.value ?? '').replace(/\D/g, '').slice(0, 2);
+        if (input)
+            input.value = digits;
+        if (!digits)
+            return null;
+        const value = Number(digits);
+        return part === 'hour' ? this.clampHour(value) : this.clampMinute(value);
+    }
+    clampHour(value) {
+        if (value === null || Number.isNaN(value))
+            return null;
+        if (this.hourFormat === '12')
+            return this.clamp12Hour(value);
+        return Math.min(23, Math.max(0, value));
+    }
+    clamp12Hour(value) {
+        if (value <= 0)
+            return 12;
+        return Math.min(12, Math.max(1, value));
+    }
+    clampMinute(value) {
+        if (value === null || Number.isNaN(value))
+            return null;
+        return Math.min(59, Math.max(0, value));
+    }
+    getMinuteStep() {
+        return Math.max(1, Math.min(59, Math.floor(this.minuteStep || 1)));
+    }
+    toDisplayHour(hour) {
+        const normalized = this.clampHour(hour) ?? 0;
+        const display = normalized % 12;
+        return display === 0 ? 12 : display;
+    }
+    pad(value) {
+        return value.toString().padStart(2, '0');
+    }
+    applyMinTime(hour, minute) {
+        const selected = { hour, minute, second: 0, nano: 0 };
+        const min = this.coerceToTimeObject(this.minTime);
+        if (!min)
+            return selected;
+        const selectedTotal = selected.hour * 60 + selected.minute;
+        const minTotal = min.hour * 60 + min.minute;
+        return selectedTotal < minTotal
+            ? { hour: min.hour, minute: min.minute, second: min.second ?? 0, nano: min.nano ?? 0 }
+            : selected;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTimeInputFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTimeInputFormComponent, isStandalone: true, selector: "custom-time-input-form", inputs: { parentForm: "parentForm", name: "name", controlName: "controlName", label: "label", labelClass: "labelClass", inputClass: "inputClass", validation: "validation", height: "height", stringMode: "stringMode", defaultTime: "defaultTime", minTime: "minTime", value: "value" }, outputs: { timeChange: "timeChange" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"time-form-tokens time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      placeholder=\"00:00\"\r\n    />\r\n    <span\r\n      class=\"time-picker__input--time-icon\"\r\n      (click)=\"toggleDropdown()\"\r\n      aria-hidden=\"true\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_time_icon)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_time_icon\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n  </div>\r\n\r\n  <custom-app-error\r\n    [showErrors]=\"showErrors()\"\r\n    [control]=\"parentForm.controls[controlName]\"\r\n    [validation]=\"validation\"\r\n    [name]=\"controlName\"\r\n  />\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"toggleDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <select\r\n        [(ngModel)]=\"selectedHour\"\r\n        class=\"time-select\"\r\n        (ngModelChange)=\"onHourChange()\"\r\n      >\r\n        <option [ngValue]=\"null\" disabled>HH</option>\r\n        @for (h of hours; track h) {\r\n          <option [ngValue]=\"h\" [disabled]=\"isHourDisabled(h)\">\r\n            {{ h < 10 ? \"0\" + h : h }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <span>:</span>\r\n\r\n      <select [(ngModel)]=\"selectedMinute\" class=\"time-select\">\r\n        <option [ngValue]=\"null\" disabled>MM</option>\r\n        @for (m of minutes; track m) {\r\n          <option [ngValue]=\"m\" [disabled]=\"isMinuteDisabled(m)\">\r\n            {{ m < 10 ? \"0\" + m : m }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <button type=\"button\" (click)=\"confirmTime()\" class=\"confirm-btn\">\r\n        \u2714\r\n      </button>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-form-tokens{--time-height: 4.8rem;--time-radius: 1.2rem;--time-border-width: .1rem;--time-border: var(--smp-color-form-border);--time-border-error: var(--smp-form-border-error);--time-bg: var(--smp-form-bg);--time-text: var(--smp-form-text);--time-placeholder: var(--smp-color-form-placeholder);--time-label: var(--smp-color-form-label);--time-label-size: 1.4rem;--time-label-weight: var(--smp-font-weight-medium, 500);--time-label-margin-bottom: .8rem;--time-font-size: 1.6rem;--time-padding-x: 1.4rem;--time-icon: var(--smp-text-muted);--time-dropdown-bg: var(--smp-bg-surface);--time-dropdown-border: var(--smp-color-form-border);--time-dropdown-shadow: var(--smp-shadow-md);--time-select-bg: var(--smp-bg-muted);--time-confirm-bg: var(--smp-color-secondary);--time-confirm-fg: var(--smp-text-inverse)}.time-picker-container{position:relative;width:100%;cursor:pointer}.custom-label{font-size:var(--time-label-size);font-weight:var(--time-label-weight);display:block;color:var(--time-label);margin-bottom:var(--time-label-margin-bottom);line-height:2rem}.time-picker__input{position:relative;display:flex;align-items:center}.custom-input{height:var(--height, var(--time-height));width:100%;border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-border);padding-inline:var(--time-padding-x) 4rem;outline:none!important;box-shadow:none;font-size:var(--time-font-size);font-weight:400;cursor:pointer;background:var(--time-bg);color:var(--time-text);box-sizing:border-box}.custom-input::placeholder{color:var(--time-placeholder)}.custom-input.input-error{border-color:var(--time-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--time-border-error) 20%,transparent)}.time-picker__input--time-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:var(--time-icon)}.time-dropdown-container{position:absolute;top:calc(100% + .4rem);inset-inline-start:0;width:100%;min-width:18rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:var(--time-dropdown-bg);border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-dropdown-border);padding:1rem;z-index:100;box-shadow:var(--time-dropdown-shadow)}.time-select{width:30%;padding:.6rem;font-size:1.4rem;border-radius:.8rem;border:var(--time-border-width) solid var(--time-border);background:var(--time-select-bg);color:var(--time-text)}.confirm-btn{background:var(--time-confirm-bg);border:none;color:var(--time-confirm-fg);font-size:1.6rem;border-radius:.8rem;cursor:pointer;width:4rem;height:3.2rem}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: i1$4.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$4.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$4.SelectControlValueAccessor, selector: "select:not([multiple])[formControlName],select:not([multiple])[formControl],select:not([multiple])[ngModel]", inputs: ["compareWith"] }, { kind: "directive", type: i1$4.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$4.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomTimeInputFormComponent, isStandalone: true, selector: "custom-time-input-form", inputs: { parentForm: "parentForm", name: "name", controlName: "controlName", label: "label", placeholder: "placeholder", labelClass: "labelClass", inputClass: "inputClass", validation: "validation", height: "height", stringMode: "stringMode", defaultTime: "defaultTime", minTime: "minTime", hourFormat: "hourFormat", minuteStep: "minuteStep", value: "value" }, outputs: { timeChange: "timeChange" }, usesOnChanges: true, ngImport: i0, template: "<div class=\"time-form-tokens time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      [placeholder]=\"placeholder\"\r\n    />\r\n    <span\r\n      class=\"time-picker__input--time-icon\"\r\n      (click)=\"toggleDropdown()\"\r\n      aria-hidden=\"true\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_time_icon)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_time_icon\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n  </div>\r\n\r\n  <custom-app-error\r\n    [showErrors]=\"showErrors()\"\r\n    [control]=\"parentForm.controls[controlName]\"\r\n    [validation]=\"validation\"\r\n    [name]=\"controlName\"\r\n  />\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"closeDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <div\r\n        class=\"time-dropdown-body\"\r\n        [class.time-dropdown-body--meridiem]=\"hourFormat === '12'\"\r\n      >\r\n        <div class=\"time-spinner\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button\"\r\n            (click)=\"increment('hour')\"\r\n            aria-label=\"Increase hour\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n          <input\r\n            class=\"time-spinner__input\"\r\n            type=\"text\"\r\n            inputmode=\"numeric\"\r\n            maxlength=\"2\"\r\n            [value]=\"displayHour()\"\r\n            (dblclick)=\"selectManualValue($event)\"\r\n            (focus)=\"selectManualValue($event)\"\r\n            (input)=\"onManualHourInput($event)\"\r\n            (blur)=\"onManualInputBlur('hour')\"\r\n            (keydown.enter)=\"closeDropdown()\"\r\n            aria-label=\"Hour\"\r\n          />\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button time-spinner__button--down\"\r\n            (click)=\"decrement('hour')\"\r\n            aria-label=\"Decrease hour\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n        </div>\r\n\r\n        <span class=\"time-separator\">:</span>\r\n\r\n        <div class=\"time-spinner\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button\"\r\n            (click)=\"increment('minute')\"\r\n            aria-label=\"Increase minute\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n          <input\r\n            class=\"time-spinner__input\"\r\n            type=\"text\"\r\n            inputmode=\"numeric\"\r\n            maxlength=\"2\"\r\n            [value]=\"displayMinute()\"\r\n            (dblclick)=\"selectManualValue($event)\"\r\n            (focus)=\"selectManualValue($event)\"\r\n            (input)=\"onManualMinuteInput($event)\"\r\n            (blur)=\"onManualInputBlur('minute')\"\r\n            (keydown.enter)=\"closeDropdown()\"\r\n            aria-label=\"Minute\"\r\n          />\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button time-spinner__button--down\"\r\n            (click)=\"decrement('minute')\"\r\n            aria-label=\"Decrease minute\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n        </div>\r\n\r\n        @if (hourFormat === '12') {\r\n          <div class=\"time-spinner time-spinner--meridiem\">\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__button\"\r\n              (click)=\"toggleMeridiem()\"\r\n              aria-label=\"Toggle meridiem\"\r\n            >\r\n              <span></span>\r\n            </button>\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__meridiem-value\"\r\n              (click)=\"toggleMeridiem()\"\r\n            >\r\n              {{ selectedMeridiem }}\r\n            </button>\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__button time-spinner__button--down\"\r\n              (click)=\"toggleMeridiem()\"\r\n              aria-label=\"Toggle meridiem\"\r\n            >\r\n              <span></span>\r\n            </button>\r\n          </div>\r\n        }\r\n      </div>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-form-tokens{--time-height: 4.8rem;--time-radius: 1.2rem;--time-border-width: .1rem;--time-border: var(--smp-color-form-border);--time-border-error: var(--smp-form-border-error);--time-bg: var(--smp-form-bg);--time-text: var(--smp-form-text);--time-placeholder: var(--smp-color-form-placeholder);--time-label: var(--smp-color-form-label);--time-label-size: 1.4rem;--time-label-weight: var(--smp-font-weight-medium, 500);--time-label-margin-bottom: .8rem;--time-font-size: 1.6rem;--time-padding-x: 1.4rem;--time-icon: var(--smp-text-muted);--time-dropdown-bg: var(--smp-bg-surface);--time-dropdown-border: var(--smp-color-form-border);--time-dropdown-shadow: var(--smp-shadow-md);--time-select-bg: var(--smp-bg-muted);--time-confirm-bg: var(--smp-color-secondary);--time-confirm-fg: var(--smp-text-inverse);--time-panel-muted: var(--smp-text-muted)}.time-picker-container{position:relative;width:100%;cursor:pointer}.custom-label{font-size:var(--time-label-size);font-weight:var(--time-label-weight);display:block;color:var(--time-label);margin-bottom:var(--time-label-margin-bottom);line-height:2rem}.time-picker__input{position:relative;display:flex;align-items:center}.custom-input{height:var(--height, var(--time-height));width:100%;border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-border);padding-inline:var(--time-padding-x) 4rem;outline:none!important;box-shadow:none;font-size:var(--time-font-size);font-weight:400;cursor:pointer;background:var(--time-bg);color:var(--time-text);box-sizing:border-box}.custom-input::placeholder{color:var(--time-placeholder)}.custom-input.input-error{border-color:var(--time-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--time-border-error) 20%,transparent)}.time-picker__input--time-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:var(--time-icon)}.time-dropdown-container{position:absolute;top:calc(100% + .4rem);inset-inline-start:0;width:100%;min-width:22rem;display:grid;background:var(--time-dropdown-bg);border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-dropdown-border);padding:1.2rem;z-index:100;box-shadow:var(--time-dropdown-shadow)}.time-dropdown-body{align-items:center;display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem}.time-dropdown-body--meridiem{grid-template-columns:1fr auto 1fr 1fr}.time-spinner{align-items:center;display:grid;gap:.2rem;justify-items:center;min-width:0}.time-spinner__button{align-items:center;background:transparent;border:0;color:var(--time-panel-muted);cursor:pointer;display:flex;height:2.4rem;justify-content:center;padding:0;width:100%}.time-spinner__button span{border-inline-end:.2rem solid currentColor;border-block-start:.2rem solid currentColor;display:block;height:.9rem;transform:rotate(-45deg);width:.9rem}.time-spinner__button--down span{transform:rotate(135deg)}.time-spinner__button:hover{color:var(--time-confirm-bg)}.time-spinner__input,.time-spinner__meridiem-value{background:transparent;border:0;color:var(--time-text);font-size:1.8rem;height:2.8rem;outline:none;text-align:center;width:100%}.time-spinner__input:focus{background:var(--time-select-bg);border-radius:.6rem}.time-spinner__meridiem-value{cursor:pointer;font-weight:500}.time-separator{color:var(--time-text);font-size:1.8rem;font-weight:600}\n"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "ngmodule", type: ReactiveFormsModule }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomTimeInputFormComponent, decorators: [{
             type: Component,
@@ -5154,9 +5295,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
                         NgStyle,
                         CustomAppErrorComponent,
                         ReactiveFormsModule,
-                        FormsModule,
                         ClickOutsideDirective,
-                    ], template: "<div class=\"time-form-tokens time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      placeholder=\"00:00\"\r\n    />\r\n    <span\r\n      class=\"time-picker__input--time-icon\"\r\n      (click)=\"toggleDropdown()\"\r\n      aria-hidden=\"true\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_time_icon)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_time_icon\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n  </div>\r\n\r\n  <custom-app-error\r\n    [showErrors]=\"showErrors()\"\r\n    [control]=\"parentForm.controls[controlName]\"\r\n    [validation]=\"validation\"\r\n    [name]=\"controlName\"\r\n  />\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"toggleDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <select\r\n        [(ngModel)]=\"selectedHour\"\r\n        class=\"time-select\"\r\n        (ngModelChange)=\"onHourChange()\"\r\n      >\r\n        <option [ngValue]=\"null\" disabled>HH</option>\r\n        @for (h of hours; track h) {\r\n          <option [ngValue]=\"h\" [disabled]=\"isHourDisabled(h)\">\r\n            {{ h < 10 ? \"0\" + h : h }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <span>:</span>\r\n\r\n      <select [(ngModel)]=\"selectedMinute\" class=\"time-select\">\r\n        <option [ngValue]=\"null\" disabled>MM</option>\r\n        @for (m of minutes; track m) {\r\n          <option [ngValue]=\"m\" [disabled]=\"isMinuteDisabled(m)\">\r\n            {{ m < 10 ? \"0\" + m : m }}\r\n          </option>\r\n        }\r\n      </select>\r\n\r\n      <button type=\"button\" (click)=\"confirmTime()\" class=\"confirm-btn\">\r\n        \u2714\r\n      </button>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-form-tokens{--time-height: 4.8rem;--time-radius: 1.2rem;--time-border-width: .1rem;--time-border: var(--smp-color-form-border);--time-border-error: var(--smp-form-border-error);--time-bg: var(--smp-form-bg);--time-text: var(--smp-form-text);--time-placeholder: var(--smp-color-form-placeholder);--time-label: var(--smp-color-form-label);--time-label-size: 1.4rem;--time-label-weight: var(--smp-font-weight-medium, 500);--time-label-margin-bottom: .8rem;--time-font-size: 1.6rem;--time-padding-x: 1.4rem;--time-icon: var(--smp-text-muted);--time-dropdown-bg: var(--smp-bg-surface);--time-dropdown-border: var(--smp-color-form-border);--time-dropdown-shadow: var(--smp-shadow-md);--time-select-bg: var(--smp-bg-muted);--time-confirm-bg: var(--smp-color-secondary);--time-confirm-fg: var(--smp-text-inverse)}.time-picker-container{position:relative;width:100%;cursor:pointer}.custom-label{font-size:var(--time-label-size);font-weight:var(--time-label-weight);display:block;color:var(--time-label);margin-bottom:var(--time-label-margin-bottom);line-height:2rem}.time-picker__input{position:relative;display:flex;align-items:center}.custom-input{height:var(--height, var(--time-height));width:100%;border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-border);padding-inline:var(--time-padding-x) 4rem;outline:none!important;box-shadow:none;font-size:var(--time-font-size);font-weight:400;cursor:pointer;background:var(--time-bg);color:var(--time-text);box-sizing:border-box}.custom-input::placeholder{color:var(--time-placeholder)}.custom-input.input-error{border-color:var(--time-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--time-border-error) 20%,transparent)}.time-picker__input--time-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:var(--time-icon)}.time-dropdown-container{position:absolute;top:calc(100% + .4rem);inset-inline-start:0;width:100%;min-width:18rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:var(--time-dropdown-bg);border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-dropdown-border);padding:1rem;z-index:100;box-shadow:var(--time-dropdown-shadow)}.time-select{width:30%;padding:.6rem;font-size:1.4rem;border-radius:.8rem;border:var(--time-border-width) solid var(--time-border);background:var(--time-select-bg);color:var(--time-text)}.confirm-btn{background:var(--time-confirm-bg);border:none;color:var(--time-confirm-fg);font-size:1.6rem;border-radius:.8rem;cursor:pointer;width:4rem;height:3.2rem}\n"] }]
+                    ], template: "<div class=\"time-form-tokens time-picker-container\">\r\n  @if (label) {\r\n    <label [for]=\"label\" [class]=\"'custom-label ' + labelClass\">\r\n      {{ label }}\r\n    </label>\r\n  }\r\n\r\n  <div class=\"time-picker__input\">\r\n    <input\r\n      type=\"text\"\r\n      readonly\r\n      [class]=\"'custom-input ' + inputClass\"\r\n      [class.input-error]=\"\r\n        parentForm.controls[controlName].invalid &&\r\n        parentForm.controls[controlName].touched\r\n      \"\r\n      [value]=\"displayTime()\"\r\n      (click)=\"toggleDropdown()\"\r\n      [attr.name]=\"name\"\r\n      [attr.id]=\"name\"\r\n      [ngStyle]=\"{ '--height': height }\"\r\n      [placeholder]=\"placeholder\"\r\n    />\r\n    <span\r\n      class=\"time-picker__input--time-icon\"\r\n      (click)=\"toggleDropdown()\"\r\n      aria-hidden=\"true\"\r\n    >\r\n      <svg\r\n        width=\"22\"\r\n        height=\"22\"\r\n        viewBox=\"0 0 22 22\"\r\n        fill=\"none\"\r\n        xmlns=\"http://www.w3.org/2000/svg\"\r\n      >\r\n        <g opacity=\"0.5\" clip-path=\"url(#clip0_time_icon)\">\r\n          <path\r\n            d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n          <path\r\n            d=\"M11 5V11L15 13\"\r\n            stroke=\"currentColor\"\r\n            stroke-linecap=\"round\"\r\n            stroke-linejoin=\"round\"\r\n          />\r\n        </g>\r\n        <defs>\r\n          <clipPath id=\"clip0_time_icon\">\r\n            <rect width=\"22\" height=\"22\" fill=\"white\" />\r\n          </clipPath>\r\n        </defs>\r\n      </svg>\r\n    </span>\r\n  </div>\r\n\r\n  <custom-app-error\r\n    [showErrors]=\"showErrors()\"\r\n    [control]=\"parentForm.controls[controlName]\"\r\n    [validation]=\"validation\"\r\n    [name]=\"controlName\"\r\n  />\r\n\r\n  @if (dropdownOpen()) {\r\n    <div\r\n      #dropdownOptions\r\n      [clickOutside]=\"dropdownOptions\"\r\n      (clickOutsideEmitter)=\"closeDropdown()\"\r\n      class=\"time-dropdown-container\"\r\n    >\r\n      <div\r\n        class=\"time-dropdown-body\"\r\n        [class.time-dropdown-body--meridiem]=\"hourFormat === '12'\"\r\n      >\r\n        <div class=\"time-spinner\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button\"\r\n            (click)=\"increment('hour')\"\r\n            aria-label=\"Increase hour\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n          <input\r\n            class=\"time-spinner__input\"\r\n            type=\"text\"\r\n            inputmode=\"numeric\"\r\n            maxlength=\"2\"\r\n            [value]=\"displayHour()\"\r\n            (dblclick)=\"selectManualValue($event)\"\r\n            (focus)=\"selectManualValue($event)\"\r\n            (input)=\"onManualHourInput($event)\"\r\n            (blur)=\"onManualInputBlur('hour')\"\r\n            (keydown.enter)=\"closeDropdown()\"\r\n            aria-label=\"Hour\"\r\n          />\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button time-spinner__button--down\"\r\n            (click)=\"decrement('hour')\"\r\n            aria-label=\"Decrease hour\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n        </div>\r\n\r\n        <span class=\"time-separator\">:</span>\r\n\r\n        <div class=\"time-spinner\">\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button\"\r\n            (click)=\"increment('minute')\"\r\n            aria-label=\"Increase minute\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n          <input\r\n            class=\"time-spinner__input\"\r\n            type=\"text\"\r\n            inputmode=\"numeric\"\r\n            maxlength=\"2\"\r\n            [value]=\"displayMinute()\"\r\n            (dblclick)=\"selectManualValue($event)\"\r\n            (focus)=\"selectManualValue($event)\"\r\n            (input)=\"onManualMinuteInput($event)\"\r\n            (blur)=\"onManualInputBlur('minute')\"\r\n            (keydown.enter)=\"closeDropdown()\"\r\n            aria-label=\"Minute\"\r\n          />\r\n          <button\r\n            type=\"button\"\r\n            class=\"time-spinner__button time-spinner__button--down\"\r\n            (click)=\"decrement('minute')\"\r\n            aria-label=\"Decrease minute\"\r\n          >\r\n            <span></span>\r\n          </button>\r\n        </div>\r\n\r\n        @if (hourFormat === '12') {\r\n          <div class=\"time-spinner time-spinner--meridiem\">\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__button\"\r\n              (click)=\"toggleMeridiem()\"\r\n              aria-label=\"Toggle meridiem\"\r\n            >\r\n              <span></span>\r\n            </button>\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__meridiem-value\"\r\n              (click)=\"toggleMeridiem()\"\r\n            >\r\n              {{ selectedMeridiem }}\r\n            </button>\r\n            <button\r\n              type=\"button\"\r\n              class=\"time-spinner__button time-spinner__button--down\"\r\n              (click)=\"toggleMeridiem()\"\r\n              aria-label=\"Toggle meridiem\"\r\n            >\r\n              <span></span>\r\n            </button>\r\n          </div>\r\n        }\r\n      </div>\r\n    </div>\r\n  }\r\n</div>\r\n", styles: [".time-form-tokens{--time-height: 4.8rem;--time-radius: 1.2rem;--time-border-width: .1rem;--time-border: var(--smp-color-form-border);--time-border-error: var(--smp-form-border-error);--time-bg: var(--smp-form-bg);--time-text: var(--smp-form-text);--time-placeholder: var(--smp-color-form-placeholder);--time-label: var(--smp-color-form-label);--time-label-size: 1.4rem;--time-label-weight: var(--smp-font-weight-medium, 500);--time-label-margin-bottom: .8rem;--time-font-size: 1.6rem;--time-padding-x: 1.4rem;--time-icon: var(--smp-text-muted);--time-dropdown-bg: var(--smp-bg-surface);--time-dropdown-border: var(--smp-color-form-border);--time-dropdown-shadow: var(--smp-shadow-md);--time-select-bg: var(--smp-bg-muted);--time-confirm-bg: var(--smp-color-secondary);--time-confirm-fg: var(--smp-text-inverse);--time-panel-muted: var(--smp-text-muted)}.time-picker-container{position:relative;width:100%;cursor:pointer}.custom-label{font-size:var(--time-label-size);font-weight:var(--time-label-weight);display:block;color:var(--time-label);margin-bottom:var(--time-label-margin-bottom);line-height:2rem}.time-picker__input{position:relative;display:flex;align-items:center}.custom-input{height:var(--height, var(--time-height));width:100%;border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-border);padding-inline:var(--time-padding-x) 4rem;outline:none!important;box-shadow:none;font-size:var(--time-font-size);font-weight:400;cursor:pointer;background:var(--time-bg);color:var(--time-text);box-sizing:border-box}.custom-input::placeholder{color:var(--time-placeholder)}.custom-input.input-error{border-color:var(--time-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--time-border-error) 20%,transparent)}.time-picker__input--time-icon{position:absolute;inset-inline-end:1.2rem;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:var(--time-icon)}.time-dropdown-container{position:absolute;top:calc(100% + .4rem);inset-inline-start:0;width:100%;min-width:22rem;display:grid;background:var(--time-dropdown-bg);border-radius:var(--time-radius);border:var(--time-border-width) solid var(--time-dropdown-border);padding:1.2rem;z-index:100;box-shadow:var(--time-dropdown-shadow)}.time-dropdown-body{align-items:center;display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem}.time-dropdown-body--meridiem{grid-template-columns:1fr auto 1fr 1fr}.time-spinner{align-items:center;display:grid;gap:.2rem;justify-items:center;min-width:0}.time-spinner__button{align-items:center;background:transparent;border:0;color:var(--time-panel-muted);cursor:pointer;display:flex;height:2.4rem;justify-content:center;padding:0;width:100%}.time-spinner__button span{border-inline-end:.2rem solid currentColor;border-block-start:.2rem solid currentColor;display:block;height:.9rem;transform:rotate(-45deg);width:.9rem}.time-spinner__button--down span{transform:rotate(135deg)}.time-spinner__button:hover{color:var(--time-confirm-bg)}.time-spinner__input,.time-spinner__meridiem-value{background:transparent;border:0;color:var(--time-text);font-size:1.8rem;height:2.8rem;outline:none;text-align:center;width:100%}.time-spinner__input:focus{background:var(--time-select-bg);border-radius:.6rem}.time-spinner__meridiem-value{cursor:pointer;font-weight:500}.time-separator{color:var(--time-text);font-size:1.8rem;font-weight:600}\n"] }]
         }], propDecorators: { parentForm: [{
                 type: Input,
                 args: [{ required: true }]
@@ -5166,6 +5306,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             }], controlName: [{
                 type: Input
             }], label: [{
+                type: Input
+            }], placeholder: [{
                 type: Input
             }], labelClass: [{
                 type: Input
@@ -5180,6 +5322,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImpo
             }], defaultTime: [{
                 type: Input
             }], minTime: [{
+                type: Input
+            }], hourFormat: [{
+                type: Input
+            }], minuteStep: [{
                 type: Input
             }], value: [{
                 type: Input
@@ -9816,6 +9962,406 @@ function calculateDatesFromDuration(durationId) {
     }
 }
 
+class CustomDateTimeFormComponent {
+    parentForm;
+    controlName = '';
+    name = '';
+    validation = [];
+    mode = 'dateTime';
+    label = '';
+    placeholder = 'Select date';
+    timePlaceholder = '00:00';
+    labelClass = '';
+    componentClass = '';
+    disabled = false;
+    minDate = null;
+    maxDate = null;
+    minTime = null;
+    defaultTime = null;
+    stringMode = false;
+    height = 'var(--input-height, 4.8rem)';
+    hourFormat = '24';
+    dateTimeHourFormat = '12';
+    minuteStep = 1;
+    valueChange = new EventEmitter();
+    showDateTimePanel = false;
+    currentMonth = new Date();
+    days = [];
+    selectedDate = null;
+    selectedHour = null;
+    selectedMinute = null;
+    selectedMeridiem = 'AM';
+    ngOnInit() {
+        if (this.mode === 'dateTime') {
+            this.seedDateTimeControls();
+            this.generateCalendar();
+        }
+    }
+    get isDateMode() {
+        return this.mode === 'date';
+    }
+    get isTimeMode() {
+        return this.mode === 'time';
+    }
+    get isDateTimeMode() {
+        return this.mode === 'dateTime';
+    }
+    containRequiredError() {
+        return this.validation.some(error => error.errorType.includes(ComponentFormErrorConstant.REQUIRED));
+    }
+    toggleDateTimePanel() {
+        if (this.disabled)
+            return;
+        this.showDateTimePanel = !this.showDateTimePanel;
+        if (this.showDateTimePanel) {
+            this.seedDateTimeControls();
+            this.generateCalendar();
+            return;
+        }
+        this.commitDateTimeValue();
+    }
+    closeDateTimePanel() {
+        this.showDateTimePanel = false;
+        this.commitDateTimeValue();
+    }
+    prevMonth() {
+        this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
+        this.generateCalendar();
+    }
+    nextMonth() {
+        this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+        this.generateCalendar();
+    }
+    selectDate(date) {
+        if (this.isDisabledDate(date))
+            return;
+        this.selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        this.commitDateTimeValue(false);
+    }
+    increment(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.nextHour(1);
+            this.commitDateTimeValue(false);
+            return;
+        }
+        this.selectedMinute = this.nextMinute(this.getMinuteStep());
+        this.commitDateTimeValue(false);
+    }
+    decrement(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.nextHour(-1);
+            this.commitDateTimeValue(false);
+            return;
+        }
+        this.selectedMinute = this.nextMinute(-this.getMinuteStep());
+        this.commitDateTimeValue(false);
+    }
+    toggleMeridiem() {
+        this.selectedMeridiem = this.selectedMeridiem === 'AM' ? 'PM' : 'AM';
+        this.commitDateTimeValue(false);
+    }
+    onManualHourInput(event) {
+        this.selectedHour = this.normalizeManualNumber(event, 'hour');
+        this.commitDateTimeValue(false);
+    }
+    onManualMinuteInput(event) {
+        this.selectedMinute = this.normalizeManualNumber(event, 'minute');
+        this.commitDateTimeValue(false);
+    }
+    onManualInputBlur(part) {
+        if (part === 'hour') {
+            this.selectedHour = this.clampHour(this.selectedHour);
+        }
+        else {
+            this.selectedMinute = this.clampMinute(this.selectedMinute);
+        }
+        this.commitDateTimeValue(false);
+    }
+    selectManualValue(event) {
+        const input = event.target;
+        input?.select();
+    }
+    get weekdays() {
+        return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    }
+    getMonthName() {
+        return this.currentMonth.toLocaleString('en-US', { month: 'long' });
+    }
+    getYear() {
+        return this.currentMonth.getFullYear();
+    }
+    isCurrentMonth(date) {
+        return date.getMonth() === this.currentMonth.getMonth();
+    }
+    isSelectedDate(date) {
+        if (!this.selectedDate)
+            return false;
+        return (date.getDate() === this.selectedDate.getDate() &&
+            date.getMonth() === this.selectedDate.getMonth() &&
+            date.getFullYear() === this.selectedDate.getFullYear());
+    }
+    isDisabledDate(date) {
+        const day = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+        const min = this.minDate
+            ? new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate()).getTime()
+            : null;
+        const max = this.maxDate
+            ? new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate()).getTime()
+            : null;
+        return (min !== null && day < min) || (max !== null && day > max);
+    }
+    displayDateTimeValue() {
+        const value = this.parentForm.get(this.controlName)?.value;
+        if (!(value instanceof Date) || Number.isNaN(value.getTime()))
+            return '';
+        const date = value.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+        return `${date} ${this.toTimeString({
+            hour: value.getHours(),
+            minute: value.getMinutes(),
+            second: value.getSeconds(),
+            nano: 0,
+        })}`;
+    }
+    displayHour() {
+        if (this.selectedHour === null || this.selectedHour === undefined)
+            return '--';
+        const hour = this.dateTimeHourFormat === '12'
+            ? this.toDisplayHour(this.selectedHour)
+            : this.selectedHour;
+        return this.pad(hour);
+    }
+    displayMinute() {
+        if (this.selectedMinute === null || this.selectedMinute === undefined)
+            return '--';
+        return this.pad(this.selectedMinute);
+    }
+    seedDateTimeControls() {
+        const value = this.parentForm.get(this.controlName)?.value;
+        if (value instanceof Date && !Number.isNaN(value.getTime())) {
+            this.selectedDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+            this.currentMonth = new Date(value.getFullYear(), value.getMonth(), 1);
+            this.setSelectedTime({
+                hour: value.getHours(),
+                minute: value.getMinutes(),
+                second: value.getSeconds(),
+                nano: 0,
+            });
+            return;
+        }
+        const defaultTime = this.coerceToTimeObject(this.defaultTime);
+        if (defaultTime)
+            this.setSelectedTime(defaultTime);
+    }
+    commitDateTimeValue(markTouched = true) {
+        const control = this.parentForm.get(this.controlName);
+        if (!this.selectedDate || this.selectedHour === null || this.selectedMinute === null) {
+            if (markTouched)
+                control?.markAsTouched();
+            return;
+        }
+        const normalizedTime = this.applyMinTime(this.normalizeSelectedHour(), this.selectedMinute);
+        this.setSelectedTime(normalizedTime);
+        const nextValue = new Date(this.selectedDate);
+        nextValue.setHours(normalizedTime.hour, normalizedTime.minute, normalizedTime.second ?? 0, 0);
+        control?.setValue(nextValue);
+        control?.markAsDirty();
+        if (markTouched)
+            control?.markAsTouched();
+        control?.updateValueAndValidity();
+        this.valueChange.emit(nextValue);
+    }
+    generateCalendar() {
+        this.days = [];
+        const year = this.currentMonth.getFullYear();
+        const month = this.currentMonth.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        for (let index = firstDay.getDay() - 1; index >= 0; index--) {
+            this.days.push(new Date(year, month, -index));
+        }
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            this.days.push(new Date(year, month, day));
+        }
+        for (let day = 1; day <= 6 - lastDay.getDay(); day++) {
+            this.days.push(new Date(year, month + 1, day));
+        }
+    }
+    toTimeString(value) {
+        if (typeof value === 'string') {
+            const [hour = '00', minute = '00', second = '00'] = value.split(':');
+            return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:${second.padStart(2, '0')}`;
+        }
+        const pad = (part) => String(part).padStart(2, '0');
+        return `${pad(value.hour)}:${pad(value.minute)}:${pad(value.second ?? 0)}`;
+    }
+    setSelectedTime(value) {
+        this.selectedHour = this.dateTimeHourFormat === '12'
+            ? this.toDisplayHour(value.hour)
+            : this.clampHour(value.hour);
+        this.selectedMinute = this.clampMinute(value.minute);
+        this.selectedMeridiem = value.hour >= 12 ? 'PM' : 'AM';
+    }
+    normalizeSelectedHour() {
+        const hour = this.selectedHour ?? 0;
+        if (this.dateTimeHourFormat !== '12')
+            return this.clampHour(hour) ?? 0;
+        const displayHour = this.clamp12Hour(hour);
+        if (this.selectedMeridiem === 'AM')
+            return displayHour === 12 ? 0 : displayHour;
+        return displayHour === 12 ? 12 : displayHour + 12;
+    }
+    nextHour(direction) {
+        const maxHour = this.dateTimeHourFormat === '12' ? 12 : 23;
+        const minHour = this.dateTimeHourFormat === '12' ? 1 : 0;
+        const current = this.dateTimeHourFormat === '12'
+            ? this.clamp12Hour(this.selectedHour ?? minHour)
+            : this.clampHour(this.selectedHour ?? 0) ?? 0;
+        const next = current + direction;
+        if (next > maxHour)
+            return minHour;
+        if (next < minHour)
+            return maxHour;
+        return next;
+    }
+    nextMinute(step) {
+        const current = this.clampMinute(this.selectedMinute ?? 0) ?? 0;
+        const next = current + step;
+        if (next > 59)
+            return 0;
+        if (next < 0)
+            return 59;
+        return next;
+    }
+    normalizeManualNumber(event, part) {
+        const input = event.target;
+        const digits = (input?.value ?? '').replace(/\D/g, '').slice(0, 2);
+        if (input)
+            input.value = digits;
+        if (!digits)
+            return null;
+        const value = Number(digits);
+        return part === 'hour' ? this.clampHour(value) : this.clampMinute(value);
+    }
+    clampHour(value) {
+        if (value === null || Number.isNaN(value))
+            return null;
+        if (this.dateTimeHourFormat === '12')
+            return this.clamp12Hour(value);
+        return Math.min(23, Math.max(0, value));
+    }
+    clamp12Hour(value) {
+        if (value <= 0)
+            return 12;
+        return Math.min(12, Math.max(1, value));
+    }
+    clampMinute(value) {
+        if (value === null || Number.isNaN(value))
+            return null;
+        return Math.min(59, Math.max(0, value));
+    }
+    getMinuteStep() {
+        return Math.max(1, Math.min(59, Math.floor(this.minuteStep || 1)));
+    }
+    toDisplayHour(hour) {
+        const normalized = Math.min(23, Math.max(0, hour));
+        const display = normalized % 12;
+        return display === 0 ? 12 : display;
+    }
+    pad(value) {
+        return value.toString().padStart(2, '0');
+    }
+    applyMinTime(hour, minute) {
+        const selected = { hour, minute, second: 0, nano: 0 };
+        const min = this.coerceToTimeObject(this.minTime);
+        if (!min)
+            return selected;
+        const selectedTotal = selected.hour * 60 + selected.minute;
+        const minTotal = min.hour * 60 + min.minute;
+        return selectedTotal < minTotal
+            ? { hour: min.hour, minute: min.minute, second: min.second ?? 0, nano: min.nano ?? 0 }
+            : selected;
+    }
+    coerceToTimeObject(value) {
+        if (!value)
+            return null;
+        if (typeof value === 'string') {
+            const parts = value.split(':');
+            if (parts.length < 2)
+                return null;
+            const hour = Number(parts[0]);
+            const minute = Number(parts[1]);
+            const second = parts[2] ? Number(parts[2]) : 0;
+            if (Number.isNaN(hour) || Number.isNaN(minute))
+                return null;
+            return { hour, minute, second, nano: 0 };
+        }
+        return value;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomDateTimeFormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "19.2.17", type: CustomDateTimeFormComponent, isStandalone: true, selector: "custom-date-time-form", inputs: { parentForm: "parentForm", controlName: "controlName", name: "name", validation: "validation", mode: "mode", label: "label", placeholder: "placeholder", timePlaceholder: "timePlaceholder", labelClass: "labelClass", componentClass: "componentClass", disabled: "disabled", minDate: "minDate", maxDate: "maxDate", minTime: "minTime", defaultTime: "defaultTime", stringMode: "stringMode", height: "height", hourFormat: "hourFormat", dateTimeHourFormat: "dateTimeHourFormat", minuteStep: "minuteStep" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: "@if (isDateMode) {\n  <custom-calender-form\n    [name]=\"name\"\n    [controlName]=\"controlName\"\n    [parentForm]=\"parentForm\"\n    [validation]=\"validation\"\n    [label]=\"label\"\n    [placeholder]=\"placeholder\"\n    [labelClass]=\"labelClass\"\n    [componentClass]=\"componentClass\"\n    [disabled]=\"disabled\"\n    [minDate]=\"minDate\"\n    [maxDate]=\"maxDate\"\n    [height]=\"height\"\n    (valueChange)=\"valueChange.emit($event)\"\n  ></custom-calender-form>\n}\n\n@if (isTimeMode) {\n  <custom-time-input-form\n    [name]=\"name\"\n    [controlName]=\"controlName\"\n    [parentForm]=\"parentForm\"\n    [validation]=\"validation\"\n    [label]=\"label\"\n    [labelClass]=\"labelClass\"\n    [inputClass]=\"componentClass\"\n    [height]=\"height\"\n    [placeholder]=\"timePlaceholder\"\n    [stringMode]=\"stringMode\"\n    [defaultTime]=\"defaultTime\"\n    [minTime]=\"minTime\"\n    [hourFormat]=\"hourFormat\"\n    [minuteStep]=\"minuteStep\"\n    (timeChange)=\"valueChange.emit($event)\"\n  ></custom-time-input-form>\n}\n\n@if (isDateTimeMode) {\n  <div class=\"date-time-form\" [class]=\"componentClass\">\n    @if (label) {\n      <label [for]=\"name\" [class]=\"'custom-label ' + labelClass\">\n        {{ label }}\n        @if (containRequiredError()) {\n          <span class=\"required-marker\">*</span>\n        } @else {\n          <span class=\"required-marker\">&nbsp;</span>\n        }\n      </label>\n    }\n\n    <div class=\"date-time-form__picker\">\n      <div\n        class=\"date-time-form__input\"\n        [class.date-time-form__input--disabled]=\"disabled\"\n        [class.date-time-form__input--error]=\"\n          parentForm.controls[controlName].invalid &&\n          parentForm.controls[controlName].touched\n        \"\n        [ngStyle]=\"{ '--height': height }\"\n        (click)=\"toggleDateTimePanel()\"\n      >\n        @if (displayDateTimeValue()) {\n          <span class=\"date-time-form__value\">{{ displayDateTimeValue() }}</span>\n        } @else {\n          <span class=\"date-time-form__placeholder\">{{ placeholder }}</span>\n        }\n\n        <span class=\"date-time-form__icon\" aria-hidden=\"true\">\n          <svg width=\"20\" height=\"20\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n            <path d=\"M11 5V11L15 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n          </svg>\n        </span>\n      </div>\n\n      @if (showDateTimePanel && !disabled) {\n        <div\n          #dateTimePanel\n          class=\"date-time-panel\"\n          [clickOutside]=\"dateTimePanel\"\n          (clickOutsideEmitter)=\"closeDateTimePanel()\"\n        >\n          <div [dir]=\"'ltr'\" class=\"date-time-panel__calendar-header\">\n            <button type=\"button\" class=\"date-time-panel__nav\" (click)=\"prevMonth()\">\n              <span></span>\n            </button>\n            <div class=\"date-time-panel__month\">{{ getMonthName() }} {{ getYear() }}</div>\n            <button type=\"button\" class=\"date-time-panel__nav date-time-panel__nav--next\" (click)=\"nextMonth()\">\n              <span></span>\n            </button>\n          </div>\n\n          <div class=\"date-time-panel__weekdays\">\n            @for (weekday of weekdays; track weekday) {\n              <div>{{ weekday }}</div>\n            }\n          </div>\n\n          <div class=\"date-time-panel__days\">\n            @for (day of days; track day) {\n              <button\n                type=\"button\"\n                class=\"date-time-panel__day\"\n                [class.date-time-panel__day--muted]=\"!isCurrentMonth(day)\"\n                [class.date-time-panel__day--selected]=\"isSelectedDate(day)\"\n                [class.date-time-panel__day--disabled]=\"isDisabledDate(day)\"\n                (click)=\"selectDate(day)\"\n              >\n                {{ day.getDate() }}\n              </button>\n            }\n          </div>\n\n          <div class=\"date-time-panel__time\">\n            <div class=\"date-time-panel__spinner\">\n              <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"increment('hour')\">\n                <span></span>\n              </button>\n              <input\n                class=\"date-time-panel__time-input\"\n                type=\"text\"\n                inputmode=\"numeric\"\n                maxlength=\"2\"\n                [value]=\"displayHour()\"\n                (dblclick)=\"selectManualValue($event)\"\n                (focus)=\"selectManualValue($event)\"\n                (input)=\"onManualHourInput($event)\"\n                (blur)=\"onManualInputBlur('hour')\"\n              />\n              <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"decrement('hour')\">\n                <span></span>\n              </button>\n            </div>\n\n            <span class=\"date-time-panel__separator\">:</span>\n\n            <div class=\"date-time-panel__spinner\">\n              <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"increment('minute')\">\n                <span></span>\n              </button>\n              <input\n                class=\"date-time-panel__time-input\"\n                type=\"text\"\n                inputmode=\"numeric\"\n                maxlength=\"2\"\n                [value]=\"displayMinute()\"\n                (dblclick)=\"selectManualValue($event)\"\n                (focus)=\"selectManualValue($event)\"\n                (input)=\"onManualMinuteInput($event)\"\n                (blur)=\"onManualInputBlur('minute')\"\n              />\n              <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"decrement('minute')\">\n                <span></span>\n              </button>\n            </div>\n\n            @if (dateTimeHourFormat === '12') {\n              <div class=\"date-time-panel__spinner\">\n                <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"toggleMeridiem()\">\n                  <span></span>\n                </button>\n                <button type=\"button\" class=\"date-time-panel__meridiem\" (click)=\"toggleMeridiem()\">\n                  {{ selectedMeridiem }}\n                </button>\n                <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"toggleMeridiem()\">\n                  <span></span>\n                </button>\n              </div>\n            }\n          </div>\n        </div>\n      }\n    </div>\n\n    <custom-app-error\n      [control]=\"parentForm.controls[controlName]\"\n      [validation]=\"validation\"\n      [name]=\"name\"\n    />\n  </div>\n}\n", styles: [".date-time-form{width:100%}.custom-label{color:var(--smp-color-form-label);display:block;font-size:1.4rem;font-weight:var(--smp-font-weight-medium, 500);line-height:2rem;margin-bottom:.8rem}.required-marker{color:var(--smp-color-form-label);font-size:.95em;font-weight:500}.date-time-form__picker{position:relative;width:100%}.date-time-form__input{align-items:center;background:var(--smp-form-bg);border:.1rem solid var(--smp-color-form-border);border-radius:1.2rem;box-sizing:border-box;color:var(--smp-form-text);cursor:pointer;display:flex;height:var(--height, 4.8rem);justify-content:space-between;padding-inline:1.4rem 4rem;position:relative;width:100%}.date-time-form__input--error{border-color:var(--smp-form-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--smp-form-border-error) 20%,transparent)}.date-time-form__input--disabled{background:var(--smp-form-bg-disabled);color:var(--smp-text-disabled);cursor:not-allowed;opacity:.7}.date-time-form__placeholder{color:var(--smp-color-form-placeholder);font-size:1.4rem}.date-time-form__value{color:var(--smp-form-text);font-size:1.4rem}.date-time-form__icon{color:var(--smp-text-muted);display:flex;inset-inline-end:1.2rem;opacity:.6;position:absolute}.date-time-panel{background:var(--smp-bg-surface);border:.1rem solid var(--smp-color-form-border);border-radius:.8rem;box-shadow:var(--smp-shadow-md);color:var(--smp-form-text);inset-inline-start:0;margin-top:.4rem;overflow:hidden;padding:1.2rem;position:absolute;top:100%;width:min(34rem,100vw - 3.2rem);z-index:100}.date-time-panel__calendar-header{align-items:center;border-bottom:.1rem solid var(--smp-color-form-border);display:flex;justify-content:space-between;padding-block-end:1rem}.date-time-panel__month{font-size:1.6rem;font-weight:600}.date-time-panel__nav,.date-time-panel__spin-btn{align-items:center;background:transparent;border:0;color:var(--smp-text-muted);cursor:pointer;display:flex;justify-content:center;padding:0}.date-time-panel__nav{height:2.8rem;width:2.8rem}.date-time-panel__nav span,.date-time-panel__spin-btn span{border-block-start:.2rem solid currentColor;border-inline-end:.2rem solid currentColor;display:block;height:.9rem;width:.9rem}.date-time-panel__nav span{transform:rotate(-135deg)}.date-time-panel__nav--next span{transform:rotate(45deg)}.date-time-panel__weekdays,.date-time-panel__days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-time-panel__weekdays{color:var(--smp-text-muted);font-size:1.4rem;font-weight:600;padding-block:1.2rem .6rem}.date-time-panel__days{gap:.3rem}.date-time-panel__day{align-items:center;aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:var(--smp-form-text);cursor:pointer;display:flex;font-size:1.6rem;justify-content:center}.date-time-panel__day--muted{color:var(--smp-text-muted);opacity:.65}.date-time-panel__day--selected{background:var(--smp-bg-muted)}.date-time-panel__day--disabled{color:var(--smp-text-disabled);cursor:not-allowed;text-decoration:line-through}.date-time-panel__time{align-items:center;border-top:.1rem solid var(--smp-color-form-border);display:grid;gap:.8rem;grid-template-columns:1fr auto 1fr 1fr;margin-block-start:1rem;padding-block-start:1rem}.date-time-panel__spinner{align-items:center;display:grid;gap:.2rem;justify-items:center}.date-time-panel__spin-btn{height:2.4rem;width:100%}.date-time-panel__spin-btn span{transform:rotate(-45deg)}.date-time-panel__spin-btn--down span{transform:rotate(135deg)}.date-time-panel__time-input,.date-time-panel__meridiem{background:transparent;border:0;color:var(--smp-form-text);font-size:1.8rem;height:2.8rem;outline:none;text-align:center;width:100%}.date-time-panel__time-input:focus{background:var(--smp-bg-muted);border-radius:.6rem}.date-time-panel__meridiem{cursor:pointer;font-weight:500}.date-time-panel__separator{color:var(--smp-form-text);font-size:1.8rem;font-weight:600}@media (max-width: 640px){.date-time-panel{width:min(32rem,100vw - 3.2rem)}}\n"], dependencies: [{ kind: "component", type: CustomAppErrorComponent, selector: "custom-app-error", inputs: ["control", "validation", "name", "showErrors"] }, { kind: "component", type: CustomCalenderFormComponent, selector: "custom-calender-form", inputs: ["label", "placeholder", "filterDesign", "labelClass", "calendarPopUpClass", "calendarInputClass", "calendarContainerClass", "componentClass", "minDate", "maxDate", "controlName", "parentForm", "validation", "name", "disabled", "openUp", "overlayMode", "height"], outputs: ["valueChange", "toggledCalendar"] }, { kind: "component", type: CustomTimeInputFormComponent, selector: "custom-time-input-form", inputs: ["parentForm", "name", "controlName", "label", "placeholder", "labelClass", "inputClass", "validation", "height", "stringMode", "defaultTime", "minTime", "hourFormat", "minuteStep", "value"], outputs: ["timeChange"] }, { kind: "directive", type: ClickOutsideDirective, selector: "[clickOutside]", inputs: ["clickOutside"], outputs: ["clickOutsideEmitter"] }, { kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "ngmodule", type: ReactiveFormsModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: CustomDateTimeFormComponent, decorators: [{
+            type: Component,
+            args: [{ selector: 'custom-date-time-form', standalone: true, imports: [
+                        CustomAppErrorComponent,
+                        CustomCalenderFormComponent,
+                        CustomTimeInputFormComponent,
+                        ClickOutsideDirective,
+                        NgStyle,
+                        ReactiveFormsModule,
+                    ], template: "@if (isDateMode) {\n  <custom-calender-form\n    [name]=\"name\"\n    [controlName]=\"controlName\"\n    [parentForm]=\"parentForm\"\n    [validation]=\"validation\"\n    [label]=\"label\"\n    [placeholder]=\"placeholder\"\n    [labelClass]=\"labelClass\"\n    [componentClass]=\"componentClass\"\n    [disabled]=\"disabled\"\n    [minDate]=\"minDate\"\n    [maxDate]=\"maxDate\"\n    [height]=\"height\"\n    (valueChange)=\"valueChange.emit($event)\"\n  ></custom-calender-form>\n}\n\n@if (isTimeMode) {\n  <custom-time-input-form\n    [name]=\"name\"\n    [controlName]=\"controlName\"\n    [parentForm]=\"parentForm\"\n    [validation]=\"validation\"\n    [label]=\"label\"\n    [labelClass]=\"labelClass\"\n    [inputClass]=\"componentClass\"\n    [height]=\"height\"\n    [placeholder]=\"timePlaceholder\"\n    [stringMode]=\"stringMode\"\n    [defaultTime]=\"defaultTime\"\n    [minTime]=\"minTime\"\n    [hourFormat]=\"hourFormat\"\n    [minuteStep]=\"minuteStep\"\n    (timeChange)=\"valueChange.emit($event)\"\n  ></custom-time-input-form>\n}\n\n@if (isDateTimeMode) {\n  <div class=\"date-time-form\" [class]=\"componentClass\">\n    @if (label) {\n      <label [for]=\"name\" [class]=\"'custom-label ' + labelClass\">\n        {{ label }}\n        @if (containRequiredError()) {\n          <span class=\"required-marker\">*</span>\n        } @else {\n          <span class=\"required-marker\">&nbsp;</span>\n        }\n      </label>\n    }\n\n    <div class=\"date-time-form__picker\">\n      <div\n        class=\"date-time-form__input\"\n        [class.date-time-form__input--disabled]=\"disabled\"\n        [class.date-time-form__input--error]=\"\n          parentForm.controls[controlName].invalid &&\n          parentForm.controls[controlName].touched\n        \"\n        [ngStyle]=\"{ '--height': height }\"\n        (click)=\"toggleDateTimePanel()\"\n      >\n        @if (displayDateTimeValue()) {\n          <span class=\"date-time-form__value\">{{ displayDateTimeValue() }}</span>\n        } @else {\n          <span class=\"date-time-form__placeholder\">{{ placeholder }}</span>\n        }\n\n        <span class=\"date-time-form__icon\" aria-hidden=\"true\">\n          <svg width=\"20\" height=\"20\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path d=\"M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n            <path d=\"M11 5V11L15 13\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n          </svg>\n        </span>\n      </div>\n\n      @if (showDateTimePanel && !disabled) {\n        <div\n          #dateTimePanel\n          class=\"date-time-panel\"\n          [clickOutside]=\"dateTimePanel\"\n          (clickOutsideEmitter)=\"closeDateTimePanel()\"\n        >\n          <div [dir]=\"'ltr'\" class=\"date-time-panel__calendar-header\">\n            <button type=\"button\" class=\"date-time-panel__nav\" (click)=\"prevMonth()\">\n              <span></span>\n            </button>\n            <div class=\"date-time-panel__month\">{{ getMonthName() }} {{ getYear() }}</div>\n            <button type=\"button\" class=\"date-time-panel__nav date-time-panel__nav--next\" (click)=\"nextMonth()\">\n              <span></span>\n            </button>\n          </div>\n\n          <div class=\"date-time-panel__weekdays\">\n            @for (weekday of weekdays; track weekday) {\n              <div>{{ weekday }}</div>\n            }\n          </div>\n\n          <div class=\"date-time-panel__days\">\n            @for (day of days; track day) {\n              <button\n                type=\"button\"\n                class=\"date-time-panel__day\"\n                [class.date-time-panel__day--muted]=\"!isCurrentMonth(day)\"\n                [class.date-time-panel__day--selected]=\"isSelectedDate(day)\"\n                [class.date-time-panel__day--disabled]=\"isDisabledDate(day)\"\n                (click)=\"selectDate(day)\"\n              >\n                {{ day.getDate() }}\n              </button>\n            }\n          </div>\n\n          <div class=\"date-time-panel__time\">\n            <div class=\"date-time-panel__spinner\">\n              <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"increment('hour')\">\n                <span></span>\n              </button>\n              <input\n                class=\"date-time-panel__time-input\"\n                type=\"text\"\n                inputmode=\"numeric\"\n                maxlength=\"2\"\n                [value]=\"displayHour()\"\n                (dblclick)=\"selectManualValue($event)\"\n                (focus)=\"selectManualValue($event)\"\n                (input)=\"onManualHourInput($event)\"\n                (blur)=\"onManualInputBlur('hour')\"\n              />\n              <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"decrement('hour')\">\n                <span></span>\n              </button>\n            </div>\n\n            <span class=\"date-time-panel__separator\">:</span>\n\n            <div class=\"date-time-panel__spinner\">\n              <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"increment('minute')\">\n                <span></span>\n              </button>\n              <input\n                class=\"date-time-panel__time-input\"\n                type=\"text\"\n                inputmode=\"numeric\"\n                maxlength=\"2\"\n                [value]=\"displayMinute()\"\n                (dblclick)=\"selectManualValue($event)\"\n                (focus)=\"selectManualValue($event)\"\n                (input)=\"onManualMinuteInput($event)\"\n                (blur)=\"onManualInputBlur('minute')\"\n              />\n              <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"decrement('minute')\">\n                <span></span>\n              </button>\n            </div>\n\n            @if (dateTimeHourFormat === '12') {\n              <div class=\"date-time-panel__spinner\">\n                <button type=\"button\" class=\"date-time-panel__spin-btn\" (click)=\"toggleMeridiem()\">\n                  <span></span>\n                </button>\n                <button type=\"button\" class=\"date-time-panel__meridiem\" (click)=\"toggleMeridiem()\">\n                  {{ selectedMeridiem }}\n                </button>\n                <button type=\"button\" class=\"date-time-panel__spin-btn date-time-panel__spin-btn--down\" (click)=\"toggleMeridiem()\">\n                  <span></span>\n                </button>\n              </div>\n            }\n          </div>\n        </div>\n      }\n    </div>\n\n    <custom-app-error\n      [control]=\"parentForm.controls[controlName]\"\n      [validation]=\"validation\"\n      [name]=\"name\"\n    />\n  </div>\n}\n", styles: [".date-time-form{width:100%}.custom-label{color:var(--smp-color-form-label);display:block;font-size:1.4rem;font-weight:var(--smp-font-weight-medium, 500);line-height:2rem;margin-bottom:.8rem}.required-marker{color:var(--smp-color-form-label);font-size:.95em;font-weight:500}.date-time-form__picker{position:relative;width:100%}.date-time-form__input{align-items:center;background:var(--smp-form-bg);border:.1rem solid var(--smp-color-form-border);border-radius:1.2rem;box-sizing:border-box;color:var(--smp-form-text);cursor:pointer;display:flex;height:var(--height, 4.8rem);justify-content:space-between;padding-inline:1.4rem 4rem;position:relative;width:100%}.date-time-form__input--error{border-color:var(--smp-form-border-error);box-shadow:0 0 0 .3rem color-mix(in srgb,var(--smp-form-border-error) 20%,transparent)}.date-time-form__input--disabled{background:var(--smp-form-bg-disabled);color:var(--smp-text-disabled);cursor:not-allowed;opacity:.7}.date-time-form__placeholder{color:var(--smp-color-form-placeholder);font-size:1.4rem}.date-time-form__value{color:var(--smp-form-text);font-size:1.4rem}.date-time-form__icon{color:var(--smp-text-muted);display:flex;inset-inline-end:1.2rem;opacity:.6;position:absolute}.date-time-panel{background:var(--smp-bg-surface);border:.1rem solid var(--smp-color-form-border);border-radius:.8rem;box-shadow:var(--smp-shadow-md);color:var(--smp-form-text);inset-inline-start:0;margin-top:.4rem;overflow:hidden;padding:1.2rem;position:absolute;top:100%;width:min(34rem,100vw - 3.2rem);z-index:100}.date-time-panel__calendar-header{align-items:center;border-bottom:.1rem solid var(--smp-color-form-border);display:flex;justify-content:space-between;padding-block-end:1rem}.date-time-panel__month{font-size:1.6rem;font-weight:600}.date-time-panel__nav,.date-time-panel__spin-btn{align-items:center;background:transparent;border:0;color:var(--smp-text-muted);cursor:pointer;display:flex;justify-content:center;padding:0}.date-time-panel__nav{height:2.8rem;width:2.8rem}.date-time-panel__nav span,.date-time-panel__spin-btn span{border-block-start:.2rem solid currentColor;border-inline-end:.2rem solid currentColor;display:block;height:.9rem;width:.9rem}.date-time-panel__nav span{transform:rotate(-135deg)}.date-time-panel__nav--next span{transform:rotate(45deg)}.date-time-panel__weekdays,.date-time-panel__days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-time-panel__weekdays{color:var(--smp-text-muted);font-size:1.4rem;font-weight:600;padding-block:1.2rem .6rem}.date-time-panel__days{gap:.3rem}.date-time-panel__day{align-items:center;aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:var(--smp-form-text);cursor:pointer;display:flex;font-size:1.6rem;justify-content:center}.date-time-panel__day--muted{color:var(--smp-text-muted);opacity:.65}.date-time-panel__day--selected{background:var(--smp-bg-muted)}.date-time-panel__day--disabled{color:var(--smp-text-disabled);cursor:not-allowed;text-decoration:line-through}.date-time-panel__time{align-items:center;border-top:.1rem solid var(--smp-color-form-border);display:grid;gap:.8rem;grid-template-columns:1fr auto 1fr 1fr;margin-block-start:1rem;padding-block-start:1rem}.date-time-panel__spinner{align-items:center;display:grid;gap:.2rem;justify-items:center}.date-time-panel__spin-btn{height:2.4rem;width:100%}.date-time-panel__spin-btn span{transform:rotate(-45deg)}.date-time-panel__spin-btn--down span{transform:rotate(135deg)}.date-time-panel__time-input,.date-time-panel__meridiem{background:transparent;border:0;color:var(--smp-form-text);font-size:1.8rem;height:2.8rem;outline:none;text-align:center;width:100%}.date-time-panel__time-input:focus{background:var(--smp-bg-muted);border-radius:.6rem}.date-time-panel__meridiem{cursor:pointer;font-weight:500}.date-time-panel__separator{color:var(--smp-form-text);font-size:1.8rem;font-weight:600}@media (max-width: 640px){.date-time-panel{width:min(32rem,100vw - 3.2rem)}}\n"] }]
+        }], propDecorators: { parentForm: [{
+                type: Input,
+                args: [{ required: true }]
+            }], controlName: [{
+                type: Input,
+                args: [{ required: true }]
+            }], name: [{
+                type: Input,
+                args: [{ required: true }]
+            }], validation: [{
+                type: Input,
+                args: [{ required: true }]
+            }], mode: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], placeholder: [{
+                type: Input
+            }], timePlaceholder: [{
+                type: Input
+            }], labelClass: [{
+                type: Input
+            }], componentClass: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], minDate: [{
+                type: Input
+            }], maxDate: [{
+                type: Input
+            }], minTime: [{
+                type: Input
+            }], defaultTime: [{
+                type: Input
+            }], stringMode: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }], hourFormat: [{
+                type: Input
+            }], dateTimeHourFormat: [{
+                type: Input
+            }], minuteStep: [{
+                type: Input
+            }], valueChange: [{
+                type: Output
+            }] } });
+
 // confirm-dialog.service.ts
 class ConfirmDialogService {
     applicationRef = inject(ApplicationRef);
@@ -10839,5 +11385,5 @@ const getSaudiTime = () => {
  * Generated bundle index. Do not edit.
  */
 
-export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCdkOverlayService, CustomCdkTooltipDirective, CustomCdkTooltipPanelComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatAbsolute, formatActivityTime, formatDate, formatDateWithTime, formatRelativeActivityTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, hideOverflowTooltip, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, showOverflowTooltip, someFieldsContainData, tenantAuthGuard, timeAgo, toDate };
+export { API_BASE_URL, ActivityTimePipe, AllowNumberOnlyDirective, ArabicOnlyDirective, AuthBeService, AuthConstant, AuthContextService, AuthDirective, AuthInterceptor, AuthService, BlurBackdropDirective, ClickOutsideDirective, CommonHttpService, ComponentFormErrorConstant, ConfirmDialogService, CustomActionsDropdownComponent, CustomAppErrorComponent, CustomAvatarsComponent, CustomBreadcrumbComponent, CustomButtonComponent, CustomCalendarComponent, CustomCalendarRangeFormComponent, CustomCalenderFormComponent, CustomCategoryTableComponent, CustomCdkOverlayService, CustomCdkTooltipDirective, CustomCdkTooltipPanelComponent, CustomCheckBoxFormComponent, CustomColorComponent, CustomConfirmPopupComponent, CustomCounterInputComponent, CustomDateRangesFilterComponent, CustomDateTimeFormComponent, CustomDetailsHeaderComponent, CustomDetailsModalComponent, CustomDetailsNavComponent, CustomDropdownButtonComponent, CustomDropdownComponent, CustomDropdownFormComponent, CustomDynamicTableWithCategoriesComponent, CustomFieldsFormComponent, CustomFileUploadComponent, CustomFileViewerComponent, CustomFilterDropdownComponent, CustomFilterDynamicFormComponent, CustomFormActionsComponent, CustomImageViewerComponent, CustomInputFormComponent, CustomLoadingSpinnerComponent, CustomMainPagesFilterComponent, CustomModalComponent, CustomModalService, CustomMultiSelectComponent, CustomMultiSelectFormComponent, CustomOtpInputFormComponent, CustomPagesHeaderComponent, CustomPagesHeaderWithDialogFilterComponent, CustomPaginationComponent, CustomPhoneFormComponent, CustomPlateNumberInputFormComponent, CustomPopUpComponent, CustomProfileImgInputComponent, CustomProgressBarComponent, CustomRadioComponentComponent, CustomRadioGroupFormComponent, CustomReactiveSearchInputComponent, CustomSearchInputComponent, CustomSmDynamicTableComponent, CustomSmpFileUploadComponent, CustomStatusLabelComponent, CustomSteppersContainerComponent, CustomSteppersControllersComponent, CustomSvgIconComponent, CustomTableComponent, CustomTabsComponent, CustomTabsWithDialogFilterComponent, CustomTextareaComponent, CustomTextareaFormComponent, CustomTimeInputFormComponent, CustomTitleContentComponent, CustomToastComponent, CustomToastViewportComponent, CustomToggleSwitchComponent, CustomToggleSwitchFormComponent, CustomTooltipComponent, DispatchingFeComponentsService, EnglishOnlyDirective, ErrorInterceptor, GeoLocationService, I18nConstant, Lang, LoadingService, LocalizePipe, MODAL_REF, MinsToDurationPipe, ModuleRoutes, NetworkConnectionInterceptor, OverlayPanelComponent, PERMISSIONS, PermissionGuard, ROUTE_APPLICATION_PATTERNS, Roles, SHOW_SUCCESS_TOASTER, SKIP_LOADER, SKIP_TOKEN, SidenavService, StepperService, StorageService, TenantAuthConstant, TenantAuthService, TenantPlatformService, TenantsProductsService, ToastService, ToggleElementDirective, TranslationService, USE_TOKEN, UserDataService, UserStatus, authGuard, b64toBlob, blobToB64, calculateDatesFromDuration, checkProductAccess, convertDateFormat, convertFileToBase64, convertFormGroupToFormData, diffTime, downloadBlob, excelDateToJSDate, flattenTree, formatAbsolute, formatActivityTime, formatDate, formatDateWithTime, formatRelativeActivityTime, formatTimestamp, formatinitialTakeTime, generateRandomColor, generateUniqueNumber, getFormValidationErrors, getSaudiTime, hideOverflowTooltip, injectModalRef, isDocumentPath, isImagePath, isVedioPath, loadingInterceptor, logger, noAuthGuard, noAuthTenantGuard, showOverflowTooltip, someFieldsContainData, tenantAuthGuard, timeAgo, toDate };
 //# sourceMappingURL=smart-parking-shared-lib.mjs.map

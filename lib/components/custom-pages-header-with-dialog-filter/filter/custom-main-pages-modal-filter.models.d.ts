@@ -1,5 +1,4 @@
 import type { TemplateRef } from '@angular/core';
-import type { FormGroup } from '@angular/forms';
 import type { IDropdownOption, IUserLookup } from '../../../interfaces/components/dropdown.interface';
 export type FilterValue = string | number | Date | null | unknown[];
 export type FilterSelections = Record<string, FilterValue>;
@@ -9,8 +8,24 @@ export interface FilterChange {
     selectedIds: unknown[];
     selections?: Record<string, unknown[]>;
 }
+export interface FilterBoundControl {
+    invalid: boolean;
+    setValue(value: FilterValue, options?: {
+        emitEvent?: boolean;
+    }): void;
+    enable(options?: {
+        emitEvent?: boolean;
+    }): void;
+    disable(options?: {
+        emitEvent?: boolean;
+    }): void;
+    markAsTouched(): void;
+}
+export interface FilterBindingForm {
+    get(path: string): FilterBoundControl | null;
+}
 export interface FilterFormBinding {
-    parentForm: FormGroup;
+    parentForm: FilterBindingForm;
     controlName: string;
     name?: string;
     onValueChange?: (value: FilterValue) => void;

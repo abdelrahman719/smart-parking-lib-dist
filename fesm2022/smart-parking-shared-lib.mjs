@@ -6026,7 +6026,7 @@ class CustomMainPagesModalFilterDialogComponent {
         return `${config.key}${index === 0 ? 'From' : 'To'}`;
     }
     getForm(config) {
-        return config.formBinding?.parentForm ?? this.internalForm;
+        return (config.formBinding?.parentForm ?? this.internalForm);
     }
     getMinDate(config) {
         const value = config.formBinding?.minDate;

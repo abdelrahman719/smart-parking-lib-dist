@@ -1,8 +1,9 @@
-import { EventEmitter } from '@angular/core';
+import { ElementRef, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IComponentFormError } from '../../interfaces';
 import * as i0 from "@angular/core";
 export declare class CustomInputFormComponent {
+    inputElement?: ElementRef<HTMLInputElement>;
     numberType: 'currency' | 'time' | 'discount' | null;
     timeText: string | null;
     inputExtraTextLabel: string | null;

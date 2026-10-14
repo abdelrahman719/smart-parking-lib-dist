@@ -59,6 +59,7 @@ export * from './custom-sm-dynamic-table/custom-sm-dynamic-table.component';
 export * from './custom-phone-form/custom-phone-form.component';
 export * from './custom-otp-input-form/custom-otp-input-form.component';
 export * from './custom-counter-input/custom-counter-input.component';
+export * from './custom-cropped-text/custom-cropped-text.component';
 export * from './custom-smp-file-upload/custom-smp-file-upload.component';
 export * from './custom-smp-dropzone-file-upload/custom-smp-dropzone-file-upload.component';
 export * from './custom-toast-viewport/custom-toast-viewport.component';

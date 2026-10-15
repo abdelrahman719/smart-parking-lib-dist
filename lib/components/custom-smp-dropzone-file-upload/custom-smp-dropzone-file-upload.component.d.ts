@@ -30,6 +30,7 @@ export declare class CustomSmpDropzoneFileUploadComponent implements ControlValu
     touched: EventEmitter<void>;
     fileInput: ElementRef<HTMLInputElement>;
     readonly fileInputId: string;
+    isDragging: boolean;
     private readonly toast;
     private readonly removedExisting;
     private fileValue;
@@ -48,6 +49,10 @@ export declare class CustomSmpDropzoneFileUploadComponent implements ControlValu
     containRequiredError(): boolean;
     getFileTypesText(): string;
     onFileSelected(event: Event): Promise<void>;
+    onDragOver(event: DragEvent): void;
+    onDragLeave(event: DragEvent): void;
+    onDrop(event: DragEvent): Promise<void>;
+    private processFiles;
     removeSelectedFile(index: number): void;
     removeExistingAt(index: number): void;
     existingPreviewSrc(item: ISmpAttachmentAfterResolving): SafeHtml;

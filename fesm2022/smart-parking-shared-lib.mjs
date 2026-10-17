@@ -7860,6 +7860,12 @@ const STYLES = {
         border: 'var(--tahakom-colors-neutral-lightest-active, #f3f4f6)',
         label: 'Deleted',
     },
+    archived: {
+        color: 'var(--tahakom-colors-neutral-lightest-active, #f3f4f6)',
+        bg: 'var(--tahakom-colors-neutral-dark, #1F2A37)',
+        border: 'var(--tahakom-colors-neutral-dark, #1F2A37)',
+        label: 'Archived',
+    },
     inprogress: {
         color: 'var(--tahakom-colors-blue-normal-active, #175CD3)',
         bg: 'var(--tahakom-colors-blue-lightest-hover, #EFF8FF)',
@@ -7955,6 +7961,7 @@ class CustomStatusLabelComponent {
             inactive: 'inactive',
             canceled: 'canceled',
             deleted: 'deleted',
+            archived: 'archived',
             open: 'open',
             inprogress: 'inprogress',
             in_progress: 'inprogress',

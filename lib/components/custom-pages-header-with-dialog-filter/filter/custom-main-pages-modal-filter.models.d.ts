@@ -9,6 +9,7 @@ export interface FilterChange {
     selections?: Record<string, unknown[]>;
 }
 export interface FilterBoundControl {
+    readonly value?: FilterValue;
     invalid: boolean;
     setValue(value: FilterValue, options?: {
         emitEvent?: boolean;

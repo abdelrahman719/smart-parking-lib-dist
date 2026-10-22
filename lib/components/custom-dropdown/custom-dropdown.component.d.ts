@@ -1,8 +1,8 @@
-import { AfterViewChecked, ElementRef, EventEmitter, OnDestroy } from '@angular/core';
+import { AfterViewChecked, ElementRef, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { IDropdownOption, IUserLookup } from '../../interfaces';
 import { TranslationService } from '../../services';
 import * as i0 from "@angular/core";
-export declare class CustomDropdownComponent implements AfterViewChecked, OnDestroy {
+export declare class CustomDropdownComponent implements AfterViewChecked, OnChanges, OnDestroy {
     label?: string;
     labelClass: string;
     dropdownOptionsClass: string;
@@ -35,6 +35,7 @@ export declare class CustomDropdownComponent implements AfterViewChecked, OnDest
     private positionFrame;
     private readonly positionOverlayHandler;
     ngOnInit(): void;
+    ngOnChanges(changes: SimpleChanges): void;
     get selectedOption(): IDropdownOption | null;
     get selectedUser(): IUserLookup | null;
     toggleDropdown(): void;

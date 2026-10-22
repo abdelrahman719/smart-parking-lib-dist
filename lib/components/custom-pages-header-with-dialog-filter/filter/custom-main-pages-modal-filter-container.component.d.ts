@@ -30,6 +30,7 @@ export declare class CustomMainPagesModalFilterContainerComponent {
     filterReset: import("@angular/core").OutputEmitterRef<boolean>;
     private readonly modalService;
     private readonly translateService;
+    private activeFilterDialog?;
     readonly appliedState: import("@angular/core").WritableSignal<FilterState>;
     readonly initialState: import("@angular/core").WritableSignal<FilterState>;
     readonly normalizedConfigs: import("@angular/core").Signal<NormalizedFilterConfigItem[]>;

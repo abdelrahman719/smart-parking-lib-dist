@@ -7,5 +7,5 @@ export declare class CustomFormActionsComponent {
     saveBtnClicked: EventEmitter<void>;
     cancelBtnClicked: EventEmitter<void>;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFormActionsComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomFormActionsComponent, "custom-form-actions", never, { "saveBtnLabel": { "alias": "saveBtnLabel"; "required": false; }; "cancelBtnLabel": { "alias": "cancelBtnLabel"; "required": false; }; "saveBtnDisabled": { "alias": "saveBtnDisabled"; "required": false; }; }, { "saveBtnClicked": "saveBtnClicked"; "cancelBtnClicked": "cancelBtnClicked"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomFormActionsComponent, "custom-form-actions", never, { "saveBtnLabel": { "alias": "saveBtnLabel"; "required": false; }; "cancelBtnLabel": { "alias": "cancelBtnLabel"; "required": false; }; "saveBtnDisabled": { "alias": "saveBtnDisabled"; "required": false; }; }, { "saveBtnClicked": "saveBtnClicked"; "cancelBtnClicked": "cancelBtnClicked"; }, never, ["[saveBtnIcon]"], true, never>;
 }

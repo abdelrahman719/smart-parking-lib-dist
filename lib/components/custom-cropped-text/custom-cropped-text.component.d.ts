@@ -12,3 +12,4 @@ export declare class CustomCroppedTextComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomCroppedTextComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomCroppedTextComponent, "custom-cropped-text", never, { "value": { "alias": "value"; "required": false; }; "maxLength": { "alias": "maxLength"; "required": false; }; "fallback": { "alias": "fallback"; "required": false; }; "tooltipPosition": { "alias": "tooltipPosition"; "required": false; }; "textClass": { "alias": "textClass"; "required": false; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-cropped-text.component.d.ts.map

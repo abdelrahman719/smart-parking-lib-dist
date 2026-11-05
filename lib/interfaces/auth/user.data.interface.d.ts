@@ -62,3 +62,4 @@ export interface ILocalData {
     refreshToken: string;
     user: IUserData;
 }
+//# sourceMappingURL=user.data.interface.d.ts.map

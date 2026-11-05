@@ -17,3 +17,4 @@ export interface ITenantUserSingleAuthResult {
     email?: string;
     error?: any;
 }
+//# sourceMappingURL=tenant-user.interface.d.ts.map

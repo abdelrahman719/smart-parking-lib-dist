@@ -10,3 +10,4 @@ export declare class AllowNumberOnlyDirective {
     static ɵfac: i0.ɵɵFactoryDeclaration<AllowNumberOnlyDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<AllowNumberOnlyDirective, "[appAllowNumberOnly]", never, {}, {}, never, never, true, never>;
 }
+//# sourceMappingURL=allow.number.only.directive.d.ts.map

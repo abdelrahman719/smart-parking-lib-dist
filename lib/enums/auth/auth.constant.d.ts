@@ -60,3 +60,4 @@ export declare enum PERMISSIONS {
     COUPON_VIEW = "COUPON:VIEW",
     DASHBOARD_VIEW = "DASHBOARD:VIEW"
 }
+//# sourceMappingURL=auth.constant.d.ts.map

@@ -28,3 +28,4 @@ export declare class CustomDetailsHeaderComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDetailsHeaderComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomDetailsHeaderComponent, "custom-details-header", never, { "showX": { "alias": "showX"; "required": false; }; "BreadCrumbs": { "alias": "BreadCrumbs"; "required": true; }; "actionsDropdown": { "alias": "actionsDropdown"; "required": false; "isSignal": true; }; }, { "closeContainer": "closeContainer"; "dropdownSelectAction": "dropdownSelectAction"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-details-header.component.d.ts.map

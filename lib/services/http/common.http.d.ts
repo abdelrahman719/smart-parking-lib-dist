@@ -18,3 +18,4 @@ export declare class CommonHttpService {
     static ɵfac: i0.ɵɵFactoryDeclaration<CommonHttpService, [null, { optional: true; }]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<CommonHttpService>;
 }
+//# sourceMappingURL=common.http.d.ts.map

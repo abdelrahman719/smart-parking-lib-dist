@@ -19,3 +19,4 @@ export declare class CustomColorComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomColorComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomColorComponent, "custom-color", never, { "positionClass": { "alias": "positionClass"; "required": true; }; "title": { "alias": "title"; "required": true; }; "name": { "alias": "name"; "required": false; }; "hideNameInput": { "alias": "hideNameInput"; "required": false; }; "color": { "alias": "color"; "required": false; }; "enableColors": { "alias": "enableColors"; "required": false; }; }, { "onSaveColor": "onSaveColor"; }, never, ["*"], true, never>;
 }
+//# sourceMappingURL=custom-color.component.d.ts.map

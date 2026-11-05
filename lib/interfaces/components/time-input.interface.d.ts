@@ -4,3 +4,4 @@ export interface ITimeDetails {
     second: number;
     nano: number;
 }
+//# sourceMappingURL=time-input.interface.d.ts.map

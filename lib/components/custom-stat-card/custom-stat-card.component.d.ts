@@ -14,3 +14,4 @@ export declare class CustomStatCardComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomStatCardComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomStatCardComponent, "custom-stat-card", never, { "icon": { "alias": "icon"; "required": false; }; "iconPath": { "alias": "iconPath"; "required": false; }; "iconColor": { "alias": "iconColor"; "required": false; }; "iconBgColor": { "alias": "iconBgColor"; "required": false; }; "title": { "alias": "title"; "required": false; }; "value": { "alias": "value"; "required": false; }; "titleTemplate": { "alias": "titleTemplate"; "required": false; }; "valueTemplate": { "alias": "valueTemplate"; "required": false; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-stat-card.component.d.ts.map

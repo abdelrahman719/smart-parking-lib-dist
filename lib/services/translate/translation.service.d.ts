@@ -18,3 +18,4 @@ export declare class TranslationService {
     static ɵfac: i0.ɵɵFactoryDeclaration<TranslationService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<TranslationService>;
 }
+//# sourceMappingURL=translation.service.d.ts.map

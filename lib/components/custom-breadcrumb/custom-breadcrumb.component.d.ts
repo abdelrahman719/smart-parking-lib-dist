@@ -17,3 +17,4 @@ export declare class CustomBreadcrumbComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomBreadcrumbComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomBreadcrumbComponent, "custom-breadcrumb", never, { "actionsTemplate": { "alias": "actionsTemplate"; "required": false; }; "breadcrumbItems": { "alias": "breadcrumbItems"; "required": true; }; "saveBtnLabel": { "alias": "saveBtnLabel"; "required": false; }; "cancelBtnLabel": { "alias": "cancelBtnLabel"; "required": false; }; "saveBtnDisabled": { "alias": "saveBtnDisabled"; "required": false; }; "showActions": { "alias": "showActions"; "required": false; }; }, { "saveBtnClicked": "saveBtnClicked"; "cancelBtnClicked": "cancelBtnClicked"; "breadcrumbItemClicked": "breadcrumbItemClicked"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-breadcrumb.component.d.ts.map

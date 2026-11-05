@@ -18,3 +18,4 @@ export declare class CustomToastViewportComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomToastViewportComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomToastViewportComponent, "custom-toast-viewport", never, {}, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-toast-viewport.component.d.ts.map

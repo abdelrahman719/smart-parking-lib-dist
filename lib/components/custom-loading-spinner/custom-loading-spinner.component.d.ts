@@ -4,3 +4,4 @@ export declare class CustomLoadingSpinnerComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomLoadingSpinnerComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomLoadingSpinnerComponent, "custom-loading-spinner", never, { "local": { "alias": "local"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-loading-spinner.component.d.ts.map

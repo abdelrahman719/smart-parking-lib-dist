@@ -12,3 +12,4 @@ export declare class CustomAppErrorComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomAppErrorComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomAppErrorComponent, "custom-app-error", never, { "control": { "alias": "control"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "name": { "alias": "name"; "required": true; }; "showErrors": { "alias": "showErrors"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-app-error.component.d.ts.map

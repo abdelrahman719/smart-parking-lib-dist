@@ -15,3 +15,4 @@ export declare class OverlayPanelComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<OverlayPanelComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<OverlayPanelComponent, "overlay-panel", never, { "overlayClass": { "alias": "overlayClass"; "required": false; }; "expandSide": { "alias": "expandSide"; "required": false; }; }, {}, ["targetTemplate", "overlayTemplate"], never, true, never>;
 }
+//# sourceMappingURL=overlay-panel.component.d.ts.map

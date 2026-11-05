@@ -61,3 +61,4 @@ export declare class CustomSmDynamicTableComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmDynamicTableComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmDynamicTableComponent, "custom-sm-dynamic-table", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "actionsList": { "alias": "actionsList"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "tableMaxHeight": { "alias": "tableMaxHeight"; "required": false; }; "colTemplates": { "alias": "colTemplates"; "required": false; }; "emptyStateMsg": { "alias": "emptyStateMsg"; "required": false; }; "actionTemplate": { "alias": "actionTemplate"; "required": false; }; "hasActionTemplate": { "alias": "hasActionTemplate"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-sm-dynamic-table.component.d.ts.map

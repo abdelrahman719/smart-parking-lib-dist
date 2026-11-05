@@ -6,3 +6,4 @@ export declare class CustomSvgIconComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSvgIconComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomSvgIconComponent, "custom-svg-icon", never, { "path": { "alias": "path"; "required": false; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-svg-icon.component.d.ts.map

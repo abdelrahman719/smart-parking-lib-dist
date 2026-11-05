@@ -6,3 +6,4 @@ export declare const ModuleRoutes: {
     ASSET_MANAGEMENT_HOME: string;
     USER_MANAGEMENT_HOME: string;
 };
+//# sourceMappingURL=routerPaths.constants.d.ts.map

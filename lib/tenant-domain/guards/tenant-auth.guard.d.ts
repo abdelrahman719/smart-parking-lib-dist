@@ -1,2 +1,3 @@
 import { CanActivateFn } from '@angular/router';
 export declare const tenantAuthGuard: CanActivateFn;
+//# sourceMappingURL=tenant-auth.guard.d.ts.map

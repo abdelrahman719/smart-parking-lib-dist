@@ -9,3 +9,4 @@ export declare class ActivityTimePipe implements PipeTransform {
     static ɵfac: i0.ɵɵFactoryDeclaration<ActivityTimePipe, never>;
     static ɵpipe: i0.ɵɵPipeDeclaration<ActivityTimePipe, "activityTime", true>;
 }
+//# sourceMappingURL=activity-time.pipe.d.ts.map

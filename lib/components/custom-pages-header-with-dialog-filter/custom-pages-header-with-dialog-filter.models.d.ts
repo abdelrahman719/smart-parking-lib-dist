@@ -7,3 +7,4 @@ export interface CustomPagesHeaderResultSummary {
     showingLabel?: string;
     ofLabel?: string;
 }
+//# sourceMappingURL=custom-pages-header-with-dialog-filter.models.d.ts.map

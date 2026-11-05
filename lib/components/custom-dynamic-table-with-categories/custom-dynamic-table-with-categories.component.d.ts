@@ -25,3 +25,4 @@ export declare class CustomDynamicTableWithCategoriesComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDynamicTableWithCategoriesComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomDynamicTableWithCategoriesComponent, "custom-dynamic-table-with-categories", never, { "config": { "alias": "config"; "required": false; }; "hasCheckBox": { "alias": "hasCheckBox"; "required": false; }; "cellTemplates": { "alias": "cellTemplates"; "required": false; }; "actionTemplates": { "alias": "actionTemplates"; "required": false; }; }, { "sortColumn": "sortColumn"; "nameClick": "nameClick"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-dynamic-table-with-categories.component.d.ts.map

@@ -11,3 +11,4 @@ export declare class CustomTextareaComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomTextareaComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomTextareaComponent, "custom-textarea", never, { "class": { "alias": "class"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "name": { "alias": "name"; "required": false; }; "value": { "alias": "value"; "required": true; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-textarea.component.d.ts.map

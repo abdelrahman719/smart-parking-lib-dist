@@ -14,3 +14,4 @@ export declare class CustomCdkTooltipPanelComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomCdkTooltipPanelComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomCdkTooltipPanelComponent, "custom-cdk-tooltip-panel", never, { "customClass": { "alias": "customClass"; "required": false; }; "title": { "alias": "title"; "required": false; }; "text": { "alias": "text"; "required": false; }; "template": { "alias": "template"; "required": false; }; "templateContext": { "alias": "templateContext"; "required": false; }; }, { "mouseEnter": "mouseEnter"; "mouseLeave": "mouseLeave"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-cdk-tooltip-panel.component.d.ts.map

@@ -7,3 +7,4 @@ export declare const ROUTE_APPLICATION_PATTERNS: {
     readonly ON_STREET: RegExp;
     readonly OFF_STREET: RegExp;
 };
+//# sourceMappingURL=tenant-auth.constant.d.ts.map

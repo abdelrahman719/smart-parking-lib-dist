@@ -11,3 +11,4 @@ export * from './components/attachments.interface';
 export * from './components/dynamic-table.interface';
 export * from './auth/gloal-res.interface';
 export * from './auth/user.data.interface';
+//# sourceMappingURL=index.d.ts.map

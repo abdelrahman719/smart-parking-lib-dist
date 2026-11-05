@@ -13,3 +13,4 @@ export declare class CustomAvatarsComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomAvatarsComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomAvatarsComponent, "custom-avatars", never, { "items": { "alias": "items"; "required": false; }; "size": { "alias": "size"; "required": false; }; "overlapOffset": { "alias": "overlapOffset"; "required": false; }; "removeOutline": { "alias": "removeOutline"; "required": false; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-avatars.component.d.ts.map

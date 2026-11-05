@@ -15,3 +15,4 @@ export declare class CustomTooltipComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomTooltipComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomTooltipComponent, "custom-tooltip", never, { "customClass": { "alias": "customClass"; "required": false; }; "text": { "alias": "text"; "required": false; }; "title": { "alias": "title"; "required": false; }; "delay": { "alias": "delay"; "required": false; }; "position": { "alias": "position"; "required": false; }; "template": { "alias": "template"; "required": false; }; "templateContext": { "alias": "templateContext"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
+//# sourceMappingURL=custom-tooltip.component.d.ts.map

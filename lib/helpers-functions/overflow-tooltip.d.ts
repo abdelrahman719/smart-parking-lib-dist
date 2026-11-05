@@ -17,3 +17,4 @@ export interface OverflowTooltipOptions {
 export declare function showOverflowTooltip(host: HTMLElement, options?: OverflowTooltipOptions): void;
 /** Removes the open overflow tooltip, if any. */
 export declare function hideOverflowTooltip(): void;
+//# sourceMappingURL=overflow-tooltip.d.ts.map

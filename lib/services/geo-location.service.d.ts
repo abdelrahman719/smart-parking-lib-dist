@@ -5,3 +5,4 @@ export declare class GeoLocationService {
     static ɵfac: i0.ɵɵFactoryDeclaration<GeoLocationService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<GeoLocationService>;
 }
+//# sourceMappingURL=geo-location.service.d.ts.map

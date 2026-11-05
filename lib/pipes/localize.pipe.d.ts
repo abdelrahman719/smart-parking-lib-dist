@@ -8,3 +8,4 @@ export declare class LocalizePipe implements PipeTransform {
     static ɵfac: i0.ɵɵFactoryDeclaration<LocalizePipe, never>;
     static ɵpipe: i0.ɵɵPipeDeclaration<LocalizePipe, "localize", true>;
 }
+//# sourceMappingURL=localize.pipe.d.ts.map

@@ -23,3 +23,4 @@ export interface IStatusCol<T> {
     falseText: string;
     sort?: boolean;
 }
+//# sourceMappingURL=table.interface.d.ts.map

@@ -9,3 +9,4 @@ export declare class CustomFormActionsComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFormActionsComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomFormActionsComponent, "custom-form-actions", never, { "saveBtnLabel": { "alias": "saveBtnLabel"; "required": false; }; "cancelBtnLabel": { "alias": "cancelBtnLabel"; "required": false; }; "saveBtnDisabled": { "alias": "saveBtnDisabled"; "required": false; }; }, { "saveBtnClicked": "saveBtnClicked"; "cancelBtnClicked": "cancelBtnClicked"; }, never, ["[saveBtnIcon]"], true, never>;
 }
+//# sourceMappingURL=custom-form-actions.component.d.ts.map

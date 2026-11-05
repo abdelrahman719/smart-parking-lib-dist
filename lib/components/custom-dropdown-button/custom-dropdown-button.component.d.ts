@@ -14,3 +14,4 @@ export declare class CustomDropdownButtonComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDropdownButtonComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomDropdownButtonComponent, "custom-dropdown-button", never, { "options": { "alias": "options"; "required": true; }; }, { "selected": "selected"; }, never, ["[buttonLabel]"], true, never>;
 }
+//# sourceMappingURL=custom-dropdown-button.component.d.ts.map

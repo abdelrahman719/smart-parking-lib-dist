@@ -30,3 +30,4 @@ export declare class UserDataService {
     static ɵfac: i0.ɵɵFactoryDeclaration<UserDataService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<UserDataService>;
 }
+//# sourceMappingURL=user.data.services.d.ts.map

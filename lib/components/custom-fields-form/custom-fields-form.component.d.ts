@@ -23,3 +23,4 @@ export declare class CustomFieldsFormComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFieldsFormComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomFieldsFormComponent, "custom-fields-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "addTitle": { "alias": "addTitle"; "required": false; }; "addOneField": { "alias": "addOneField"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
+//# sourceMappingURL=custom-fields-form.component.d.ts.map

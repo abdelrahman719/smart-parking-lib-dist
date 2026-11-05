@@ -26,3 +26,4 @@ export declare class CustomFileViewerComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFileViewerComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomFileViewerComponent, "custom-file-viewer", never, { "file": { "alias": "file"; "required": true; }; "showMenu": { "alias": "showMenu"; "required": false; }; }, { "menuClick": "menuClick"; "fileClick": "fileClick"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-file-viewer.component.d.ts.map

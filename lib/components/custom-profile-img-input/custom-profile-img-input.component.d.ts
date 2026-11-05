@@ -30,3 +30,4 @@ export declare class CustomProfileImgInputComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomProfileImgInputComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomProfileImgInputComponent, "custom-profile-img-input", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "FileTypes": { "alias": "FileTypes"; "required": true; }; "maxFileSize": { "alias": "maxFileSize"; "required": true; }; "firstImgSrc": { "alias": "firstImgSrc"; "required": false; "isSignal": true; }; "placeholderText": { "alias": "placeholderText"; "required": false; "isSignal": true; }; "disableDeleteButton": { "alias": "disableDeleteButton"; "required": false; "isSignal": true; }; }, { "imageChanged": "imageChanged"; "imageDeleted": "imageDeleted"; }, never, never, true, never>;
 }
+//# sourceMappingURL=custom-profile-img-input.component.d.ts.map

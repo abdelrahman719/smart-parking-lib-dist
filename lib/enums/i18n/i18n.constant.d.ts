@@ -22,3 +22,4 @@ export declare enum I18nConstant {
     CS = "cs",
     HU = "hu"
 }
+//# sourceMappingURL=i18n.constant.d.ts.map

@@ -38,3 +38,4 @@ export declare class CustomModalService {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomModalService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<CustomModalService>;
 }
+//# sourceMappingURL=custom-modal.service.d.ts.map

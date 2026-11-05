@@ -28,3 +28,4 @@ export declare class CustomModalComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomModalComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomModalComponent, "modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "modalIconBackground": { "alias": "modalIconBackground"; "required": false; }; "modalIconColor": { "alias": "modalIconColor"; "required": false; }; "showTitleMarker": { "alias": "showTitleMarker"; "required": false; }; "modalTitleMarkerColor": { "alias": "modalTitleMarkerColor"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; "showHeader": { "alias": "showHeader"; "required": false; }; }, { "hideEvent": "hideEvent"; "closed": "closed"; }, never, ["*"], true, never>;
 }
+//# sourceMappingURL=custom-modal.component.d.ts.map

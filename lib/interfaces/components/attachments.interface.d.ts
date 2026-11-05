@@ -17,3 +17,4 @@ export interface ISmpAttachmentAfterResolving {
     id: string;
     imagePath: SafeUrl;
 }
+//# sourceMappingURL=attachments.interface.d.ts.map

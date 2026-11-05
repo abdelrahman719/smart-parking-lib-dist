@@ -7,3 +7,4 @@ export declare class OverlayManagerService {
     static ɵfac: i0.ɵɵFactoryDeclaration<OverlayManagerService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<OverlayManagerService>;
 }
+//# sourceMappingURL=overlay-panel.service.d.ts.map

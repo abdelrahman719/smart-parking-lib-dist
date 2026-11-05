@@ -8183,6 +8183,9 @@ class CustomSmDynamicTableComponent {
         }
     }
     findStatusKey() {
+        const statusKey = this.config()?.statusKey;
+        if (statusKey)
+            return statusKey;
         const col = this.config()?.columns?.find((c) => (c.key ?? '').toLowerCase().includes('status'));
         return col?.key ?? null;
     }

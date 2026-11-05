@@ -16,6 +16,8 @@ export interface ISmTableColumn {
 export interface ISmDynmaicTableConfig {
     columns: ISmTableColumn[];
     data: any[];
+    /** Status field used for inactive styling and action visibility. Auto-detected when omitted. */
+    statusKey?: string;
     dataStatus: 'LOADING' | 'EMPTY' | 'HAS_DATA' | 'No_Filter_Result';
 }
 export declare class CustomSmDynamicTableComponent {

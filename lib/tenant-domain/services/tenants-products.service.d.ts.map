@@ -1,0 +1,1 @@
+{"version":3,"file":"tenants-products.service.d.ts","sourceRoot":"","sources":["../../../../../projects/smart-parking-shared-lib/src/lib/tenant-domain/services/tenants-products.service.ts"],"names":[],"mappings":";AAIA,qBAGa,sBAAsB;IAEjC,OAAO,CAAC,MAAM,CAAkB;;IAGhC,mBAAmB,CAAC,KAAK,SAA8B,GAAG,IAAI;IAO9D,kBAAkB,IAAI,IAAI;yCAZf,sBAAsB;6CAAtB,sBAAsB;CAsBlC"}

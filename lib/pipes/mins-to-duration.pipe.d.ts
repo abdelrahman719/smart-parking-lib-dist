@@ -6,4 +6,3 @@ export declare class MinsToDurationPipe implements PipeTransform {
     static ɵfac: i0.ɵɵFactoryDeclaration<MinsToDurationPipe, never>;
     static ɵpipe: i0.ɵɵPipeDeclaration<MinsToDurationPipe, "minsToDuration", true>;
 }
-//# sourceMappingURL=mins-to-duration.pipe.d.ts.map

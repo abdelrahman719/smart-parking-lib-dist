@@ -14,4 +14,3 @@ export declare class CustomSmpFileUploadComponent extends CustomFileUploadCompon
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmpFileUploadComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmpFileUploadComponent, "custom-smp-file-upload", never, { "editMode": { "alias": "editMode"; "required": false; }; "existingItems": { "alias": "existingItems"; "required": false; }; }, { "removedExistingIds": "removedExistingIds"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-smp-file-upload.component.d.ts.map

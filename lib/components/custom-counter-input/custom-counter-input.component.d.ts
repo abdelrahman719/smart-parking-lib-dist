@@ -39,4 +39,3 @@ export declare class CustomCounterInputComponent implements OnInit, OnChanges {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomCounterInputComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomCounterInputComponent, "custom-counter-input", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "step": { "alias": "step"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "headerTemplate": { "alias": "headerTemplate"; "required": false; }; "validation": { "alias": "validation"; "required": false; }; "name": { "alias": "name"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-counter-input.component.d.ts.map

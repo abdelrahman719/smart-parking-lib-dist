@@ -19,4 +19,3 @@ export declare class CustomStatusLabelComponent {
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomStatusLabelComponent, "custom-status-label", never, { "status": { "alias": "status"; "required": true; }; "uppercase": { "alias": "uppercase"; "required": false; }; "extraText": { "alias": "extraText"; "required": false; }; }, {}, never, never, true, never>;
 }
 export {};
-//# sourceMappingURL=custom-status-label.component.d.ts.map

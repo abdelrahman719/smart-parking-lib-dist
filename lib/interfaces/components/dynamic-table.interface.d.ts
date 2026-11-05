@@ -35,4 +35,3 @@ export interface TableGroup<T = any> {
     items: T[];
     isCollapsed?: boolean;
 }
-//# sourceMappingURL=dynamic-table.interface.d.ts.map

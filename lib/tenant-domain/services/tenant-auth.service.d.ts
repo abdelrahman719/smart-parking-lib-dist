@@ -21,4 +21,3 @@ export declare class TenantAuthService {
     static ɵfac: i0.ɵɵFactoryDeclaration<TenantAuthService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<TenantAuthService>;
 }
-//# sourceMappingURL=tenant-auth.service.d.ts.map

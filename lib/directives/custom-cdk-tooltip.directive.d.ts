@@ -33,4 +33,3 @@ export declare class CustomCdkTooltipDirective implements OnDestroy {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomCdkTooltipDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<CustomCdkTooltipDirective, "[customCdkTooltip], [appCdkTooltip]", never, { "tooltipTitle": { "alias": "tooltipTitle"; "required": false; }; "tooltipClass": { "alias": "tooltipClass"; "required": false; }; "tooltipDelay": { "alias": "tooltipDelay"; "required": false; }; "tooltipPosition": { "alias": "tooltipPosition"; "required": false; }; "tooltipTemplate": { "alias": "tooltipTemplate"; "required": false; }; "tooltipContext": { "alias": "tooltipContext"; "required": false; }; "customCdkTooltip": { "alias": "customCdkTooltip"; "required": false; }; "appCdkTooltip": { "alias": "appCdkTooltip"; "required": false; }; }, {}, never, never, true, never>;
 }
-//# sourceMappingURL=custom-cdk-tooltip.directive.d.ts.map

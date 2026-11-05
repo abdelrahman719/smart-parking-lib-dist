@@ -31,4 +31,3 @@ export declare class CustomCalendarComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomCalendarComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomCalendarComponent, "custom-calendar", never, { "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "calendarPopUpClass": { "alias": "calendarPopUpClass"; "required": false; }; "calendarInputClass": { "alias": "calendarInputClass"; "required": false; }; "calendarContainerClass": { "alias": "calendarContainerClass"; "required": false; }; "minDate": { "alias": "minDate"; "required": false; }; "maxDate": { "alias": "maxDate"; "required": false; }; "value": { "alias": "value"; "required": true; }; "height": { "alias": "height"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-calendar.component.d.ts.map

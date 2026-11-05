@@ -7,4 +7,3 @@ export declare class ArabicOnlyDirective {
     static ɵfac: i0.ɵɵFactoryDeclaration<ArabicOnlyDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<ArabicOnlyDirective, "[appArabicOnly]", never, {}, {}, never, never, true, never>;
 }
-//# sourceMappingURL=arabic.text.validation.directive.d.ts.map

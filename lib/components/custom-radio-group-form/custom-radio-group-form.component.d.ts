@@ -16,4 +16,3 @@ export declare class CustomRadioGroupFormComponent implements OnInit {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomRadioGroupFormComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomRadioGroupFormComponent, "custom-radio-group-form", never, { "setFirstAsDefaultValue": { "alias": "setFirstAsDefaultValue"; "required": false; }; "name": { "alias": "name"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "parentForm": { "alias": "parentForm"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "options": { "alias": "options"; "required": true; }; }, { "onChange": "onChange"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-radio-group-form.component.d.ts.map

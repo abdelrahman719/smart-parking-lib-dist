@@ -55,4 +55,3 @@ export declare class CustomMainPagesModalFilterDialogComponent implements OnChan
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomMainPagesModalFilterDialogComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomMainPagesModalFilterDialogComponent, "custom-main-pages-modal-filter-dialog", never, { "configs": { "alias": "configs"; "required": false; }; "draftValues": { "alias": "draftValues"; "required": false; }; "searchText": { "alias": "searchText"; "required": false; }; "searchInputPlaceholder": { "alias": "searchInputPlaceholder"; "required": false; }; "validateNumber": { "alias": "validateNumber"; "required": false; }; }, {}, never, never, true, never>;
 }
-//# sourceMappingURL=custom-main-pages-modal-filter-dialog.component.d.ts.map

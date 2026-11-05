@@ -10,4 +10,3 @@ export declare class SidenavService {
     static ɵfac: i0.ɵɵFactoryDeclaration<SidenavService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<SidenavService>;
 }
-//# sourceMappingURL=side-nav-collapse.service.d.ts.map

@@ -5,4 +5,3 @@ export declare class TenantPlatformService {
     static ɵfac: i0.ɵɵFactoryDeclaration<TenantPlatformService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<TenantPlatformService>;
 }
-//# sourceMappingURL=tenant-platform.service.d.ts.map

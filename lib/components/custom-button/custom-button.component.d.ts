@@ -8,4 +8,3 @@ export declare class CustomButtonComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomButtonComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomButtonComponent, "custom-button", never, { "disabled": { "alias": "disabled"; "required": false; }; "type": { "alias": "type"; "required": false; }; "class": { "alias": "class"; "required": true; }; }, { "buttonClick": "buttonClick"; }, never, ["*"], true, never>;
 }
-//# sourceMappingURL=custom-button.component.d.ts.map

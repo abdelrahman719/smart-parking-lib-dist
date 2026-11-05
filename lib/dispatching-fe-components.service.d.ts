@@ -4,4 +4,3 @@ export declare class DispatchingFeComponentsService {
     static ɵfac: i0.ɵɵFactoryDeclaration<DispatchingFeComponentsService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<DispatchingFeComponentsService>;
 }
-//# sourceMappingURL=dispatching-fe-components.service.d.ts.map

@@ -12,4 +12,3 @@ export * from './lib/utilities/saudiTime';
 export * from './lib/utilities/activity-time.util';
 export * from './lib/pipes';
 export * from './lib/tenant-domain';
-//# sourceMappingURL=public-api.d.ts.map

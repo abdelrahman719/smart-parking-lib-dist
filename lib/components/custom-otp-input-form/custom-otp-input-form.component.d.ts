@@ -33,4 +33,3 @@ export declare class CustomOtpInputFormComponent implements OnInit, AfterViewIni
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomOtpInputFormComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomOtpInputFormComponent, "custom-otp-input-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "showError": { "alias": "showError"; "required": false; }; "length": { "alias": "length"; "required": false; }; }, {}, never, never, true, never>;
 }
-//# sourceMappingURL=custom-otp-input-form.component.d.ts.map

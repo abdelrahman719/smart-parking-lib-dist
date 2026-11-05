@@ -14,4 +14,3 @@ export declare class ClickOutsideDirective implements AfterViewInit, OnDestroy {
     static ɵfac: i0.ɵɵFactoryDeclaration<ClickOutsideDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<ClickOutsideDirective, "[clickOutside]", never, { "clickOutside": { "alias": "clickOutside"; "required": false; }; }, { "clickOutsideEmitter": "clickOutsideEmitter"; }, never, never, true, never>;
 }
-//# sourceMappingURL=click.outside.directive.d.ts.map

@@ -12,4 +12,3 @@ export declare class ToggleElementDirective implements OnInit {
     static ɵfac: i0.ɵɵFactoryDeclaration<ToggleElementDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<ToggleElementDirective, "[toggleElement]", never, { "element": { "alias": "element"; "required": true; }; "hideElement": { "alias": "hideElement"; "required": false; }; }, {}, never, never, true, never>;
 }
-//# sourceMappingURL=toggle-element.directive.d.ts.map

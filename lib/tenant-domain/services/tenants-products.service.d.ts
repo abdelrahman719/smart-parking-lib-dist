@@ -7,4 +7,3 @@ export declare class TenantsProductsService {
     static ɵfac: i0.ɵɵFactoryDeclaration<TenantsProductsService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<TenantsProductsService>;
 }
-//# sourceMappingURL=tenants-products.service.d.ts.map

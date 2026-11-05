@@ -11,4 +11,3 @@ export declare class CustomToastComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomToastComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomToastComponent, "custom-toast", never, {}, {}, never, never, true, never>;
 }
-//# sourceMappingURL=custom-toast.component.d.ts.map

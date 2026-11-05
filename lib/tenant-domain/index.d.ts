@@ -6,4 +6,3 @@ export * from './services/tenants-products.service';
 export * from './guards/tenant-auth.guard';
 export * from './guards/no-auth-tenant.guard';
 export * from './helpers/checkProductAccess';
-//# sourceMappingURL=index.d.ts.map

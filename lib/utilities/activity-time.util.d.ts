@@ -21,4 +21,3 @@ export declare function formatActivityTime(input: string | Date | number | null 
  */
 export declare function formatRelativeActivityTime(input: string | Date | null | undefined, lang?: string, opts?: ActivityTimeOptions): string;
 export {};
-//# sourceMappingURL=activity-time.util.d.ts.map

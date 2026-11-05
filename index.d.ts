@@ -3,4 +3,3 @@
  */
 /// <amd-module name="smart-parking-shared-lib" />
 export * from './public-api';
-//# sourceMappingURL=smart-parking-shared-lib.d.ts.map

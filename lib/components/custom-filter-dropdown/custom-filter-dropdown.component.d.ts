@@ -55,4 +55,3 @@ export declare class CustomFilterDropdownComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFilterDropdownComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomFilterDropdownComponent, "custom-filter-dropdown", never, { "filtersConfig": { "alias": "filtersConfig"; "required": true; }; "activeFilters": { "alias": "activeFilters"; "required": false; "isSignal": true; }; }, { "filtersChanged": "filtersChanged"; "activeFilters": "activeFiltersChange"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-filter-dropdown.component.d.ts.map

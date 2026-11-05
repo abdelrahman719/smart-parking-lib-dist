@@ -38,4 +38,3 @@ export declare class CustomFilterDynamicFormComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomFilterDynamicFormComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomFilterDynamicFormComponent, "custom-filter-dynamic-form", never, { "config": { "alias": "config"; "required": false; "isSignal": true; }; "values": { "alias": "values"; "required": false; "isSignal": true; }; }, { "formChanged": "formChanged"; "formReset": "formReset"; }, never, never, true, never>;
 }
-//# sourceMappingURL=custom-filter-dynamic-form.component.d.ts.map

@@ -11,4 +11,3 @@ export declare class AuthDirective {
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<AuthDirective, "[canDoAction]", never, { "canDoAction": { "alias": "canDoAction"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
 }
-//# sourceMappingURL=auth.directive.d.ts.map

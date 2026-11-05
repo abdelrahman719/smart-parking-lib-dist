@@ -7,4 +7,3 @@ export declare class EnglishOnlyDirective {
     static ɵfac: i0.ɵɵFactoryDeclaration<EnglishOnlyDirective, never>;
     static ɵdir: i0.ɵɵDirectiveDeclaration<EnglishOnlyDirective, "[appEnglishOnly]", never, {}, {}, never, never, true, never>;
 }
-//# sourceMappingURL=english.text.validation.directive.d.ts.map

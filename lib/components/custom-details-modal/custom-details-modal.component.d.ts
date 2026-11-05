@@ -22,4 +22,3 @@ export declare class CustomDetailsModalComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDetailsModalComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<CustomDetailsModalComponent, "custom-details-modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; "BreadCrumbs": { "alias": "BreadCrumbs"; "required": true; }; "sectionDimensions": { "alias": "sectionDimensions"; "required": false; }; "actionsDropdown": { "alias": "actionsDropdown"; "required": false; "isSignal": true; }; "mainSize": { "alias": "mainSize"; "required": false; }; "sideSize": { "alias": "sideSize"; "required": false; }; }, { "headerButtonClick": "headerButtonClick"; "dropdownSelectAction": "dropdownSelectAction"; }, never, ["[mainContent]", "[sideContent]"], true, never>;
 }
-//# sourceMappingURL=custom-details-modal.component.d.ts.map

@@ -38,4 +38,3 @@ export interface IPaginatedGlobalAppsResponse<T> {
         last: boolean;
     };
 }
-//# sourceMappingURL=gloal-res.interface.d.ts.map

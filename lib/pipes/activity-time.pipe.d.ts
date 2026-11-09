@@ -6,6 +6,7 @@ export declare class ActivityTimePipe implements PipeTransform {
     private translation;
     constructor(translation: TranslationService);
     transform(value: string | Date | number | null | undefined, lang?: string | null, mode?: ActivityTimeMode, format?: ActivityTimeFormat, timezoneMode?: ActivityTimeTimezoneMode): string;
+    private isolateArabicDate;
     static ɵfac: i0.ɵɵFactoryDeclaration<ActivityTimePipe, never>;
     static ɵpipe: i0.ɵɵPipeDeclaration<ActivityTimePipe, "activityTime", true>;
 }

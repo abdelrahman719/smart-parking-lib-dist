@@ -2299,20 +2299,40 @@ class ActivityTimePipe {
                 showTime: format !== 'dateOnly',
             });
         }
-        return formatActivityTime(value, resolvedLang, {
+        const formatted = formatActivityTime(value, resolvedLang, {
             locale: resolvedLang,
             format,
             timezoneMode,
         });
+        if (formatted === '-')
+            return formatted;
+        // Isolate Arabic words so the fields within each date or time stay in order.
+        const isolate = (text) => `\u2066${text.replace(/\p{Script=Arabic}+/gu, '\u2067$&\u2069')}\u2069`;
+        if (resolvedLang.startsWith('ar')) {
+            const dateAndTime = formatted.match(/^(.+?)(,?\s+(?:(?:-|في)\s+)?)(\d{1,2}:\d{2}.*)$/u);
+            if (dateAndTime) {
+                const [, date, separator, time] = dateAndTime;
+                return `\u2067${this.isolateArabicDate(date)}${separator}${isolate(time)}\u2069`;
+            }
+            return /^\d+\s*:/.test(formatted) ? isolate(formatted) : this.isolateArabicDate(formatted);
+        }
+        return isolate(formatted);
+    }
+    isolateArabicDate(date) {
+        const monthFirst = date.match(/^(\D+?) (\d{1,2})(, \d{4})?$/u);
+        const ordered = monthFirst ? `${monthFirst[2]} ${monthFirst[1]}${monthFirst[3]?.slice(1) ?? ''}` : date;
+        // RTL orders the fields; isolate each number so its digits stay left to right.
+        return `\u2067${ordered.replace(/\d+/g, '\u2066$&\u2069')}\u2069`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, deps: [{ token: TranslationService }], target: i0.ɵɵFactoryTarget.Pipe });
-    static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, isStandalone: true, name: "activityTime" });
+    static ɵpipe = i0.ɵɵngDeclarePipe({ minVersion: "14.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, isStandalone: true, name: "activityTime", pure: false });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.17", ngImport: i0, type: ActivityTimePipe, decorators: [{
             type: Pipe,
             args: [{
                     name: 'activityTime',
                     standalone: true,
+                    pure: false, // The current language can change without a change to the pipe arguments.
                 }]
         }], ctorParameters: () => [{ type: TranslationService }] });
 

@@ -41,6 +41,7 @@ export * from './custom-details-header/custom-details-header.component';
 export * from './custom-details-nav/custom-details-nav.component';
 export * from './custom-title-content/custom-title-content.component';
 export * from './custom-plate-number-input-form/custom-plate-number-input-form.component';
+export * from './custom-vehicle-plate-number/custom-vehicle-plate-number.component';
 export * from './custom-tabs/custom-tabs.component';
 export * from './custom-tabs-with-dialog-filter/custom-tabs-with-dialog-filter.component';
 export * from './custom-color/custom-color.component';

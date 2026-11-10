@@ -1,5 +1,6 @@
 import { OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { VehiclePlateValue } from '../../../custom-vehicle-plate-number/custom-vehicle-plate-number.component';
 import type { IDropdownOption, IUserLookup } from '../../../../interfaces/components/dropdown.interface';
 import type { FilterCustomTemplateContext, FilterSelections, FilterValue, NormalizedFilterConfigItem } from '../custom-main-pages-modal-filter.models';
 import * as i0 from "@angular/core";
@@ -39,6 +40,8 @@ export declare class CustomMainPagesModalFilterDialogComponent implements OnChan
     onSearchChange(value: string): void;
     resetDraft(): void;
     apply(): void;
+    readonly plateValues: import("@angular/core").Signal<Record<string, VehiclePlateValue>>;
+    onPlateChange(config: NormalizedFilterConfigItem, value: VehiclePlateValue): void;
     templateContext(config: NormalizedFilterConfigItem): FilterCustomTemplateContext;
     private ensureInternalControls;
     private loadDraft;

@@ -1,8 +1,9 @@
+import type { VehiclePlateAssets } from '../../custom-vehicle-plate-number/custom-vehicle-plate-number.component';
 import type { TemplateRef } from '@angular/core';
 import type { IDropdownOption, IUserLookup } from '../../../interfaces/components/dropdown.interface';
 export type FilterValue = string | number | Date | null | unknown[];
 export type FilterSelections = Record<string, FilterValue>;
-export type FilterInputType = 'select' | 'multi-select' | 'text' | 'number' | 'date' | 'date-range' | 'custom';
+export type FilterInputType = 'select' | 'multi-select' | 'text' | 'number' | 'date' | 'date-range' | 'vehicle-plate' | 'custom';
 export interface FilterChange {
     searchText: string;
     selectedIds: unknown[];
@@ -58,6 +59,7 @@ export interface FilterConfigItem {
     valueLabelFormatter?: (value: FilterValue, option?: IDropdownOption) => string;
     gridSpan?: 1 | 2;
     width?: string;
+    plateAssets?: VehiclePlateAssets;
     customTemplate?: TemplateRef<FilterCustomTemplateContext>;
     metadata?: Record<string, unknown>;
     formBinding?: FilterFormBinding;

@@ -1,5 +1,6 @@
 import type { VehiclePlateAssets } from '../../custom-vehicle-plate-number/custom-vehicle-plate-number.component';
 import type { TemplateRef } from '@angular/core';
+import type { IComponentFormError } from '../../../interfaces';
 import type { IDropdownOption, IUserLookup } from '../../../interfaces/components/dropdown.interface';
 export type FilterValue = string | number | Date | null | unknown[];
 export type FilterSelections = Record<string, FilterValue>;
@@ -55,6 +56,7 @@ export interface FilterConfigItem {
     disabled?: boolean;
     required?: boolean;
     loading?: boolean;
+    validation?: IComponentFormError[];
     chipLabelFormatter?: (value: unknown, option?: IDropdownOption) => string;
     valueLabelFormatter?: (value: FilterValue, option?: IDropdownOption) => string;
     gridSpan?: 1 | 2;

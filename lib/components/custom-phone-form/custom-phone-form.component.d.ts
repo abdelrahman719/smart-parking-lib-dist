@@ -29,6 +29,8 @@ export declare class CustomPhoneFormComponent {
     numberInputClass: string;
     placeholderNumber: string;
     enableFilter: boolean;
+    /** Opt in to choosing a country; existing consumers retain a fixed dial code. */
+    allowCountrySelection: boolean;
     /** Country list is required. Each option should provide id, nameEn, dialCode, and (optionally) rules. */
     countries: IPhoneCountryOption[];
     /** Your existing error system (same as dropdown) */
@@ -55,6 +57,8 @@ export declare class CustomPhoneFormComponent {
     /** Pull current control value and mirror into local UI state */
     private syncFromControl;
     toggleDropdown(): void;
+    onCountryTriggerKeydown(event: Event): void;
+    onCountryOptionKeydown(event: Event, option: IPhoneCountryOption): void;
     closeDropdown(): void;
     applyFilter(): void;
     selectCountry(option: IPhoneCountryOption): void;
@@ -78,5 +82,5 @@ export declare class CustomPhoneFormComponent {
     private findCountryByDial;
     containRequiredError(): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomPhoneFormComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomPhoneFormComponent, "custom-phone-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "name": { "alias": "name"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "containerClass": { "alias": "containerClass"; "required": false; }; "countryHeaderClass": { "alias": "countryHeaderClass"; "required": false; }; "optionsPanelClass": { "alias": "optionsPanelClass"; "required": false; }; "numberInputClass": { "alias": "numberInputClass"; "required": false; }; "placeholderNumber": { "alias": "placeholderNumber"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "countries": { "alias": "countries"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "disabled": { "alias": "disabled"; "required": false; }; "height": { "alias": "height"; "required": false; }; "phoneRules": { "alias": "phoneRules"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomPhoneFormComponent, "custom-phone-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "name": { "alias": "name"; "required": true; }; "label": { "alias": "label"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "containerClass": { "alias": "containerClass"; "required": false; }; "countryHeaderClass": { "alias": "countryHeaderClass"; "required": false; }; "optionsPanelClass": { "alias": "optionsPanelClass"; "required": false; }; "numberInputClass": { "alias": "numberInputClass"; "required": false; }; "placeholderNumber": { "alias": "placeholderNumber"; "required": false; }; "enableFilter": { "alias": "enableFilter"; "required": false; }; "allowCountrySelection": { "alias": "allowCountrySelection"; "required": false; }; "countries": { "alias": "countries"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "disabled": { "alias": "disabled"; "required": false; }; "height": { "alias": "height"; "required": false; }; "phoneRules": { "alias": "phoneRules"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }

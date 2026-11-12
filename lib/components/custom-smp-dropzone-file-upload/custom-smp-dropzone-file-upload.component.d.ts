@@ -1,3 +1,4 @@
+import type { ToastType, ToastPosition } from '../../services/ui/toast.service';
 import { ElementRef, EventEmitter } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormGroup, ValidationErrors, Validator } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
@@ -13,6 +14,10 @@ export declare class CustomSmpDropzoneFileUploadComponent implements ControlValu
     validation: IComponentFormError[];
     labelClass: string;
     newSmpResponse: boolean;
+    /** Keep valid files from a mixed batch; batch validation remains the default. */
+    validationMode: 'batch' | 'per-file';
+    validationToastType: ToastType;
+    validationToastPosition: ToastPosition;
     valueMode: 'smp' | 'file';
     buttonSelectLabel: string;
     placeholder: string;
@@ -80,5 +85,5 @@ export declare class CustomSmpDropzoneFileUploadComponent implements ControlValu
     private showInvalidTypeMessage;
     private showMaxSizeMessage;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomSmpDropzoneFileUploadComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmpDropzoneFileUploadComponent, "custom-smp-dropzone-file-upload", never, { "parentForm": { "alias": "parentForm"; "required": false; }; "FileTypes": { "alias": "FileTypes"; "required": false; }; "acceptedExtensions": { "alias": "acceptedExtensions"; "required": false; }; "maxFileSize": { "alias": "maxFileSize"; "required": false; }; "controlName": { "alias": "controlName"; "required": false; }; "label": { "alias": "label"; "required": false; }; "validation": { "alias": "validation"; "required": true; }; "labelClass": { "alias": "labelClass"; "required": false; }; "newSmpResponse": { "alias": "newSmpResponse"; "required": false; }; "valueMode": { "alias": "valueMode"; "required": false; }; "buttonSelectLabel": { "alias": "buttonSelectLabel"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "supportText": { "alias": "supportText"; "required": false; }; "invalidFileTypeMessage": { "alias": "invalidFileTypeMessage"; "required": false; }; "maxFileSizeMessage": { "alias": "maxFileSizeMessage"; "required": false; }; "gridCols": { "alias": "gridCols"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; "maxFileCount": { "alias": "maxFileCount"; "required": false; }; "editMode": { "alias": "editMode"; "required": false; }; "existingItems": { "alias": "existingItems"; "required": false; }; }, { "removedExistingIds": "removedExistingIds"; "blur": "blur"; "touched": "touched"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomSmpDropzoneFileUploadComponent, "custom-smp-dropzone-file-upload", never, { "parentForm": { "alias": "parentForm"; "required": false; }; "FileTypes": { "alias": "FileTypes"; "required": false; }; "acceptedExtensions": { "alias": "acceptedExtensions"; "required": false; }; "maxFileSize": { "alias": "maxFileSize"; "required": false; }; "controlName": { "alias": "controlName"; "required": false; }; "label": { "alias": "label"; "required": false; }; "validation": { "alias": "validation"; "required": true; }; "labelClass": { "alias": "labelClass"; "required": false; }; "newSmpResponse": { "alias": "newSmpResponse"; "required": false; }; "validationMode": { "alias": "validationMode"; "required": false; }; "validationToastType": { "alias": "validationToastType"; "required": false; }; "validationToastPosition": { "alias": "validationToastPosition"; "required": false; }; "valueMode": { "alias": "valueMode"; "required": false; }; "buttonSelectLabel": { "alias": "buttonSelectLabel"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "supportText": { "alias": "supportText"; "required": false; }; "invalidFileTypeMessage": { "alias": "invalidFileTypeMessage"; "required": false; }; "maxFileSizeMessage": { "alias": "maxFileSizeMessage"; "required": false; }; "gridCols": { "alias": "gridCols"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; "maxFileCount": { "alias": "maxFileCount"; "required": false; }; "editMode": { "alias": "editMode"; "required": false; }; "existingItems": { "alias": "existingItems"; "required": false; }; }, { "removedExistingIds": "removedExistingIds"; "blur": "blur"; "touched": "touched"; }, never, never, true, never>;
 }

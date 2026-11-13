@@ -72,3 +72,4 @@ export * from './custom-calendar-range-form/custom-calendar-range-form.component
 export * from './custom-date-ranges-filter/custom-date-ranges-filter.component';
 export * from './custom-date-time-form/custom-date-time-form.component';
 export * from './custom-notification-toast/custom-notification-toast.component';
+export * from './custom-color-input-form/custom-color-input-form.component';

@@ -1,4 +1,4 @@
-import { ComponentRef, EventEmitter, Injector, Type, ViewContainerRef } from '@angular/core';
+import { ComponentRef, EventEmitter, Injector, Type, TemplateRef, ViewContainerRef } from '@angular/core';
 import * as i0 from "@angular/core";
 export declare class CustomModalComponent {
     modalTitle: string;
@@ -9,6 +9,12 @@ export declare class CustomModalComponent {
     modalTitleMarkerColor: string;
     overlayClickClose: boolean;
     showHeader: boolean;
+    /** Replaces the title area only; the standard close button remains available. */
+    headerTemplate?: TemplateRef<{
+        $implicit: string;
+        close: (result?: unknown) => void;
+    }>;
+    readonly closeFromHeader: (result?: unknown) => void;
     dir: 'rtl' | 'ltr';
     hideEvent: EventEmitter<void>;
     closed: EventEmitter<unknown>;
@@ -26,5 +32,5 @@ export declare class CustomModalComponent {
     attachContent<T>(component: Type<T>, injector: Injector): ComponentRef<T>;
     private clearDynamicContent;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomModalComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomModalComponent, "modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "modalIconBackground": { "alias": "modalIconBackground"; "required": false; }; "modalIconColor": { "alias": "modalIconColor"; "required": false; }; "showTitleMarker": { "alias": "showTitleMarker"; "required": false; }; "modalTitleMarkerColor": { "alias": "modalTitleMarkerColor"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; "showHeader": { "alias": "showHeader"; "required": false; }; }, { "hideEvent": "hideEvent"; "closed": "closed"; }, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomModalComponent, "modal", never, { "modalTitle": { "alias": "modalTitle"; "required": false; }; "modalIcon": { "alias": "modalIcon"; "required": false; }; "modalIconBackground": { "alias": "modalIconBackground"; "required": false; }; "modalIconColor": { "alias": "modalIconColor"; "required": false; }; "showTitleMarker": { "alias": "showTitleMarker"; "required": false; }; "modalTitleMarkerColor": { "alias": "modalTitleMarkerColor"; "required": false; }; "overlayClickClose": { "alias": "overlayClickClose"; "required": false; }; "showHeader": { "alias": "showHeader"; "required": false; }; "headerTemplate": { "alias": "headerTemplate"; "required": false; }; }, { "hideEvent": "hideEvent"; "closed": "closed"; }, never, ["*"], true, never>;
 }

@@ -1,4 +1,4 @@
-import { ComponentRef, InjectionToken, Type } from '@angular/core';
+import { ComponentRef, InjectionToken, Type, TemplateRef } from '@angular/core';
 import { CustomModalComponent } from '../../components/custom-modal/custom-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import * as i0 from "@angular/core";
@@ -16,6 +16,10 @@ export interface ModalOpenOptions<TInputs = unknown> {
     titleMarkerColor?: string;
     overlayClickClose?: boolean;
     showHeader?: boolean;
+    headerTemplate?: TemplateRef<{
+        $implicit: string;
+        close: (result?: unknown) => void;
+    }>;
 }
 export interface ModalRef<TChild, TResult = unknown> {
     modalComponentRef: ComponentRef<CustomModalComponent>;

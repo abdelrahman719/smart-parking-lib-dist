@@ -14,6 +14,7 @@ type PlateField = keyof VehiclePlateValue;
 export declare class CustomVehiclePlateNumberComponent implements ControlValueAccessor {
     readonlyMode: boolean;
     label: string;
+    required: boolean;
     assets?: VehiclePlateAssets;
     blur: EventEmitter<void>;
     enterKey: EventEmitter<void>;
@@ -43,6 +44,6 @@ export declare class CustomVehiclePlateNumberComponent implements ControlValueAc
     private focusSlot;
     private emitValue;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomVehiclePlateNumberComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomVehiclePlateNumberComponent, "custom-vehicle-plate-number", never, { "readonlyMode": { "alias": "readonlyMode"; "required": false; }; "label": { "alias": "label"; "required": false; }; "assets": { "alias": "assets"; "required": false; }; }, { "blur": "blur"; "enterKey": "enterKey"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomVehiclePlateNumberComponent, "custom-vehicle-plate-number", never, { "readonlyMode": { "alias": "readonlyMode"; "required": false; }; "label": { "alias": "label"; "required": false; }; "required": { "alias": "required"; "required": false; }; "assets": { "alias": "assets"; "required": false; }; }, { "blur": "blur"; "enterKey": "enterKey"; }, never, never, true, never>;
 }
 export {};

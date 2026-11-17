@@ -87,6 +87,7 @@ export interface NormalizedFilterConfigItem extends FilterConfigItem {
     height: string;
 }
 export interface AppliedFilterChip {
+    direction?: 'ltr';
     key: string;
     value: unknown;
     label: string;

@@ -1,4 +1,4 @@
-import { EventEmitter, OnInit } from '@angular/core';
+import { AfterViewChecked, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ITimeObject, TimeHourFormat, TimeString } from '../custom-time-input-form/custom-time-input-form.component';
 import { IComponentFormError } from '../../interfaces';
@@ -6,12 +6,13 @@ import * as i0 from "@angular/core";
 export type CustomDateTimeMode = 'date' | 'time' | 'dateTime';
 type TimePart = 'hour' | 'minute';
 type Meridiem = 'AM' | 'PM';
-export declare class CustomDateTimeFormComponent implements OnInit {
+export declare class CustomDateTimeFormComponent implements OnInit, AfterViewChecked, OnDestroy {
     parentForm: FormGroup;
     controlName: string;
     name: string;
     validation: IComponentFormError[];
     mode: CustomDateTimeMode;
+    overlayMode: 'inline' | 'fixed';
     label: string;
     placeholder: string;
     timePlaceholder: string;
@@ -28,6 +29,14 @@ export declare class CustomDateTimeFormComponent implements OnInit {
     dateTimeHourFormat: TimeHourFormat;
     minuteStep: number;
     valueChange: EventEmitter<string | Date | ITimeObject | null>;
+    private dateTimeTrigger?;
+    private dateTimePanel?;
+    private readonly zone;
+    private readonly overlayGap;
+    private readonly viewportEdgeGap;
+    private overlayListenersActive;
+    private positionFrame;
+    private readonly positionOverlayHandler;
     showDateTimePanel: boolean;
     currentMonth: Date;
     days: Date[];
@@ -78,7 +87,14 @@ export declare class CustomDateTimeFormComponent implements OnInit {
     private pad;
     private applyMinTime;
     private coerceToTimeObject;
+    ngAfterViewChecked(): void;
+    ngOnDestroy(): void;
+    private activateFixedOverlay;
+    private deactivateFixedOverlay;
+    private scheduleOverlayPosition;
+    private positionFixedOverlay;
+    private resetOverlayStyles;
     static ɵfac: i0.ɵɵFactoryDeclaration<CustomDateTimeFormComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDateTimeFormComponent, "custom-date-time-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "name": { "alias": "name"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "mode": { "alias": "mode"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "timePlaceholder": { "alias": "timePlaceholder"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "componentClass": { "alias": "componentClass"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "minDate": { "alias": "minDate"; "required": false; }; "maxDate": { "alias": "maxDate"; "required": false; }; "minTime": { "alias": "minTime"; "required": false; }; "defaultTime": { "alias": "defaultTime"; "required": false; }; "stringMode": { "alias": "stringMode"; "required": false; }; "height": { "alias": "height"; "required": false; }; "hourFormat": { "alias": "hourFormat"; "required": false; }; "dateTimeHourFormat": { "alias": "dateTimeHourFormat"; "required": false; }; "minuteStep": { "alias": "minuteStep"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CustomDateTimeFormComponent, "custom-date-time-form", never, { "parentForm": { "alias": "parentForm"; "required": true; }; "controlName": { "alias": "controlName"; "required": true; }; "name": { "alias": "name"; "required": true; }; "validation": { "alias": "validation"; "required": true; }; "mode": { "alias": "mode"; "required": false; }; "overlayMode": { "alias": "overlayMode"; "required": false; }; "label": { "alias": "label"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "timePlaceholder": { "alias": "timePlaceholder"; "required": false; }; "labelClass": { "alias": "labelClass"; "required": false; }; "componentClass": { "alias": "componentClass"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "minDate": { "alias": "minDate"; "required": false; }; "maxDate": { "alias": "maxDate"; "required": false; }; "minTime": { "alias": "minTime"; "required": false; }; "defaultTime": { "alias": "defaultTime"; "required": false; }; "stringMode": { "alias": "stringMode"; "required": false; }; "height": { "alias": "height"; "required": false; }; "hourFormat": { "alias": "hourFormat"; "required": false; }; "dateTimeHourFormat": { "alias": "dateTimeHourFormat"; "required": false; }; "minuteStep": { "alias": "minuteStep"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
 export {};
